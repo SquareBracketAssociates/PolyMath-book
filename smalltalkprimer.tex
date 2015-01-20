@@ -1,7 +1,7 @@
 \ifx\wholebook\relax\else
 \documentclass[twoside]{book}
 \usepackage[active]{srcltx}
-\usepackage[LY1]{em}
+%\usepackage[LY1]{em}
 \input{DhbDefinitions}
 \begin{document}
 \fi
@@ -229,9 +229,9 @@ sent is an interval from 1 to $n-1$. This line is equivalent to
 the Java statement {\tt for (int k = 1; k < n; k++)}. The reader
 should notice that indices in Smalltalk begin at 1 instead of 0.
 
-\noindent Line 6 is the beginning of the block context, argument
+\noindent Line 6 is the beginning of the block, argument
 of the {\tt do:} message. This line is declarative and states that
-the variable used to evaluate the block context is named {\tt k}.
+the variable used to evaluate the block is named {\tt k}.
 
 \noindent Line 7 contains two messages sent to the variable {\tt
 self}. The first message to be executed is a keyword message
@@ -249,7 +249,7 @@ case, the target of the message {\tt pivotAt:} --- a keyword
 message with one argument {\tt k} --- is {\tt self}.
 
 \noindent Line 9 is the end of the statement beginning on line 5.
-It is the terminating bracket of the block context beginning on
+It is the terminating bracket of the block beginning on
 line 6. This statement is terminator with a dot. Because this
 method does not return an explicit result, the result of the
 method is {\tt self}, that is the instance which was executing the
@@ -277,11 +277,11 @@ with all instance variables set to nil. An application designer
 can chose to redefine the method {\tt new} for a given subclass.
 This book shows several example of this.
 
-\subsection{Block context}
+\subsection{Block}
 In Smalltalk everything is an object. And yes! This is the third
 times this important statement is made. This is true for Smalltalk
 code itself. A Smalltalk code object is specified with a special
-syntax: the block context. Here is an example of a block context
+syntax: the block. Here is an example of a block 
 computing polar coordinates from supplied Cartesian coordinates:
 \begin{quote}
 \begin{verbatim}
@@ -292,14 +292,14 @@ computing polar coordinates from supplied Cartesian coordinates:
  Array with: radius with: angle]
 \end{verbatim}
 \end{quote}
-The block context is delimited by a pair of brackets ({\tt []}).
+The block  is delimited by a pair of brackets ({\tt []}).
 The first line contains the declaration of the block variables.
-These variables are supplied to the block context at execution
+These variables are supplied to the block  at execution
 time. The next line contains the declaration of the local
 variables, that is variables used within the block. The next two
 lines perform computation needed to obtain the final result. The
-last expression of the block context is the value returned by the
-block context at execution time.
+last expression of the block  is the value returned by the
+block  at execution time.
 
 Here is an example on how the block of the previous example is
 used.
@@ -314,13 +314,13 @@ used.
  block value: 2 value: 3.
 \end{verbatim}
 \end{quote}
-Of course, this is a contrived example. Usually block context are
+Of course, this is a contrived example. Usually block  are
 much simpler. They are also seldom used to perform computation for
 the sake of computation, although functions described in chapter
-\ref{ch:function} are a good example of using block contexts.
+\ref{ch:function} are a good example of using blocks.
 
 \section{Iterator methods}
-\label{sec:iterator} The most important use of block contexts is
+\label{sec:iterator} The most important use of blocks is
 within so-called iterator methods. Quickly said, iterators method
 provide the functionality of the {\tt Enumeration} interface.
 Smalltalk iterator methods, however, provide far most flexibility
@@ -339,7 +339,7 @@ one used in this book.
 \subsection{\tt do:}
 The {\tt do:} iterator corresponds to the Java {\tt for} loop. In
 Smalltalk, however, there is no need to supply an index. The block
-context supplied as argument of the {\tt do:} message is evaluated
+ supplied as argument of the {\tt do:} message is evaluated
 for each element of the collection. For example, to perform the
 message {\tt sample} on each element of a collection one simply
 writes:
@@ -349,7 +349,7 @@ writes:
 \end{verbatim}
 \end{quote}
 It is customary to use the variable name {\tt each} as the
-argument of the block context used with an iterator method.
+argument of the block used with an iterator method.
 
 \subsection{\tt collect:}
 \label{sec:collect} The iterator method {\tt collect:} has no
@@ -357,7 +357,7 @@ equivalent in Java. Its results is a collection of the same
 type\footnote{There are some special collections for which the
 type of the result is different.} as the collection to which the
 message was sent. The elements of the new collection are the
-result of the context block supplied as argument to the method.
+result of the block supplied as argument to the method.
 For example, here is how one can construct an array containing the
 sum of the squares of the integers 1 to 9:
 \begin{quote}
@@ -380,8 +380,8 @@ the elements of an array:
 \end{quote}
 The iterator method {\tt inject:into:} is a keyword message. The
 first argument is the initial value used in the summation. The
-second argument is a context block with two arguments: the first
-argument is the result of the evaluation of the context block with
+second argument is a  block with two arguments: the first
+argument is the result of the evaluation of the  block with
 the preceding element or the initial value if this is the first
 evaluation; the second is the element of the collection over which
 the iterator method is iterating. The result of  the message is
