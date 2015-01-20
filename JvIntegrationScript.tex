@@ -1,0 +1,55 @@
+\begin{verbatim}
+public static void executeAtPrecision( double precision)
+{
+    double a = 1;
+    double b = 2;
+    System.out.println(" ");
+    System.out.println("====> desired precision = " + precision);
+    System.out.println("*****   Trapeze method:");
+    try {
+            TrapezeIntegrator integratorT = new TrapezeIntegrator(
+                                                    new OneVariableFunction()
+                            { public double value( double x){ return 1/x;}}, a, b);
+            integratorT.setDesiredPrecision( precision);
+            integratorT.setMaximumIterations( 25);
+            integratorT.evaluate();
+            System.out.print("Integral of ln(x) from "+a+" to "+b);
+            System.out.println(" is "+integratorT.getResult()+" +/- "
+                                                        + integratorT.getPrecision());
+            System.out.print(" ( "+integratorT.getIterations()+" iterations");
+            System.out.println(", error = "+(Math.log( b)
+                                                    - integratorT.getResult())+")");
+        } catch ( IllegalArgumentException e)
+        { System.out.println("Illegal precision specified in integration");};
+    System.out.println("*****   Simpson method:");
+    try {
+            SimpsonIntegrator integratorS = new SimpsonIntegrator(
+                                                    new OneVariableFunction()
+                            { public double value( double x){ return 1/x;}}, a, b);
+            integratorS.setDesiredPrecision( precision);
+            integratorS.evaluate();
+            System.out.print("Integral of ln(x) from "+a+" to "+b);
+            System.out.println(" is "+integratorS.getResult()+" +/- "
+                                                        +integratorS.getPrecision());
+            System.out.print(" ( "+integratorS.getIterations()+" iterations");
+            System.out.println(", error = "+(Math.log( b)
+                                                    - integratorS.getResult())+")");
+        } catch ( IllegalArgumentException e)
+        { System.out.println("Illegal precision specified in integration");};
+    System.out.println("*****   Romberg method:");
+    try {
+            RombergIntegrator integratorR = new RombergIntegrator(
+                                                    new OneVariableFunction()
+                            { public double value( double x){ return 1/x;}}, a, b);
+            integratorR.setDesiredPrecision( precision);
+            integratorR.evaluate();
+            System.out.print("Integral of ln(x) from "+a+" to "+b);
+            System.out.println(" is "+integratorR.getResult()+" +/- "
+                                                        +integratorR.getPrecision());
+            System.out.print(" ( "+integratorR.getIterations()+" iterations");
+            System.out.println(", error = "+(Math.log( b)
+                                                    - integratorR.getResult())+")");
+        } catch ( IllegalArgumentException e)
+        { System.out.println("Illegal precision specified in integration");};
+}
+\end{verbatim}
