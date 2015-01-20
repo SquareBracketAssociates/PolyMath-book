@@ -1,0 +1,61 @@
+%Equation stub
+\begin{equation}
+{df\left(x\right)\over dx}=\lim_{\epsilon\to
+0}{f\left(x+\epsilon\right)-f\left(x-\epsilon\right)\over
+2\epsilon}.
+\end{equation}
+
+%Code example stub
+\begin{codeExample}
+\begin{verbatim}
+new OneVariableFunction() {
+   public double value( double x)
+   {return 1/x;}}
+\end{verbatim}
+\end{codeExample}
+
+%Figure example
+\begin{figure}
+\center\psfig{figure=Figures/snap.eps, width=10cm} \caption{A
+typical class diagram}\label{fig:classDiagram}
+\end{figure}
+
+
+%Smalltalk listing stub
+\begin{listing} Smalltalk implementation of a generic
+derivative evaluation \label{ls:derivative}
+\input{Smalltalk/FunctionEvaluation/DhbFunctionDerivative}
+\end{listing}
+
+%Java listing stub
+\begin{listing} Java implementation of a generic
+derivative evaluation \label{lj:derivative}
+\input{Java/DhbFunctionEvaluation/FunctionDerivative.java}
+\end{listing}
+
+
+%Table for probability distribution
+Table \ref{tb:???dist} shows the properties of the ???
+distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the ??? distribution}\label{tb:???dist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $ $\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $ $ \\
+  & $ $\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=$ \\
+  &(\cf section \ref ) \\*[1ex]  \hline
+  \vbox to 3ex{}Average & $ $ \\*[1ex] \hline
+  \vbox to 3ex{}Variance & $ $ \\*[1ex] \hline
+  \vbox to 3ex{}Skewness & $ $ \\*[1ex] \hline
+  \vbox to 3ex{}Kurtosis & $ $ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+
+
+%Note to recall a figure in the margin
+\marginpar{Figure \ref{fig:dataminingclasses} with the box {\bf
+OneVariableFunction} grayed.}

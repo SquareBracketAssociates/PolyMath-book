@@ -1,0 +1,65 @@
+\chapter{Decimal floating-point simulation}
+\label{ch-fpSimul} The class {\tt DhbDecimalFloatingNumber} is
+intended to demonstrate rounding problems with floating-point
+number representation. It models the floating-point number
+representation. The radix of the floating-point representation is
+decimal to ease the reading of the results. It also allows people
+to carry some of the operations by hand. This model is almost
+equivalent to what is done inside a computer. One notable
+difference is the absence of exponent offset. Another difference
+is that there is no limit on the size of the exponent. Simple as
+it is this model can be used to illustrate rounding problems to
+beginners. This class is only intended for didactical purposes.
+
+Only the Smalltalk implementation is given here, as Java does not
+lend itself to operator overloading. Moreover, fraction arithmetic
+is not available in Java. Thus, making an equivalent class would
+require much more code.
+
+Instances of the class are created with the method {\tt new:}
+supplying any number as argument. For example, $${\tt
+DhbDecimalFloatingNumber new: 3.141592653589793238462643}$$
+Arithmetic operations are performed as usual. For example, the
+first expression of section \ref{sec-rounding} can be coded as:
+\begin{codeExample}
+\begin{verbatim}
+| a b |
+a := DhbDecimalFloatingNumber new: (2 raisedToInteger: 64).
+b := DhbDecimalFloatingNumber new: 300.
+a + b
+\end{verbatim}
+\end{codeExample}
+The class has two instance variables:
+\begin{description}
+\item[{\tt mantissa}] contains the mantissa of the number normalized to a finite number of
+digits,
+\item[{\tt exponent}] contains the negative of the decimal exponent of the number.
+\end{description}
+The class has one class variable:
+\begin{description}
+\item[{\tt Digits}] contains the maximum number of digits kept in the mantissa of all instances.
+\end{description}
+The method {\tt normalize:} computes the mantissa and exponent of
+the argument and stores it into the corresponding instance
+variables. The method {\tt value} allows retrieving the value of
+the number in numerical form. The method {\tt printOn:} allows to
+visualize the representation of the number.
+
+The number of decimal digits kept in the mantissa can be changed
+by the user using the method {\tt setDigits:}. By default it is
+set to 15, which corresponds roughly to the precision of a 64-bit
+IEEE standard floating-point number.
+
+The four arithmetic operations and the square root have been
+defined. The mechanism of each operation is the same. First each
+operand is converted to a fraction. Then, the operation is carried
+using normal numbers. In the case of arithmetic operation the
+result is exact since the use of Smalltalk fractions guaranties
+absolute precision. Then, a new instance of the class {\tt
+DhbDecimalFloatingNumber} is created from the result and is
+returned. Rounding errors will occur during this step.
+
+\begin{listing} Smalltalk code
+simulating decimal floating number arithmetic \label{ls:testst}
+\input{Smalltalk/NumericalPrecision/DhbDecimalFloatingNumber}
+\end{listing}

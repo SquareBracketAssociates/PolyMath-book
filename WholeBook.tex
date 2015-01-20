@@ -1,0 +1,38 @@
+\documentclass[twoside]{book}
+\usepackage[active]{srcltx}
+\usepackage[LY1]{em}
+\usepackage{listing}
+\input{DhbDefinitions}
+\let\wholebook=\relax
+%\renewcommand{\baselinestretch}{2} % to produce double-spaced reference document
+%\renewcommand{\psfig}[1]{{ }}% to suppress references to figures
+
+\begin{document}
+\title{Object-Oriented Implementation of \linebreak Numerical Methods\linebreak
+ An Introduction with Java $\&$ Smalltalk}
+\author{Didier H. Besset}
+\maketitle \pagenumbering{roman}
+\input{preface}
+{\parskip 0pt \tableofcontents \listoffigures \listoftables
+\listoflistings} \cleardoublepage\pagenumbering{arabic}
+\input{introduction}
+\input{function}
+\input{interpolation}
+\input{iteration}
+\input{zeroes}
+\input{integration}
+\input{series}
+\input{linearalgebra}
+\input{statistics}
+\input{estimation}
+\input{minimization}
+\input{datamining}
+\appendix
+\input{floatingpointsimulation}
+\input{smalltalkprimer}
+\input{javaprimer}
+\input{distributions}
+\input{centralmoments}
+\input{cdrom}
+\input{bibliography}
+\end{document}

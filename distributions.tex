@@ -1,0 +1,480 @@
+\ifx\wholebook\relax\else
+\documentclass[twoside]{book}
+\usepackage[active]{srcltx}
+\usepackage[LY1]{em}
+\input{DhbDefinitions}
+\begin{document}
+\fi
+
+\chapter{Additional probability distributions}
+\label{ch:distributions}
+
+\section{Beta distribution}
+\label{sec:betadist} Table \ref{tb:betadist} shows the properties
+of the beta distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the beta distribution}\label{tb:betadist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[0,1\right]$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)={1\over B\left(\alpha_1,\alpha_2\right)}
+  x^{\alpha_1 - 1}\left(1-x\right)^{\alpha_2 - 1}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $0<\alpha_1<+\infty$ \\
+  & $0<\alpha_2<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=B\left(x;\alpha_1,\alpha_2\right)$ \\
+  &(\cf section \ref{sec:incbeta}) \\*[1ex]  \hline
+  \vbox to 3ex{}Average & $\displaystyle{\alpha_1 \over \alpha_1+\alpha_2}$ \\*[2ex] \hline
+  \vbox to 4ex{}Variance & $\displaystyle{\alpha_1 \alpha_2
+   \over \left(\alpha_1+\alpha_2\right)^2\left(\alpha_1+\alpha_2+1\right)}$ \\*[3ex] \hline
+  \vbox to 4ex{}Skewness & $\displaystyle 2{\alpha_1 - \alpha_2
+   \over \left(\alpha_1+\alpha_2+2\right)}$ \\*[3ex] \hline
+  \vbox to 4ex{}Kurtosis & \parbox{8cm}{$$\begin{array}{l}\displaystyle{\root 3 \of {\alpha_1+\alpha_2+2
+  \over \alpha_1 \alpha_2}} \left\{ {\left(\alpha_1+\alpha_2+1\right)
+  \over \alpha_1 \alpha_2
+  \left(\alpha_1+\alpha_2+2\right)
+  \left(\alpha_1+\alpha_2+3\right)}\right.\\*[4ex]
+  \qquad \times \left.\left[2\left(\alpha_1+\alpha_2\right)^2+\alpha_1 \alpha_2
+  \left(\alpha_1+\alpha_2-6\right)\right]-1\right\}\end{array}$$} \\*[1ex] \hline
+\end{tabular}
+\end{table}
+If the parameters $\alpha_1$ and $\alpha_2$ are equal to 1 the
+beta distribution is identical to the uniform distribution over
+the interval $\left[0,1\right]$.
+
+The beta distribution is an ad-hoc distribution, which can take
+many shapes. Figure \ref{fig:betaDistr} shows a few characteristic
+shapes for several values of the parameters. The random variable
+is limited to the interval $\left[0,1\right]$. However, any
+distribution of a random variable varying over a finite interval
+can be mapped to a beta distribution with a suitable variable
+transformation.
+\begin{figure}
+\center\psfig{figure=Figures/BetaDistribution.eps, width=12cm}
+\caption{Many shapes of the beta
+distribution}\label{fig:betaDistr}
+\end{figure}
+
+
+\subsection{Beta distribution --- Smalltalk  implementation}
+Listing \ref{ls:betadist} shows the implementation of the beta
+distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the beta distribution \label{ls:betadist}
+\input{Smalltalk/Statistics/DhbBetaDistribution}
+\end{listing}
+
+\subsection{Beta distribution --- Java  implementation}
+Listing \ref{lj:betadist} shows the implementation of the beta
+distribution in Java.
+
+\begin{listing} Java implementation of the beta distribution \label{lj:betadist}
+\input{Java/DhbStatistics/BetaDistribution.java}
+\end{listing}
+
+\section{Cauchy distribution}
+\label{sec:cauchydist} Table \ref{tb:cauchydist} shows the
+properties of the Cauchy distribution. Physicists use the Cauchy
+distribution under the name Breit-Wigner or resonnance curve. All
+moments of order greater than 0 are not defined as the
+corresponding integrals diverge.
+
+\begin{table}[h]
+  \centering
+  \caption{Properties of the Cauchy distribution}\label{tb:cauchydist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left]-\infty,+\infty\right[$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=
+  {\beta \over \pi \left[\left(x-\mu\right)^2+\beta^2\right]}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $-\infty<\mu<+\infty$ \\
+  & $0<\beta<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=
+  {1\over 2}+{1\over\pi}\arctan\left({x-\mu\over\beta}\right)$ \\*[1ex]  \hline
+  \vbox to 2ex{}Average & (undefined) \\*[1ex] \hline
+  \vbox to 2ex{}Variance & (undefined) \\*[1ex] \hline
+  \vbox to 2ex{}Skewness & (undefined) \\*[1ex] \hline
+  \vbox to 2ex{}Kurtosis & (undefined) \\*[1ex] \hline
+\end{tabular}
+\end{table}
+Figure \ref{fig:cauchyDistr} shows the shapes taken by the Cauchy
+distribution for a few values of the parameters. These parameter
+are identical to the parameters of the normal distributions shown
+in figure \ref{fig:normDistr} so that the reader can compare them.
+\begin{figure}
+\center\psfig{figure=Figures/CauchyDistribution.eps, width=12cm}
+\caption{Cauchy distribution for a few
+parameters}\label{fig:cauchyDistr}
+\end{figure}
+
+\subsection{Cauchy distribution --- Smalltalk  implementation}
+Listing \ref{ls:cauchydist} shows the implementation of the Cauchy
+distribution in Smalltalk.
+
+This implementation returns $\mu$ for the average although the
+average is not defined mathematically. Other moment related
+quantities are returning {\tt nil}.
+
+\begin{listing} Smalltalk implementation of the Cauchy distribution \label{ls:cauchydist}
+\input{Smalltalk/Statistics/DhbCauchyDistribution}
+\end{listing}
+
+\subsection{Cauchy distribution --- Java  implementation}
+Listing \ref{lj:cauchydist} shows the implementation of the Cauchy
+distribution in Java.
+
+This implementation returns $\mu$ for the average although the
+average is not defined mathematically. Other moment related
+quantities are returning the special value {\tt Double.NaN}.
+
+\begin{listing} Java implementation of the Cauchy distribution \label{lj:cauchydist}
+\input{Java/DhbStatistics/CauchyDistribution.java}
+\end{listing}
+
+\section{Exponential distribution}
+Table \ref{tb:exponentialdist} shows the properties of the
+exponential distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the exponential distribution}\label{tb:exponentialdist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[0,+\infty\right[$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)={1\over\beta}
+  e^{-{x\over\beta}}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $0<\beta<+\infty$ \\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=1-e^{-{x\over\beta}}$ \\*[1ex]  \hline
+  \vbox to 3ex{}Average & $\beta$ \\*[1ex] \hline
+  \vbox to 3ex{}Variance & $\beta^2$ \\*[1ex] \hline
+  \vbox to 3ex{}Skewness & $2$ \\*[1ex] \hline
+  \vbox to 3ex{}Kurtosis & $6$ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+
+The exponential distribution describes the distribution of the
+time of occurrence between independent random events with a
+constant probability of occurrence. It is used in queuing theory
+and in nuclear physics. Figure \ref{fig:expDistr} shows the shapes
+taken by the exponential distribution for a few values of the
+parameters.
+\begin{figure}
+\center\psfig{figure=Figures/ExponentialDistribution.eps,
+width=12cm} \caption{Exponential distribution for a few
+parameters}\label{fig:expDistr}
+\end{figure}
+
+\subsection{Exponential distribution --- Smalltalk  implementation}
+Listing \ref{ls:exponentialdist} shows the implementation of the
+exponential distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the exponential distribution \label{ls:exponentialdist}
+\input{Smalltalk/Statistics/DhbExponentialDistribution}
+\end{listing}
+
+\subsection{Exponential distribution --- Java  implementation}
+Listing \ref{lj:exponentialdist} shows the implementation of the
+exponential distribution in Java.
+
+\begin{listing} Java implementation of the exponential distribution \label{lj:exponentialdist}
+\input{Java/DhbStatistics/ExponentialDistribution.java}
+\end{listing}
+
+\section{Fisher-Tippett distribution}
+\label{sec:fishertippettdist} Table \ref{tb:fishertippettdist}
+shows the properties of the fishertippett distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the Fisher-Tippett distribution}\label{tb:fishertippettdist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left]-\infty,+\infty\right[$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=
+  {1\over\beta}e^{-{x-\alpha\over\beta}-e^{-{x-\alpha\over\beta}}}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $-\infty<\alpha<+\infty$ \\
+  & $0<\beta<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=e^{-e^{-{x-\alpha\over\beta}}}$ \\*[1ex]  \hline
+  \vbox to 3ex{}Average & $\alpha+\gamma\beta$ \\*[1ex] \hline
+  \vbox to 4ex{}Variance & $\displaystyle{\pi\beta\over\sqrt{6}}$ \\*[2ex] \hline
+  \vbox to 3ex{}Skewness & $1.3$ \\*[1ex] \hline
+  \vbox to 3ex{}Kurtosis & $2.4$ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+In this table $\gamma=0.5772156649\ldots$ is the Euler constant.
+
+The Fisher-Tippett distribution describes the distribution of
+extreme values. Figure \ref{fig:ftippettDistr} shows the shapes
+taken by the Fisher-Tippett distribution for a few values of the
+parameters. These parameter are identical to the parameters of the
+normal distributions shown in figure \ref{fig:normDistr} so that
+the reader can compare them.
+\begin{figure}
+\center\psfig{figure=Figures/FisherTippettDistribution.eps,
+width=12cm} \caption{Fisher-Tippett distribution for a few
+parameters}\label{fig:ftippettDistr}
+\end{figure}
+
+\subsection{Fisher-Tippett distribution --- Smalltalk  implementation}
+Listing \ref{ls:fishertippettdist} shows the implementation of the
+Fisher-Tippett distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the Fisher-Tippett distribution \label{ls:fishertippettdist}
+\input{Smalltalk/Statistics/DhbFisherTippettDistribution}
+\end{listing}
+
+\subsection{Fisher-Tippett distribution --- Java  implementation}
+Listing \ref{lj:fishertippettdist} shows the implementation of the
+Fisher-Tippett distribution in Java.
+
+\begin{listing} Java implementation of the Fisher-Tippett distribution \label{lj:fishertippettdist}
+\input{Java/DhbStatistics/FisherTippettDistribution.java}
+\end{listing}
+
+\section{Laplace distribution}
+\label{sec:laplacedist} Table \ref{tb:laplacedist} shows the
+properties of the Laplace distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the Laplace distribution}\label{tb:laplacedist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left]-\infty,+\infty\right[$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)={1\over 2\beta} e^{-{\left|x-\alpha\right|\over\beta}}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $-\infty<\alpha<+\infty$ \\
+  & $0<\beta<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function &
+  \parbox{6cm}{$$F\left(x\right)=\left\{
+  \begin{array}{ll}
+  {1\over 2}e^{-{\alpha-x\over\beta}}&\mbox{\quad for
+  $x<\alpha$}\\*[1ex]
+  1-{1\over 2}e^{-{x-\alpha\over\beta}}&\mbox{\quad for $x\ge\alpha$}
+  \end{array}\right.$$}\\*[1ex]  \hline
+  \vbox to 3ex{}Average & $\alpha+\beta$ \\*[1ex] \hline
+  \vbox to 3ex{}Variance & $2\beta^2$ \\*[1ex] \hline
+  \vbox to 3ex{}Skewness & $0$ \\*[1ex] \hline
+  \vbox to 3ex{}Kurtosis & $3$ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+The Laplace distribution is an ad-hoc distribution made of two
+exponential distributions, one on each side of the peak. Figure
+\ref{fig:laplaceDistr} shows the shapes taken by the Laplace
+distribution for a few values of the parameters. These parameter
+are identical to the parameters of the normal distributions shown
+in figure \ref{fig:normDistr} so that the reader can compare them.
+\begin{figure}
+\center\psfig{figure=Figures/LaplaceDistribution.eps, width=12cm}
+\caption{Laplace distribution for a few
+parameters}\label{fig:laplaceDistr}
+\end{figure}
+
+\subsection{Laplace distribution --- Smalltalk  implementation}
+Listing \ref{ls:laplacedist} shows the implementation of the
+Laplace distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the Laplace distribution \label{ls:laplacedist}
+\input{Smalltalk/Statistics/DhbLaplaceDistribution}
+\end{listing}
+
+\subsection{Laplace distribution --- Java  implementation}
+Listing \ref{lj:laplacedist} shows the implementation of the
+Laplace distribution in Java.
+
+\begin{listing} Java implementation of the Laplace distribution \label{lj:laplacedist}
+\input{Java/DhbStatistics/LaplaceDistribution.java}
+\end{listing}
+
+\section{Log normal  distribution}
+Table \ref{tb:lognormaldist} shows the properties of the log
+normal distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the log normal distribution}\label{tb:lognormaldist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[0,+\infty\right[$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=
+  {1\over x\sqrt{2\pi\sigma^2}}e^{-{\left(\ln x-\mu\right)^2\over 2\sigma^2}}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $-\infty<\mu<+\infty$ \\
+  & $0<\sigma<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & (no closed expression) \\*[1ex]  \hline
+  \vbox to 3ex{}Average & $e^{\mu+{\sigma^2\over 2}}$ \\*[1ex] \hline
+  \vbox to 4ex{}Variance & $e^{2\mu+\sigma^2}\left(e^{\sigma^2}-1\right)$ \\*[1ex] \hline
+  \vbox to 4ex{}Skewness & $\sqrt{e^{\sigma^2}-1}\left(e^{\sigma^2}+2\right)$ \\*[2ex] \hline
+  \vbox to 3ex{}Kurtosis & $ e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6$ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+The log normal distribution is used to describe quantities that
+are the product of a large number of other quantities. It is an
+ad-hoc distribution whose shape is similar to that of gamma
+distributions with $\alpha>1$. Figure \ref{fig:logNormDistr} shows
+the shapes taken by the log normal distribution for a few values
+of the parameters.
+\begin{figure}
+\center\psfig{figure=Figures/LogNormalDistribution.eps,
+width=12cm} \caption{Log normal distribution for a few
+parameters}\label{fig:logNormDistr}
+\end{figure}
+
+\subsection{Log normal distribution --- Smalltalk  implementation}
+Listing \ref{ls:lognormaldist} shows the implementation of the log
+normal  distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the log normal distribution \label{ls:lognormaldist}
+\input{Smalltalk/Statistics/DhbLogNormalDistribution}
+\end{listing}
+
+\subsection{Log normal distribution --- Java  implementation}
+Listing \ref{lj:lognormaldist} shows the implementation of the log
+normal distribution in Java.
+
+\begin{listing} Java implementation of the log normal  distribution \label{lj:lognormaldist}
+\input{Java/DhbStatistics/LogNormalDistribution.java}
+\end{listing}
+
+\section{Triangular distribution}
+Table \ref{tb:triangdist} shows the properties of the triangular
+distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the triangular distribution}\label{tb:triangdist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[a,b\right]$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & \parbox{6cm}{$$\displaystyle P\left(x\right)=
+  \left\{\begin{array}{ll}
+  {2\left(x-a\right)\over\left(b-a\right)\left(c-a\right)}&\mbox{\quad if $a\le x\le
+  c$,}\\*[3ex]
+  {2\left(b-x\right)\over\left(b-a\right)\left(b-c\right)}&\mbox{\quad if $c\le x\le
+  b$.}
+  \end{array}
+  \right.$$} \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $-\infty<a\le c\le b<+\infty$ \\
+  & $a<b$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & \parbox{8cm}{$$\displaystyle F\left(x\right)=
+  \left\{\begin{array}{ll}
+  {\left(x-a\right)^2\over\left(b-a\right)\left(c-a\right)}&\mbox{\quad if $a\le x\le
+  c$,}\\*[3ex]
+  1-{\left(b-x\right)^2\over\left(b-a\right)\left(b-c\right)}&\mbox{\quad if $c\le x\le
+  b$.}
+  \end{array}
+  \right.$$} \\*[1ex]  \hline
+  \vbox to 4ex{}Average & $\displaystyle{a+b+c\over 3}$ \\*[1ex] \hline
+  \vbox to 4ex{}Variance & $\displaystyle{a^2+b^2+c^2-ab-ac-bc\over 18}$ \\*[1ex] \hline
+  \vbox to 4ex{}Skewness & $\displaystyle{a^3+b^3+c^3\over 135}+\ldots$ \\*[1ex] \hline
+  \vbox to 4ex{}Kurtosis & $\ldots$ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+The triangular distribution is ad-hoc distribution used when a
+variable is limited to an interval.
+
+\subsection{Triangular distribution --- Smalltalk  implementation}
+Listing \ref{ls:triangdist} shows the implementation of the
+triangular distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the triangular distribution \label{ls:triangdist}
+\input{Smalltalk/Statistics/DhbTriangularDistribution}
+\end{listing}
+
+\subsection{Triangular distribution --- Java  implementation}
+Listing \ref{lj:triangdist} shows the implementation of the
+triangular distribution in Java.
+
+\begin{listing} Java implementation of the triangular distribution \label{lj:triangdist}
+\input{Java/DhbStatistics/TriangularDistribution.java}
+\end{listing}
+
+\section{Uniform distribution}
+Table \ref{tb:uniformdist} shows the properties of the uniform
+distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the uniform distribution}\label{tb:uniformdist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[a,b\right]$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)={1\over b-a}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $-\infty<a<b<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)={x-a\over b-a}$ \\*[1ex]  \hline
+  \vbox to 3ex{}Average & ${a+b\over 2}$ \\*[1ex] \hline
+  \vbox to 3ex{}Variance & ${\left(b-a\right)^2\over 12}$ \\*[1ex] \hline
+  \vbox to 3ex{}Skewness & $0$ \\*[1ex] \hline
+  \vbox to 3ex{}Kurtosis & $-1.2$ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+The uniform distribution is another ad-hoc distribution used when
+a variable is limited to an interval.
+
+\subsection{Uniform distribution --- Smalltalk  implementation}
+Listing \ref{ls:uniformdist} shows the implementation of the
+uniform distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the uniform distribution \label{ls:uniformdist}
+\input{Smalltalk/Statistics/DhbUniformDistribution}
+\end{listing}
+
+\subsection{Uniform distribution --- Java  implementation}
+Listing \ref{lj:uniformdist} shows the implementation of the
+uniform distribution in Java.
+
+\begin{listing} Java implementation of the uniform distribution \label{lj:uniformdist}
+\input{Java/DhbStatistics/UniformDistribution.java}
+\end{listing}
+
+\section{Weibull distribution}
+Table \ref{tb:weibulldist} shows the properties of the Weibull
+distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the Weibull distribution}\label{tb:weibulldist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[0,+\infty\right[$\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=
+  {\alpha x^{\alpha-1}\over \beta^{\alpha}}e^{-\left({x \over \beta}\right)^{\alpha}}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $0<\alpha<\infty$ \\
+  & $0<\beta<\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=
+  1-e^{-\left({x \over \beta}\right)^{\alpha}}$ \\*[1ex]  \hline
+  \vbox to 3ex{}Average & ${\beta\over\alpha}\Gamma\left({1\over\alpha}\right)$ \\*[1ex] \hline
+  \vbox to 4ex{}Variance & ${\beta^2\over\alpha}\left[
+  2\Gamma\left({2\over\alpha}\right)-{1\over\alpha}\Gamma\left({1\over\alpha}\right)^2\right]$ \\*[1ex] \hline
+  \vbox to 3ex{}Skewness & $ $ \\*[1ex] \hline
+  \vbox to 3ex{}Kurtosis & $ $ \\*[1ex] \hline
+\end{tabular}
+\end{table}
+The Weibull distribution is used to model the behavior of
+reliability. It is defined by its acceptance function. Its shape
+is similar to that of the gamma distribution and, thus, can be
+applied to the same types of problems.Figure
+\ref{fig:weibullDistr} shows the shapes taken by the Weibull
+distribution for a few values of the parameters.
+\begin{figure}
+\center\psfig{figure=Figures/WeibullDistribution.eps, width=12cm}
+\caption{Weibull distribution for a few
+parameters}\label{fig:weibullDistr}
+\end{figure}
+
+Because the Weibull distribution is defined by its distribution
+function, the estimation of the initial values of the parameters
+from a histogram is made by computing the distribution function at
+2 positions. These positions are determined using the histogram
+limits and the average so that the estimation of the distribution
+function using the histogram has enough significance.
+
+\subsection{Weibull distribution --- Smalltalk  implementation}
+\label{sec:weibull} Listing \ref{ls:weibulldist} shows the
+implementation of the Weibull distribution in Smalltalk.
+
+\begin{listing} Smalltalk implementation of the Weibull distribution \label{ls:weibulldist}
+\input{Smalltalk/Statistics/DhbWeibullDistribution}
+\end{listing}
+
+\subsection{Weibull distribution --- Java  implementation}
+Listing \ref{lj:weibulldist} shows the implementation of the
+Weibull distribution in Java.
+
+\begin{listing} Java implementation of the Weibull distribution \label{lj:weibulldist}
+\input{Java/DhbStatistics/WeibullDistribution.java}
+\end{listing}
+
+
+\ifx\wholebook\relax\else\end{document}\fi

@@ -1,0 +1,28 @@
+\begin{verbatim}
+| a b  integrators |
+a := 1.0.
+b := 2.0.
+integrators := Array with: ( DhbTrapezeIntegrator new: [ :x | 1.0 / x] from: a to: b)
+					with: ( DhbSimpsonIntegrator new: [ :x | 1.0 / x] from: a to: b)
+					with: ( DhbRombergIntegrator new: [ :x | 1.0 / x] from: a to: b).
+#(1.0e-5 1.0e-7 1.0e-9 1.0e-11 1.0e-13) do: [ :precision |
+Transcript cr; cr; nextPutAll: '===> Precision: '.
+precision printOn: Transcript.
+integrators do: [ :integrator |
+Transcript cr; nextPutAll: '*****   ', integrator class name,':'; cr.
+integrator desiredPrecision: precision.
+Transcript nextPutAll: 'Integral of 1/x from '.
+a printOn: Transcript.
+Transcript nextPutAll: ' to '.
+b printOn: Transcript.
+Transcript nextPutAll: ' = '.
+integrator evaluate printOn: Transcript.
+Transcript nextPutAll: ' +- '.
+integrator precision printOn: Transcript.
+Transcript cr; nextPutAll: ' ( '.
+integrator iterations printOn: Transcript.
+Transcript nextPutAll: ' iterations, true error = '.
+( integrator result - 2 ln) printOn: Transcript.
+Transcript nextPutAll: ')'; cr.
+]]
+\end{verbatim}

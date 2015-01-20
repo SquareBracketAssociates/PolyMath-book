@@ -1,0 +1,222 @@
+\ifx\wholebook\relax\else
+\documentclass[twoside]{book}
+\usepackage[active]{srcltx}
+\usepackage[LY1]{em}
+\input{DhbDefinitions}
+\begin{document}
+\fi
+
+\chapter{Accurate accumulation of expectation values}
+\section{Accurate accumulation of central moments}
+\label{sec:centralmoments} This section shows the detailed
+derivation of equation \ref{eq:deltamoment} of section
+\ref{sec:robustmoment}. The aim of this demonstration is to
+expressed the central moment of order $k$ estimated over a sample
+of $n+1$ measurements as a function of the central moments of
+order lower or equal to $k$ estimated over a sample of $n$
+measurements. The estimator of the central moment of order $k$ is
+defined by:
+\begin{equation}
+\label{eq:momstart}
+ \left\langle\left(x-\bar{x}\right)^k\right\rangle_{n+1}
+   =\displaystyle{1\over n+1}\sum_{i=1}^{n+1} \left(x_i-\left\langle
+   x\right\rangle_{n+1}\right)^k.
+\end{equation}
+We shall now concentrate on changing the sum of equation
+\ref{eq:momstart} in such way as to bring quantities which are
+already computed. The sum of \ref{eq:momstart} is equal to
+\begin{equation}
+  \begin{array}{ll}
+ S&=\left(n+1\right)\left\langle\left(x-\bar{x}\right)^k\right\rangle_{n+1}\\
+   &=\displaystyle\sum_{i=1}^{n+1} \left(x_i-\left\langle x\right\rangle_{n+1}\right)^k\\
+   &=\displaystyle\sum_{i=1}^{n+1} \left(x_i-\left\langle x\right\rangle_n+
+   \left\langle x\right\rangle_n-\left\langle
+   x\right\rangle_{n+1}\right)^k\\
+   &=\displaystyle\sum_{i=1}^{n+1} \left[\left(x_i-\left\langle x\right\rangle_n\right)
+   +\Delta_{n+1}\right]^k,
+  \end{array}
+\end{equation}
+where we have introduced the correction defined in equation
+\ref{eq:deltaverage}. We can now transform the expression inside
+the sum using the binomial expansion:
+\begin{equation}
+\label{eq:deltamomentsstep}
+  \begin{array}{ll}
+ S&=\displaystyle\sum_{i=1}^{n+1} \sum_{l=0}^k \left({l\atop
+   k}\right)
+   \left(x_i-\left\langle x\right\rangle_n\right)^l
+   \Delta_{n+1}^{k-l}\\
+   &=\displaystyle\sum_{l=0}^k \left({l\atop
+   k}\right)\sum_{i=1}^{n+1}
+   \left(x_i-\left\langle x\right\rangle_n\right)^l
+   \Delta_{n+1}^{k-l}\\
+  \end{array}
+\end{equation}
+In the second part of equation \ref{eq:deltamomentsstep} the two
+sums have been permuted. Like in the case of the average, we now
+make the last term of the inner sum explicit. The remaining sum
+can then be expressed as a function of the estimators of the
+central moments over $n$ measurements. The term containing the
+$(n+1)\th$ measurement can be rewritten as a function of the
+correction defined in equation \ref{eq:deltaverage}. We have:
+\begin{equation}
+\label{eq:deltamomentsstep1}
+  \begin{array}{ll}
+ S&=\displaystyle\sum_{l=0}^k \left({l\atop
+   k}\right)\left[\left(x_{n+1}-\left\langle
+   x\right\rangle_n\right)^l \Delta_{n+1}^{k-l}+
+   \Delta_{n+1}^{k-l}\sum_{i=1}^{n+1} \left(x_i-\left\langle x\right\rangle_n\right)^l
+   \right]\\
+   &=\displaystyle\sum_{l=0}^k \left({l\atop
+   k}\right)\left[\left(n+1\right)^l\left({x_{n+1}-\left\langle
+   x\right\rangle_n\over n+1}\right)^l \Delta_{n+1}^{k-l}+
+   n\left\langle \left(x-\bar{x}\right)^l\right\rangle_n\Delta_{n+1}^{k-l}
+   \right]\\
+   &=\displaystyle\sum_{l=0}^k \left({l\atop
+   k}\right)\left[\left(-n-1\right)^l \Delta_{n+1}^k+
+   n\left\langle \left(x-\bar{x}\right)^l\right\rangle_n\Delta_{n+1}^{k-l}
+   \right]\\
+   &=\displaystyle\sum_{l=0}^k \left({l\atop
+   k}\right)\left(-n-1\right)^l \Delta_{n+1}^k+\sum_{l=0}^k \left({l\atop
+   k}\right)
+   n\left\langle \left(x-\bar{x}\right)^l\right\rangle_n\Delta_{n+1}^{k-l}
+   .\\
+  \end{array}
+\end{equation}
+In the last line of equation \ref{eq:deltamomentsstep1} the first
+term contains the binomial expansion of the following expression
+\begin{equation}
+  \sum_{l=0}^k \left({l\atop k}\right)\left(-n-1\right)^l
+  = \left[1+\left(-n-1\right)\right]^k=\left(-n\right)^k.
+\end{equation}
+Thus,we have:
+\begin{equation}
+  \begin{array}{ll}
+ S&=\displaystyle\left(-n\Delta_{n+1}\right)^k+n\sum_{l=0}^k \left({l\atop
+   k}\right)\left\langle \left(x-\bar{x}\right)^l\right\rangle_n\Delta_{n+1}^{k-l}
+   .\\
+  \end{array}
+\end{equation}
+In this last equation, the first term of the sum is just
+$\Delta_{n+1}^k$ and the second term of the sum vanishes by
+definition of the average $\bar{x}$. This gives us the final
+expression to compute the estimator of the central moment computed
+over $n+1$ measurements as a function of the estimator of the
+central moment computed over $n$ measurements
+\begin{equation}
+  \left\langle\left(x-\bar{x}\right)^k\right\rangle_{n+1}
+  ={n\over n+1}\left\{
+  \left[ 1 - \left(-n\right)^{k-1}\right]\Delta_{n+1}^k
+  +\sum_{l=2}^k \left({l\atop k}\right)
+  \left\langle\left(x-\bar{x}\right)^l\right\rangle_n
+  \Delta_{n+1}^{k-l}
+  \right\}.
+\end{equation}
+{\sl Quod erat demonstrandum$\ldots$}
+
+\section{Accurate accumulation of the covariance}
+\label{sec:robustcov} This section shows the detailed derivation
+of equation \ref{eq:robustcov}. To simplify notation, the
+components $x_i$ and $x_j$ have been renamed $x$ and $y$
+respectively.
+
+The estimator of the covariance of two random variables $x$ and
+$y$ over $n$ measurements is defined by:
+\begin{equation}
+ {\cov}_n\left(x,y\right)=\left\langle \left(x_i-\left\langle
+   x\right\rangle_n\right)\left(y_i-\left\langle
+   y\right\rangle_n\right)
+ \right\rangle_n
+   ={1\over n}\sum_{i=1}^n \left(x_i-\left\langle
+   x\right\rangle_n\right)\left(y_i-\left\langle
+   y\right\rangle_n\right).
+\end{equation}
+The estimator of the covariance of $x$ and $y$ over $n+1$
+measurements is then given by:
+\begin{equation}
+ {\cov}_{n+1}\left(x,y\right)={1\over n+1}\sum_{i=1}^{n+1} \left(x_i-\left\langle
+   x\right\rangle_{n+1}\right)\left(y_i-\left\langle
+   y\right\rangle_{n+1}\right).
+\end{equation}
+The sum in the equation above can then be expressed as:
+\begin{equation}
+  \begin{array}{ll}
+ C_{n+1}&= \left(n+1\right)\left\langle \left(x_i-\left\langle
+   x\right\rangle_{n+1}\right)\left(y_i-\left\langle
+   y\right\rangle_{n+1}\right)
+ \right\rangle_{n+1}\\
+ &=\displaystyle\sum_{i=1}^{n+1} \left(x_i-\left\langle
+   x\right\rangle_{n+1}\right)\left(y_i-\left\langle
+   y\right\rangle_{n+1}\right)\\
+ &=\displaystyle\sum_{i=1}^{n+1} \left(x_i-\left\langle
+   x\right\rangle_n + \left\langle x\right\rangle_n-\left\langle
+   x\right\rangle_{n+1}\right)\left(y_i-\left\langle
+   y\right\rangle_n + \left\langle y\right\rangle_n-\left\langle
+   y\right\rangle_{n+1}\right)\\
+ &=\displaystyle\sum_{i=1}^{n+1} \left(x_i-\left\langle
+   x\right\rangle_n + \Delta_{x,n+1}\right)\left(y_i-\left\langle
+   y\right\rangle_n + \Delta_{y,n+1}\right),\\
+  \end{array}
+\end{equation}
+where we have introduce the corrections to the estimation of the
+expectation value of $x$ and $y$ as follow:
+\begin{equation}
+ \left\{
+ \begin{array}{lcl}
+   \Delta_{x,n+1}&=&\left\langle x\right\rangle_n-\left\langle
+   x\right\rangle_{n+1}\\[1.5ex]
+   &=&{\displaystyle\left\langle x\right\rangle_n-x_{n+1}\over\displaystyle
+   n+1},\\[4ex]
+   \Delta_{y,n+1}&=&\left\langle y\right\rangle_n-\left\langle
+   y\right\rangle_{n+1}\\[1.5ex]
+   &=&{\displaystyle\left\langle y\right\rangle_n-y_{n+1}\over\displaystyle
+   n+1}.\\
+ \end{array}
+ \right.
+\end{equation}
+Thus, we have:
+\begin{equation}
+  \begin{array}{ll}
+ C_{n+1}&=\displaystyle\sum_{i=1}^{n+1}\left[\left(x_i-\left\langle
+   x\right\rangle_n\right)\left(y_i-\left\langle
+   y\right\rangle_n\right)+\Delta_{y,n+1}\left(x_i-\left\langle
+   x\right\rangle_n\right)\right.\\
+   &\qquad\qquad\qquad\left.+\Delta_{x,n+1}\left(y_i-\left\langle
+   y\right\rangle_n\right)+\Delta_{x,n+1}\Delta_{y,n+1}\right]\\
+   &=\displaystyle\sum_{i=1}^{n+1}\left(x_i-\left\langle
+   x\right\rangle_n\right)\left(y_i-\left\langle
+   y\right\rangle_n\right)+\left(n+1\right)\Delta_{x,n+1}\Delta_{y,n+1}\\
+   &\qquad\qquad\qquad+\Delta_{y,n+1}\left(x_{n+1}-\left\langle
+   x\right\rangle_n\right)+\Delta_{x,n+1}\left(y_{n+1}-\left\langle
+   x\right\rangle_n\right).\\
+ \end{array}
+\end{equation}
+The last line is obtained from the definition of the expectation
+values $\left\langle x\right\rangle_n$ and $\left\langle
+y\right\rangle_n$.Using the definitions of $\Delta_{x,n+1}$ and
+$\Delta_{y,n+1}$ we have:
+\begin{equation}
+  \begin{array}{ll}
+ C_{n+1}&=\displaystyle\sum_{i=1}^{n+1}\left(x_i-\left\langle
+   x\right\rangle_n\right)\left(y_i-\left\langle
+   y\right\rangle_n\right)-\left(n+1\right)\Delta_{x,n+1}\Delta_{y,n+1}\\
+   &=\displaystyle\sum_{i=1}^{n}\left(x_i-\left\langle
+   x\right\rangle_n\right)\left(y_i-\left\langle
+   y\right\rangle_n\right)-\left(n+1\right)\Delta_{x,n+1}\Delta_{y,n+1}\\
+   &\qquad\qquad\qquad+\left(x_{n+1}-\left\langle
+   x\right\rangle_n\right)\left(y_{n+1}-\left\langle
+   y\right\rangle_n\right)\\[2ex]
+   &=n\ {\cov}_n\left(x,y\right)+n\left(n+1\right)\Delta_{x,n+1}\Delta_{y,n+1}.\\
+  \end{array}
+\end{equation}
+Now, we obtain the expression for the estimator of the covariance
+over $n+1$ measurements as a function of the estimator of the
+covariance over $n$ measurements:
+\begin{equation}
+ \ {\cov}_{n+1}\left(x,y\right)={n\over
+ n+1}{\cov}_n\left(x,y\right)+n\Delta_{x,n+1}\Delta_{y,n+1}.
+\end{equation}
+Note that this equation yields equation \ref{eq:accumvariance} if
+one put $y=x$.
+
+\ifx\wholebook\relax\else\end{document}\fi

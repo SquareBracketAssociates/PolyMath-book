@@ -1,0 +1,65 @@
+
+    | offset dialog file averagePoints fl ft r s sigmaPoints points footPoints aTheory aCSFViewer |
+
+    dialog := FileDialog new.
+    dialog addFilter: '*.DAT' description: 'Data files (*.DAT)';
+               addFilter: '*.*' description: 'All Files (*.*)';
+               defFilter: '*.DAT';
+               openFile.
+    file := dialog file.
+    file isNil
+        ifTrue: [ ^nil].
+    file := File pathNameReadOnly: file.
+    points := OrderedCollection new.
+    [ file atEnd ]
+        whileFalse: [ points add: ((file nextLine asArrayOfSubstrings) collect: [ :x | Compiler evaluate: x ])].
+    file close.
+    footPoints := points asArray.
+    dialog := FileDialog new.
+    dialog addFilter: '*.DAT' description: 'Data files (*.DAT)';
+               addFilter: '*.*' description: 'All Files (*.*)';
+               defFilter: '*.DAT';
+               openFile.
+    file := dialog file.
+    file isNil
+        ifTrue: [ ^nil].
+    file := File pathNameReadOnly: file.
+    points := OrderedCollection new.
+    [ file atEnd ]
+        whileFalse: [ points add: ((file nextLine asArrayOfSubstrings) collect: [ :x | Compiler evaluate: x ])].
+    file close.
+    points := points asArray.
+    averagePoints := OrderedCollection new: points size.
+    sigmaPoints := OrderedCollection new: points size.
+    offset := 0.
+    points with: footPoints
+        do: [ :p :f |
+                fl := p at: 2.
+                ft := f at: 2.
+                r := fl / ft.
+                s := (((p at: 3) / fl) raisedToInteger: 2) + (((f at: 3) / ft) raisedToInteger: 2).
+                s := s sqrt * r.
+                offset := offset + r.
+                averagePoints add: (Array with: (p at: 1) with: r).
+                sigmaPoints add: (Array with: (p at: 1) with: s).
+              ].
+    offset := (offset / (points size)) roundTo: (1 / 100).
+    offset printOn: Transript.
+    averagePoints := averagePoints asArray
+                                    collect: [ :p | Array with: (p at: 1) with: ((p at: 2) - offset)].
+"    sigmaPoints := sigmaPoints asArray.
+    (ChiSquareFitViewer new: (ChiSquareTheory new: 2) )
+            dataPoints: sigmaPoints; open."
+    (ChiSquareFitViewer new: (SineCurve new) )
+            dataPoints: averagePoints; open.
+
+
+
+
+
+
+
+
+
+
+

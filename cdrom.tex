@@ -1,0 +1,233 @@
+\ifx\wholebook\relax\else
+\documentclass[twoside]{book}
+\usepackage[active]{srcltx}
+\usepackage[LY1]{em}
+\input{DhbDefinitions}
+\begin{document}
+\fi
+
+\chapter{Accompanying CD ROM}
+All the code presented in this book is available in the
+accompanying CD ROM. The contents of the CD ROM is described in
+the sections of this chapter.
+
+Permission to use the code for any purpose is granted to the
+purchaser of the book. The code is distributed on an "AS IS"
+basis, without warranty. Neither the author nor Morgan Kaufmann,
+Inc. make any representation, or warranty, either expressed or
+implied, with respect to the code, its quality or accuracy, or
+fitness for a specific purpose. Therefore, neither the author nor
+Morgan Kaufmann, Inc. shall have any liability to you or any other
+person or entity with respect to any liability, loss or damage
+caused or alleged to have been caused directly or indirectly by
+the code contained on the CD ROM. This includes, but is not
+limited to, interruption of service, loss of data, loss of
+classroom time, loss of consulting or anticipatory profits, or
+consequential damages from the use of the code contained on the CD
+ROM.
+
+\section{Smalltalk code}
+The Smalltalk code presented in this book was created with Visual
+Age for Smalltalk under ENVY. The entire code is contained in a
+single application. The application is split into several
+subapplications: these subapplications correspond more or less to
+the chapters of this book. To be honest, they correspond to the
+chapters of the early version.
+\subsection{non-ENVY users}
+Readers using Smalltalk without ENVY must load the classes in
+so-called {\it chunk} format. These files are located in the
+directory {\tt Smalltlk} and all subdirectories. The names of the
+subdirectories and files correspond to the subapplications of the
+ENVY repository. These names have been modified to be used on
+systems using an 8.3 file name convention.
+
+The classes of early chapters are referenced by classes of
+subsequent chapters. The reader should refer to figure
+\ref{fig:roadmap} of chapter \ref{ch:introduction} for an explicit
+description of the dependency between classes.
+
+\noindent Here is a description of the files:
+\begin{description}
+  \item[\tt Smalltlk/DataMing/dataming.app] All classes defined in chapter \ref{ch:datamining}.
+  \item[\tt Smalltlk/Estim/genestim.app] All classes defined in chapter \ref{ch:estimation} and
+     extensions of classes {\tt DhbHistogram} and
+     {\tt DhbStatisticalMoments} related to the $t$-test.
+  \item[\tt Smalltlk/Estim/estimChi.app] Extensions of classes {\tt DhbHistogram} and
+     {\tt DhbStatisticalMoments} related to the $\chi^2$-test.
+  \item[\tt Smalltlk/Estim/estimF.app] Extensions of classes {\tt DhbHistogram} and
+     {\tt DhbStatisticalMoments} related to the $F$-test.
+  \item[\tt Smalltlk/Functs/general.app] The class {\tt DhbPolynomial} defined
+     in chapter \ref{ch:function} and all classes defined in chapter \ref{ch:interpolation}.
+  \item[\tt Smalltlk/Functs/beta.app] Extensions of class {\tt Number} defined
+     in chapter \ref{ch:function} for the beta function.
+  \item[\tt Smalltlk/Functs/errfunct.app] The class {\tt DhbErfApproximation} defined
+     in chapter \ref{ch:function} and extensions of class {\tt Number} defined
+     in chapter \ref{ch:function} for the error function.
+  \item[\tt Smalltlk/Functs/gamma.app] The class {\tt DhbLanczosFormula} defined
+     in chapter \ref{ch:function} and extensions of classes {\tt Number} and {\tt Integer} defined
+     in chapter \ref{ch:function} for the gamma function.
+  \item[\tt Smalltlk/Iterativ/iterativ.app] All classes defined in chapters \ref{ch:iteration},
+     \ref{ch:zeroes}, \ref{ch:integration} and \ref{ch:series}.
+  \item[\tt Smalltlk/LinAlgeb/linalgeb.app] The classes defined in chapter \ref{ch:linearalgebra},
+   except for classes defined in the subapplications of this one.
+  \item[\tt Smalltlk/LinAlgeb/eigenv.app] The classes {\tt DhbLargestEigenValueFinder}
+  and {\tt DhbJacobiTransformation} defined in chapter \ref{ch:linearalgebra}.
+  \item[\tt Smalltlk/LinAlgeb/determin.app] Extensions of classes {\tt DhbMatrix} and
+     {\tt DhbLUPDecomposition} related to the computation of the matrix determinant.
+  \item[\tt Smalltlk/LinAlgeb/inverse.app] Extensions of classes {\tt DhbMatrix}, {\tt DhbSymmetricMatrix} and
+     {\tt DhbLUPDecomposition} related to the computation of matrix inversion.
+  \item[\tt Smalltlk/Minimize/minimize.app] All classes defined in chapter \ref{ch:minimization}.
+  \item[\tt Smalltlk/NumPrec/numprec.app] The class {\tt DhbFloatingPointMachine} defined in
+  chapter \ref{ch:introduction} and the class {\tt DhbDecimalFloatingNumber} described in appendix \ref{ch-fpSimul}.
+  \item[\tt Smalltlk/Statist/stats.app] All classes defined in chapter \ref{ch:statistics} as well as all
+  classes describing a probability distribution (defined in chapters \ref{ch:statistics},
+  \ref{ch:estimation} and appendix \ref{ch:distributions}).
+\end{description}
+
+\subsection{ENVY users}
+Readers using ENVY\tm can load the ENVY\tm repository contained in
+the file {\tt Vast/OONumS.dat}. This repository contains a single
+application, {\tt DhbNumericalMethods}, containing the entire code
+presented in this book. Here is a brief description of the
+contents of each subapplication.
+\begin{description}
+  \item[\tt DhbDataMining] All classes defined in chapter \ref{ch:datamining}.
+  \item[\tt DhbEstimation] All classes defined in chapter \ref{ch:estimation} and
+     extensions of classes {\tt DhbHistogram} and
+     {\tt DhbStatisticalMoments} related to the $t$ test.
+  \item[\tt DhbEstimationChi2] Extensions of classes {\tt DhbHistogram} and
+     {\tt DhbStatisticalMoments} related to the $\chi^2$ test.
+  \item[\tt DhbEstimationF] Extensions of classes {\tt DhbHistogram} and
+     {\tt DhbStatisticalMoments} related to the $F$ test.
+  \item[\tt DhbFunctionEvaluation] The class {\tt DhbPolynomial} defined
+     in chapter \ref{ch:function} and all classes defined in chapter \ref{ch:interpolation}.
+  \item[\tt DhbBetaFunction] Extensions of class {\tt Number} defined
+     in chapter \ref{ch:function} for the beta function.
+  \item[\tt DhbErrorFunction] The class {\tt DhbErfApproximation} defined
+     in chapter \ref{ch:function} and extensions of class {\tt Number} defined
+     in chapter \ref{ch:function} for the error function.
+  \item[\tt DhbGammaFunction] The class {\tt DhbLanczosFormula} defined
+     in chapter \ref{ch:function} and extensions of classes {\tt Number} and {\tt Integer} defined
+     in chapter \ref{ch:function} for the gamma function.
+  \item[\tt DhbIterativeAlgorithms] All classes defined in chapters \ref{ch:iteration},
+     \ref{ch:zeroes}, \ref{ch:integration} and \ref{ch:series}.
+  \item[\tt DhbLinearAlgebra] The classes defined in chapter \ref{ch:linearalgebra},
+   except for classes defined in the subapplications of this one.
+  \item[\tt DhbEigenValuesAndVectors] The classes {\tt DhbLargestEigenValueFinder}
+  and {\tt DhbJacobiTransformation} defined in chapter \ref{ch:linearalgebra}.
+  \item[\tt DhbMatrixDeterminant] Extensions of classes {\tt DhbMatrix} and
+     {\tt DhbLUPDecomposition} related to the computation of the matrix determinant.
+  \item[\tt DhbMatrixInversion] Extensions of classes {\tt DhbMatrix}, {\tt DhbSymmetricMatrix} and
+     {\tt DhbLUPDecomposition} related to the computation of matrix inversion.
+  \item[\tt DhbMinimization] All classes defined in chapter \ref{ch:minimization}.
+  \item[\tt DhbNumericalPrecision] The class {\tt DhbFloatingPointMachine} defined in
+  chapter \ref{ch:introduction} and the class {\tt DhbDecimalFloatingNumber} described in appendix \ref{ch-fpSimul}.
+  \item[\tt DhbStatistics] All classes defined in chapter \ref{ch:statistics} as well as all
+  classes describing a probability distribution (defined in chapters \ref{ch:statistics},
+  \ref{ch:estimation} and appendix \ref{ch:distributions}).
+\end{description}
+
+\section{Java code}
+The Java code presented in this book was created with Visual Age
+for Java. The entire code is split into several packages: these
+packages correspond more or less to the chapters of this book.
+They differ slightly from the Smalltalk applications because the
+Java code was generated independently from the Smalltalk code.
+Also due to the fact that Java does not allow to extend a class in
+another file, all files contain only one class.
+
+The following packages have been defined:
+\begin{description}
+  \item[\tt DhbDataMining] All classes defined in chapter \ref{ch:datamining}.
+  \item[\tt DhbEstimation] All classes defined in chapter \ref{ch:estimation}.
+  \item[\tt DhbFunctionEvaluation] All classes defined in
+  chapters \ref{ch:introduction} and  \ref{ch:function}.
+  \item[\tt DhbInterfaces] All interfaces defined in this book.
+  \item[\tt DhbInterpolation] All classes defined in chapter \ref{ch:interpolation}.
+  \item[\tt DhbIterations] All classes defined in chapters \ref{ch:iteration},
+     \ref{ch:zeroes}, \ref{ch:integration} and \ref{ch:series}.
+  \item[\tt DhbMatrixAlgebra] All classes defined in chapter \ref{ch:linearalgebra}.
+  \item[\tt DhbOptimizing] All classes defined in chapter \ref{ch:minimization}.
+  \item[\tt DhbScientificCurves] The classes {\tt Histogram} and
+     {\tt Curve}.
+  \item[\tt DhbStatistics] The classes defined in chapter \ref{ch:statistics}, except class {\tt Histogram}
+  and the classes defined in appendix \ref{ch:distributions}.
+\end{description}
+
+
+\subsection{Visual Age for Java}
+The file {\tt CDRom/Vaj/OONumJ.dat} contains a Visual Age
+repository. Users of Visual for Java can load the entire code by
+loading this file using the import facility of Visual Age.
+
+\subsection{Other Java systems}
+Classes must be loaded from the hierarchy of directories rooted at
+{\tt CDRom/Java}. Each subdirectory corresponds to one of the
+packages described earlier.
+
+\note{Because some Java system requires that the name of the class
+be identical to the name of the file, the original names of the
+classes have been kept. Similarly, the name of the directory must
+be equal to the name of the package. If you have transferred the
+contents of the CD ROM over a system limiting the size of the file
+name, you must first rename each file and directory before loading
+the classes.}
+
+\section{Utilities}
+The directory {\tt Utility} can only be used on a 32-bit Windows
+systems. It contains two programs to study some numerical effects
+experimentally. The directory must be copied as is onto a 32-bit
+Windows systems (Windows NT 4.0 or higher, Windows 98 or higher).
+The executable files must be run from this directory because it
+contains all the resources needed to execute them.
+
+\subsection{Distribution demo}
+The program contained in the file {\tt DistributionDemo.exe}
+allows the reader to study all probability density functions
+described in this book. After starting the program, a window
+containing a note book will open. Each page of the notebook
+corresponds to a distribution. The parameters can be modified.
+
+Then, clicking on the button labeled {\tt Generate} will generate
+random values distributed according to the distribution. A window
+allows to modify the number of generated values and the parameters
+of the histogram into which the values are accumulated. When the
+generating is completed the resulting histogram is displayed. The
+reader can then attempt a least square fit or a maximum likelihood
+fit and view the result. The button labeled {\tt Integral} allows
+to view the values as a distribution function.
+
+\subsection{File reader}
+This small utility program allows to display data read from a text
+file, either in tab or coma delimited format, in graphical form.
+Once data are read, the user can investigate interpolation, linear
+regression and polynomial least square fit. This program was used
+to generate the figures of chapters \ref{ch:interpolation} and
+\ref{ch:estimation}.
+
+After starting the program, a window containing the parameters of
+the file containing the data will open. Here the reader can select
+the name of the file to read, the format used (blank or coma
+delimited) and which column contains which data. For error bars,
+there are three cases:
+\begin{enumerate}
+  \item no error;
+  \item the error is given explicitly;
+  \item the error is computed from the standard deviation and the
+  number of values used to compute the standard deviation (\cf
+  equation \ref{eq:averagerror} in chapter \ref{ch:statistics}).
+\end{enumerate}
+
+If the data were read without error, the reader can investigate
+the three interpolation algorithms described in chapter
+\ref{ch:interpolation}. In addition linear regression and
+polynomial least square fit can be tried, each point having an
+identical weight.
+
+If the data were read with errors, the reader can investigate only
+Lagrange and Bulirsch-Stoer interpolation. Linear regression and
+polynomial least square fit are performed using the supplied error
+to compute the weight of each point as described in chapter
+\ref{ch:estimation}.
+
+\ifx\wholebook\relax\else\end{document}\fi

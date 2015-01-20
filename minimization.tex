@@ -1,0 +1,1663 @@
+\ifx\wholebook\relax\else
+\documentclass[twoside]{book}
+\usepackage[active]{srcltx}
+\usepackage[LY1]{em}
+\input{DhbDefinitions}
+\begin{document}
+\fi
+
+\chapter{Optimization}
+\label{ch:minimization} \vspace{1 ex}
+\begin{flushright}
+{\sl Cours vite au but, mais gare à la chute.}\footnote{Run fast
+to the goal, but beware of the fall.}\\ Alexandre Soljenitsyne
+\end{flushright}
+\vspace{1 ex} An optimization problem is a numerical problem where
+the solution is characterized by the largest or smallest value of
+a numerical function depending on several parameters. Such
+function is often called the goal function. Many kinds of problems
+can be expressed into optimization, that is, finding the maximum
+or the minimum of a goal function. This technique has been applied
+to a wide variety of fields going from operation research to game
+playing or artificial intelligence. In chapter \ref{ch:estimation}
+for example, the solution of maximum likelihood or least square
+fits was obtained by finding the maximum, respectively the minimum
+of a function.
+
+In fact generations of high energy physicists have used the
+general purpose minimization program MINUIT\footnote{F.James, M.
+Roos, {\sl MINUIT --- a system for function minimization and
+analysis of the parameter errors and corrections}, Comput. Phys.
+Commun., 10 (1975) 343-367.} written by Fred James\footnote{I take
+this opportunity to thank Fred for the many useful discussions we
+have had on the subject of minimization.} of CERN to perform least
+square fits and maximum likelihood fits.  To achieve generality,
+MINUIT uses several strategies to reach a minimum. In this chapter
+we shall discuss a few techniques and conclude with a program
+quite similar in spirit to MINUIT. Our version, however, will not
+have all the features offered by MINUIT.
+
+If the goal function can be expressed with an analytical form, the
+problem of optimization can be reduced into calculating the
+derivatives of the goal function respective to all parameters, a
+tedious but manageable job. In most cases, however, the goal
+function cannot always be expressed analytically.
+
+The classes described in this chapter are different in Smalltalk
+and in Java. Therefore we present two class diagrams: figure
+\ref{fig:soptimizingclasses} shows the Smalltalk class diagram and
+figure \ref{fig:joptimizingclasses} shows the Java class diagram.
+The main reason for the difference is the strong typing imposed in
+Java preventing the reuse of instance variables.
+\begin{figure}
+\center\psfig{figure=Figures/Optimizing.eps, width=11cm}
+\caption{Smalltak classes used in optimization}
+\label{fig:soptimizingclasses}
+\end{figure}
+\begin{figure}
+\center\psfig{figure=Figures/OptimizingJ.eps, width=11cm}
+\caption{Java classes used in optimization}
+\label{fig:joptimizingclasses}
+\end{figure}
+
+
+\section{Introduction}
+\label{sec:optimum} Let us state the problem is general term. Let
+$f\left({\bf x}\right)$ be a function of a vector ${\bf x}$ of
+dimension $n$. The $n$-dimensional space is called the search
+space of the problem. Depending on the problem the space can be
+continuous or not. In this section we shall assume that the space
+is continuous.
+
+If the function is derivable, the gradient of the function
+respective to the vector ${\bf x}$ must vanish at the optimum.
+Finding the optimum of the function can be replaced by the problem
+of finding the vector ${\bf x}$ such that:
+\begin{equation}
+\label{eq:mincondition}
+  {d f\left({\bf x}\right) \over d{\bf x}} = 0.
+\end{equation}
+Unfortunately, the above equation is not a necessary condition for
+an optimum. It can be either a maximum. a minimum or a saddle
+point, that is a point where the function has a minimum in one
+projection and a maximum in another projection. Furthermore, the
+function may have several optima. Figure \ref{fig:localabsobulte}
+shows an example of a function having two minima.
+\begin{figure}
+\center\psfig{figure=Figures/MinimumAbsLoc.eps, width=11cm}
+\caption{Local and absolute optima} \label{fig:localabsobulte}
+\end{figure}
+Some problems require to find the absolute optimum of the
+function. Thus, one must verify that the solution of
+\ref{eq:mincondition} corresponds indeed to an optimum with the
+expected properties. The reader can already see at this point that
+searching for an optimum in the general case is a very difficult
+task.
+
+\noindent All optimization algorithms can be classified in two
+broad categories:
+\begin{itemize}
+  \item {\sl Greedy algorithms}: these algorithms are characterized by a
+  local search in the most promising direction. They are usually efficient
+  and quite good at finding local optima. Among greedy algorithms,
+  one must distinguish those requiring the evaluation of the
+  function's derivatives.
+  \item {\sl Random based algorithms}: these algorithms are using
+  a random approach. They are not efficient; however, they are good at
+  finding absolute optima. Simulated annealing \cite{Press} and
+  genetic algorithms\cite{BerLin} belong to this class.
+\end{itemize}
+The table \ref{tb:optimizingalgorithms} lists the properties of
+the algorithms presented in this chapter.
+\begin{table}[h]
+  \centering
+  \caption{Optimizing algorithms presented in this book}\label{tb:optimizingalgorithms}
+\vspace{1 ex}\begin{tabular}{| l | c | c |} \hline
+  \hfil{\bf Name} & {\bf Category} & {\bf Derivatives} \\ \hline
+  Extended Newton & greedy & yes \\
+  Powell's hill climbing & greedy & no \\
+  Simplex & greedy & no \\
+  Genetic algorithm & random based & no \\ \hline
+\end{tabular}
+\end{table}
+
+
+\section{Extended Newton algorithms}
+Extended Newton algorithms are using a generalized version of
+Newton's zero finding algorithm. These algorithms assume that the
+function is continuous and has only one optimum in the region
+where the search is initiated.
+
+Let us expand the function $f\left({\bf x}\right)$ around a point
+${\bf x}^{\left(0\right)}$ near the solution. We have in
+components:
+\begin{equation}
+  f\left({\bf x}\right) = f\left[{\bf x}^{\left(0\right)}\right] +\sum_j
+  \left.{\partial f\left({\bf x}\right) \over \partial x_j}\right|_{{\bf x}={\bf
+  x}^{\left(0\right)}}
+  \left[x_j-x^{\left(0\right)}_j\right].
+\end{equation}
+Using the expansion above into equation \ref{eq:mincondition}
+yields:
+\begin{equation}
+\sum_j
+  \left.{\partial^2 f\left({\bf x}\right) \over \partial x_i\partial x_j}\right|_{{\bf x}={\bf
+  x}^{\left(0\right)}}
+  \left[x_j-x^{\left(0\right)}_j\right]
+  + \left.{\partial f\left({\bf x}\right) \over \partial x_i}\right|_{{\bf x}={\bf
+  x}^{\left(0\right)}} =0.
+\end{equation}
+This equation can be written as a system of linear equations of
+the form
+\begin{equation}
+  {\bf M}\Delta = {\bf c},
+\end{equation}
+where $\Delta_j =x_j-x^{\left(0\right)}_j$. The components of the
+matrix ${\bf M}$ --- called the Hessian matrix --- are given by:
+\begin{equation}
+  m_{ij} = \left.{\partial^2 f\left({\bf x}\right) \over \partial x_i\partial x_j}\right|_{{\bf x}={\bf
+  x}^{\left(0\right)}},
+\end{equation}
+and the components of the vector ${\bf c}$ are given by:
+\begin{equation}
+  c_i = -\left.{\partial f\left({\bf x}\right) \over \partial x_i}\right|_{{\bf x}={\bf
+  x}^{\left(0\right)}}.
+\end{equation}
+Like in section \ref{sec:lsfnonlin} one can iterate this process
+by replacing ${\bf x}^{\left(0\right)}$ with ${\bf
+x}^{\left(0\right)}+\Delta$. This process is actually equivalent
+to the Newton zero finding method (\cf section \ref{sec:newton}).
+The final solution is a minimum if the matrix ${\bf M}$ is
+positive definite; else it is a maximum.
+
+This technique is used by MINUIT in the vicinity of the goal
+function's optimum. It is the region where the algorithm described
+above works well. Far from the optimum, the risk of reaching a
+point where the matrix ${\bf M}$ cannot be inverted is quite high
+in general. In addition, the extended Newton algorithm requires
+that the second order derivatives of the function can be computed
+analytically; at least the first order derivatives must be
+provided, otherwise the cost of computation at each step becomes
+prohibitive. A concrete implementation of the technique is not
+given here. The reader can find in this book all the necessary
+tools to make such an implementation. It is left as a exercise for
+the reader. In the rest of this chapter, we shall present other
+methods which work without an analytical knowledge of the
+function.
+
+\section{Hill climbing algorithms}
+Hill climbing is a generic term covering many algorithms trying to
+reach an optimum by determining the optimum along successive
+directions. The general algorithm is outlined below.
+\begin{enumerate}
+  \item select an initial point ${\bf x}_0$ and a direction ${\bf v}$;
+  \item find ${\bf x}_1$, the optimum of the function along the selected
+  direction;
+  \item if convergence is attained, terminate the algorithm;
+  \item set ${\bf x}_0={\bf x}_1$, select a different direction and go back to step 2.
+\end{enumerate}
+The simplest of these algorithms simply follows each axis in turn
+until a convergence is reached. More elaborate algorithms
+exist\cite{Press}. One of them is described in section
+\ref{sec:powell}.
+
+Hill climbing algorithms can be applied to any continuous
+function, especially when the function's derivatives are not
+easily calculated. The core of the hill climbing algorithm is
+finding the optimum along one direction. Let ${\bf v}$ be the
+direction, then finding the optimum of the vector function
+$f\left({\bf x}\right)$ along the direction ${\bf v}$ starting
+from point ${\bf x}_0$ is equivalent to finding the optimum of the
+one-variable function $g\left(\lambda\right)=f\left({\bf
+x}_0+\lambda{\bf v}\right)$.
+
+Therefore, in order to implement a hill climbing algorithm, we
+first need to implement an algorithm able to find the optimum of a
+one-variable function. This is the topic of the sections
+\ref{sec:optonedim} and \ref{sec:bracket}. Before this, we need to
+discuss the implementation details providing a common framework to
+all classes discussed in the rest of this chapter.
+
+\subsection{Optimizing --- General implementation}
+\label{sec:goptonedim} At this point the reader may be a little
+puzzled by the use of {\sl optimum} instead of speaking of minimum
+or maximum. We shall now disclose a general implementation which
+works both for finding a minimum or a maximum. This should not
+come to a surprise since, in mathematics, a minimum or a maximum
+are both very similar --- position where the derivative of a
+function vanishes
+--- and can be easily turned into each other --- e.g. by negating the
+function.
+
+To implement a general purpose optimizing framework, we introduce
+two new classes: {\tt MinimizingPoint} and {\tt MaximizingPoint},
+ a subclass of {\tt MinimizingPoint}. These two classes
+are used as \patstyle{Strategy} by the optimizing algorithms. The
+class {\tt MinimizingPoint} has two instance variables
+\begin{description}
+  \item[\tt value] the value of the goal function, that is
+  $g\left(\lambda\right)$ or $f\left({\bf x}\right)$;
+  \item[\tt position] the position at which the function has been
+  evaluated, that is $\lambda$ or ${\bf x}$.
+\end{description}
+The class {\tt MinimizingPoint} contains most of the methods. The
+only method overloaded by the class  {\tt MaximizingPoint} is the
+method {\tt betterThan}, which tells whether an optimizing point
+is better than another. The method {\tt betterThan} can be used in
+all parts of the optimizing algorithms to find out which point is
+the optimum so far. In algorithms working in multiple dimensions,
+the method {\tt betterThan} is also used to sort the points from
+the best to the worst. In Java, the architecture is a little more
+complex because of typing requirements, but the basic design
+concept is the same.
+
+A convenience instance creation method allows to create instances
+for a given function with a given argument. The instance is then
+initialized with the function's value evaluated at the argument.
+Thus, all optimizing algorithms described here do not call the
+goal function explicitly.
+
+Otherwise the implementation of the one dimensional optimum search
+uses the general framework of the iterative process. More
+specifically it uses the class {\tt FunctionalIterator} described
+in section \ref{sec:iterrel}.
+
+A final remark concerns the method {\tt initializeIteration}. The
+golden search algorithm assume that the 3 points $\lambda_0$,
+$\lambda_1$ and $\lambda_2$ have been determined. What if they
+have not been? In this case, the method {\tt initializeIteration}
+uses the optimum bracket finder described in section
+\ref{sec:bracket}
+
+\subsection{Common optimizing classes --- Smalltalk implementation}
+\label{sec:sgeneralOpt} \marginpar{Figure
+\ref{fig:soptimizingclasses} with the boxes {\bf
+FunctionOptimizer}, {\bf MinimizingPoint}, {\bf MaximizingPoint},
+{\bf ProjectedOneVariableFunction} and {\bf
+VectorProjectedFunction} grayed.} In Smalltalk we have two classes
+of optimizing points: {\tt DhbMinimizingPoint} and its subclass
+{\tt DhbMaximizingPoint}. These classes are shown in listing
+\ref{ls:optimizerCommon}. The class {\tt DhbFunctionOptimizer} is
+in charge of handling the management of the optimizing points.
+This clas is shown in listing \ref{ls:optimizerAbstract}.
+
+\noindent The class {\tt DhbMinimizingPoint} has the following
+instance variables:
+\begin{description}
+  \item[\tt position] contains the position at which the function
+  is evaluated; this instance variable is a number if the function
+  to optimize is a one variable function and an array or a vector
+  if the function to evaluate is a function of many variables;
+  \item[\tt value] contains the value of the function evaluated at the point's position;
+\end{description}
+Accessor methods corresponding to these variables are supplied. As
+we noted in section \ref{sec:goptonedim}, the only method
+redefined by the subclass {\tt DhbMaximizingPoint} is the method
+{\tt betterThan:} used to decide whether a point is better than
+another.
+
+Optimizing points are created with the convenience method {\tt
+vector:function:} which evaluates the function supplied as second
+argument at the position supplied as the first argument.
+\begin{listing} Smalltalk classes common to all optimizing classes \label{ls:optimizerCommon}
+\input{Smalltalk/Minimization/DhbMinimizingPoint}
+\input{Smalltalk/Minimization/DhbMaximizingPoint}
+\end{listing}
+
+The class {\tt DhbFunctionOptimizer} is in charge of handling the
+optimizing points. it has the following instance variables:
+\begin{description}
+  \item[\tt optimizingPointClass] is the class of the optimizing
+  points used as \patstyle{Strategy} by the optimizer; it is used
+  to create instances of points at a given position for a given
+  function;
+  \item[\tt bestPoints] contains a sorted collection of optimizing
+  points; the best point is the first and the worst point is the
+  last; all optimizers rely on the fact that sorting is done by this sorted collection.
+\end{description}
+The method {\tt addPointAt:} creates an optimizing point at the
+position supplied as argument and adds this point to the
+collection of best points. Since that collection is sorted, one is
+always certain to find the best result in the first position. This
+fact is used by the method {\tt finalizeIterations}, which
+retrieves the result from the collection of best points.
+
+Instances of the function optimizer are created with the two
+convenience methods {\tt minimizingFuntion:} and {\tt
+maximizingFuntion:} helping to define the type of optimum. An
+additional convenience method, {\tt forOptimizer:} allows to
+create a new optimizer with the same strategy --- that is, the
+same class of optimizing points --- and the same function as the
+optimizer supplied as argument. This method is used to create
+optimizers used in intermediate steps.
+
+Because finding an optimum cannot be determined numerically with
+high precision \cite{Press} the class {\tt DhbFunctionOptimizer}
+redefines the method {\tt defaultPrecision} to be 100 times the
+default numerical precision.
+\begin{listing} Smalltalk abstract class for all optimizing classes \label{ls:optimizerAbstract}
+\input{Smalltalk/Minimization/DhbFunctionOptimizer}
+\end{listing}
+
+In order to find an optimum along a given direction, one needs to
+construct an object able to transform a vector function into a one
+variable function. The class {\tt DhbProjectedOneVariableFunction}
+and its subclass {\tt DhbVectorProjectedFunction} provide this
+functionality. They are shown in listing
+\ref{ls:projectedfunctions}. The class {\tt
+DhbProjectedOneVariableFunction} has the following instance
+variables:
+\begin{description}
+  \item[\tt function] the goal function $f\left({\bf x}\right)$;
+  \item[\tt argument] the vector argument of the goal function,
+  that is the vector ${\bf x}$;
+  \item[\tt index] the index of the axis along which the function
+  is projected.
+\end{description}
+The instance variables {\tt argument} and {\tt index} can be read
+and modified using direct accessor methods. The goal function is
+set only at creation time: the instance creation method {\tt
+function:} take the goal function as argument. A convenience
+method {\tt bumpIndex} allows to alter the index in circular
+fashion\footnote{We do not give the implementation of the simplest
+of the hill climbing algorithms using alternatively each axes of
+the reference system. This implementation, which uses the method
+{\tt bumpIndex}, is left as an exercise for the reader.}.
+
+The class {\tt DhbVectorProjectedFunction} has no additional
+variables. Instead it is reusing the instance variable {\tt index}
+as the direction along which the function is evaluated. For
+clarity, the accessor methods have been renamed {\tt direction},
+{\tt direction:}, {\tt origin} and {\tt origin:}.
+
+For both classes, the method {\tt argumentAt:} returns the
+argument vector for the goal function, that is the vector ${\bf
+x}$. The method {\tt value:} returns the value of the function
+$g\left(\lambda\right)$ for the supplied argument $\lambda$.
+
+\begin{listing} Smalltalk projected function classes \label{ls:projectedfunctions}
+\input{Smalltalk/Minimization/DhbProjectedOneVariableFunction}
+\input{Smalltalk/Minimization/DhbVectorProjectedFunction}
+\end{listing}
+
+\subsection{Common optimizing classes --- Java implementation}
+\label{sec:jgeneralOpt} \marginpar{Figure
+\ref{fig:joptimizingclasses} with the boxes {\bf OptimizingPoint},
+{\bf MinimizingPoint}, {\bf MaximizingPoint}, {\bf
+ManyVariableFunction}, {\bf OptimizingVector}, {\bf
+MinimizingVector}, {\bf MaximizingVector}, {\bf
+OptimizingFactory}, {\bf MinimizingFactory}, {\bf
+MaximizingFactory} and {\bf MultiVariableOptimizer} grayed.} In
+Java we have two distinct hierarchies of optimizing points (\cf
+figure \ref{fig:joptimizingclasses}). The abstract class {\tt
+OptimizingPoint} has two subclasses {\tt MinimizingPoint} and {\tt
+MaximizingPoint}. These classes are shown in listing
+\ref{lj:optimizerCommonPoint}. The abstract class {\tt
+OptimizingPoint} has two instance variables:
+\begin{description}
+  \item[\tt position] a {\tt double} containing the position at which the function
+  is evaluated;
+  \item[\tt value] a {\tt double} containing the value of the function evaluated at the point's position;
+\end{description}
+Both instance variables have a corresponding getter accessor
+method, but no setter method. Otherwise, the functional relation
+between {\tt position} and {\tt value} could not be ensured. As we
+noted in section \ref{sec:goptonedim}, the only method redefined
+by the subclass {\tt MaximizingPoint} is the method {\tt
+betterThan} used to decide whether a point is better than another.
+Instances of optimizing points are created with a single
+constructor method taking as arguments the position at which the
+function must be evaluated and the function itself. The supplied
+function must implement the {\tt OneVariableFunction} interface
+described in section \ref{sec:jvFunction}.
+
+\begin{listing} Java optimizing point classes \label{lj:optimizerCommonPoint}
+\input{Java/DhbOptimizing/OptimizingPoint.java}
+\input{Java/DhbOptimizing/MinimizingPoint.java}
+\input{Java/DhbOptimizing/MaximizingPoint.java}
+\end{listing}
+
+The abstract class {\tt OptimizingVector} has two subclasses {\tt
+MinimizingVector} and {\tt Maximizingvector}. The only differences
+with the corresponding optimizing point classes are that the
+instance variable {\tt position} is an array of {\tt double} and
+that the function supplied as the second argument of the
+constructor method must implement the {\tt ManyVariableFunction}
+interface. These classes and the interface {\tt
+ManyVariableFunction} are showns in listing
+\ref{lj:optimizerCommonVector}. The need for the additional
+hierarchy comes primarily from the fact that we cannot handle {\tt
+double} and array of double as a common object since these
+entities are primitive types and not objects.
+
+\begin{listing} Java optimizing vector classes \label{lj:optimizerCommonVector}
+\input{Java/DhbInterfaces/ManyVariableFunction.java}
+\input{Java/DhbOptimizing/OptimizingVector.java}
+\input{Java/DhbOptimizing/MinimizingVector.java}
+\input{Java/DhbOptimizing/MaximizingVector.java}
+\end{listing}
+
+The abstract class {\tt OptimizingPointFactory} and its two
+concrete subclasses, {\tt MinimizingPointFactory} and {\tt
+MaximizingPointFactory}, are in charge of creating the optimizing
+points. These factory classes\footnote{For people reading code in
+both languages: Smalltalk does not need any factory: objects of
+type {\tt Class} are instance factories built into the language.
+Reflection in Java could have been used here to build an
+architecture similar to that of Smalltalk. The use of reflection,
+however, implies the use of casting, which, in my humble opinion,
+spoils the purpose of strong typing.} play the role of the
+optimizing \patstyle{Strategy} described in section
+\ref{sec:goptonedim}. The concrete classes implement the two
+methods {\tt createPoint} and {\tt createVector}. The method {\tt
+createPoint} creates an optimizing point of the desired type for a
+supplied position (a {\tt double}) and function (a {\tt
+OneVariableFunction}). The method {\tt createVector} creates an
+optimizing vector of the desired type for a supplied position (an
+array of {\tt double}) and function (a {\tt
+ManyVariableFunction}). A convenience method with the same name
+takes as first argument a {\tt DhbVector} (\cf section
+\ref{sec:jlinearalgebra}). Since the factory is able to create
+either points or vectors it can be reused between optimizer
+working with one or many variable functions.
+
+\begin{listing} Java optimizing point factory classes \label{lj:optimizerCommon}
+\input{Java/DhbOptimizing/OptimizingPointFactory.java}
+\input{Java/DhbOptimizing/MinimizingPointFactory.java}
+\input{Java/DhbOptimizing/MaximizingPointFactory.java}
+\end{listing}
+
+In the Smalltalk implementation we have been able to bring all
+optimizing classes under a single abstract class. The Java
+architecture is similar. In the case of Java, however, the
+abstract class only handles optimization in $n$-dimensional space.
+
+Listing \ref{lj:optimizerAbtractCommon} shows the code of class
+{\tt MultiVariableOptimizer}. This class has the following
+instance variables:
+\begin{description}
+  \item[\tt f] the goal function; this object must implement the
+  {\tt ManyVariableFunction} interface shown in listing
+  \ref{lj:optimizerCommonVector}.
+  \item[\tt pointFactory] the factory used to create optimizing
+  points; this must be one concrete instance of the classes shown
+  in listing \ref{lj:optimizerCommon}.
+  \item[\tt result] an array of double containing the initial value
+  where to start the algorithm; at the end of the
+  algorithm, this variable contains the position of the optimum if
+  convergence was attained;
+\end{description}
+The default constructor method provided by the abstract class take
+three arguments: the goal function, the optimizing point factory
+and the initial value. These three arguments correspond to the
+three instance variables of the class.
+
+The method {\tt setInitialValue} allows to change the initial
+value in case another search is made with the same instance. The
+accessor method {\tt getResult} allows one to retrieve the result.
+
+The method {\tt sortPoints} sorts a supplied array of optimizing
+points according to their \patstyle{Strategy}. Since sorting is
+made {\it in situ}, a bubble sort algorithm is used.
+
+\begin{listing} Java abstract class for all optimizing classes \label{lj:optimizerAbtractCommon}
+\input{Java/DhbOptimizing/MultiVariableOptimizer.java}
+\end{listing}
+
+In order to find an optimum along a given direction, one needs to
+construct an object able to transform a vector function into a one
+variable function. The class {\tt VectorProjectedFunction}
+providing this functionality has the following instance variables:
+\begin{description}
+  \item[\tt f] the goal function $f\left({\bf x}\right)$;
+  \item[\tt origin] the vector argument of the goal function,
+  that is the vector ${\bf x}_0$;
+  \item[\tt direction] the direction along which the function
+  is projected,
+  that is the vector ${\bf v}$.
+\end{description}
+The constructor method takes three argument corresponding to the
+three instance variables. In addition, the instance variables {\tt
+argument} and {\tt direction} can be read and modified using
+direct accessor methods. For convenience the set methods exist in
+two versions of the argument: an array of {\tt double} or a {\tt
+DhbVector}. This is also true for the constructor method.
+
+The method {\tt argumentAt:} returns the argument vector for the
+goal function, that is the vector ${\bf x}$. The method {\tt
+value:} returns the value of the function $g\left(\lambda\right)$
+for the supplied argument $\lambda$.
+\begin{listing} Java projected function class \label{lj:projectedfunctions}
+\input{Java/DhbOptimizing/VectorProjectedFunction.java}
+\end{listing}
+
+\section{Optimizing in one dimension}
+\label{sec:optonedim} To find the optimum of a one-variable
+function, $g\left(\lambda\right)$, whose derivative is unknown,
+the most robust algorithm is an algorithm similar to the bisection
+algorithm described in section \ref{sec:bisection}.
+
+Let us assume that we have found three points $\lambda_0$,
+$\lambda_1$ and $\lambda_2$ such that
+$\lambda_0<\lambda_1<\lambda_2$ and such that
+$g\left(\lambda_1\right)$ is better than both
+$g\left(\lambda_0\right)$ and $g\left(\lambda_2\right)$. If the
+function $g$ is continuous over the interval
+$\left[\lambda_0,\lambda_2\right]$, then we are certain that an
+optimum of the function is located in the interval
+$\left[\lambda_0,\lambda_2\right]$. As for the bisection
+algorithm, we shall try to find a new triplet of values with
+similar properties while reducing the size of the interval. A
+point is picked in the largest of the two intervals
+$\left[\lambda_0,\lambda_1\right]$ or
+$\left[\lambda_1,\lambda_2\right]$ and is used to reduce the
+initial interval.
+
+If $\lambda_1-\lambda_0\leq\lambda_2-\lambda_1$ we compute
+$\lambda_4 =\lambda_1 + \omega\left(\lambda_2-\lambda_1\right)$
+where $\omega$ is the golden
+section\footnote{$\omega={3-\sqrt{5}\over 2}\approx0.38197$} from
+Pythagorean lore. Choosing $\omega$ instead of $1/2$ ensures that
+successive intervals have the same relative scale. A complete
+derivation of this argument can be found in \cite{Press}. If
+$\lambda_4$ yields a better function value than $\lambda_1$, the
+new triplet of point becomes $\lambda_1$, $\lambda_4$ and
+$\lambda_2$; otherwise, the triplet becomes $\lambda_0$,
+$\lambda_1$ and $\lambda_4$.
+
+If we have $\lambda_1-\lambda_0>\lambda_2-\lambda_1$ we compute
+$\lambda_4 =\lambda_1 + \omega\left(\lambda_0-\lambda_1\right)$.
+Then the new triplets can be either $\lambda_0$, $\lambda_4$ and
+$\lambda_1$, or $\lambda_4$, $\lambda_1$ and $\lambda_2$.
+
+
+The reader can verify that the interval decreases steadily
+although not as fast as in the case of bisection where the
+interval is halved at each iteration. Since the algorithm is using
+the golden section it is called golden section search.
+
+By construction the golden section search algorithm makes sure
+that the optimum is always located between the points $\lambda_0$
+and $\lambda_2$. Thus, at each iteration, the quantity
+$\lambda_2-\lambda_0$ give an estimate of the error on the
+position of the optimum.
+
+\subsection{Optimizing in one dimension --- Smalltalk implementation}
+\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\bf
+OneVariableFunctionOptimizer} grayed.} Listing
+\ref{ls:optimizerOneDim} shows the class {\tt
+DhbOneVariableFunctionOptimizer} implementing the search for an
+optimum of a one-variable function using the golden section
+search. The following code example shows how to use this class to
+find the maximum of the gamma distribution discussed in section
+\ref{sec:gammadist}.
+\begin{codeExample}
+\begin{verbatim}
+
+ | distr finder maximum |
+ distr := DhbGammaDistribution shape: 2 scale: 5.
+ finder := DhbOneVariableFunctionOptimizer maximizingFunction: distr.
+ maximum := finder evaluate.
+\end{verbatim}
+\end{codeExample}
+The first line after the declarations creates a new instance of a
+gamma distribution with parameters $\alpha = 2$ and $\beta = 5$.
+The next line creates an instance of the optimum finder. The
+selector used to create the instance selects a search for a
+maximum. The last line is the familiar statement to evaluate the
+iterations --- that is, performing the search for the maximum ---
+and to retrieve the result. Since no initial value was supplied
+the search begins at a random location.
+
+The class {\tt DhbOneVariableFunctionOptimizer} is a subclass of
+the class {\tt FunctionOptimizer}. It does not need any additional
+instance variables. The golden section is kept as a class variable
+and is calculated at the first time it is needed.
+
+At each iteration the method {\tt nextXValue} is used to compute
+the next position at which the function is evaluated. This
+corresponding new optimizing point is added to the collection of
+best points. Then, the method {\tt indexOfOuterPoint} is used to
+determine which point must be discarded: it is always the second
+point on either side of the best point. The precision of the
+result is estimated from the bracketing interval in the method
+{\tt computePrecision}, using relative precision (of course!).
+
+The method {\tt addPoint:} of the superclass can be used to supply
+an initial bracketing interval. The method {\tt
+computeInitialValues} first checks whether a valid bracketing
+interval has been supplied into the collection of best points. If
+this is not the case, a search for a bracketing interval is
+conducted using the class {\tt DhbOptimizingBracketFinder}
+described in section \ref{sec:sbracket}. The instance of the
+bracket finder is created with the method {\tt forOptimizer:} so
+that its strategy and goal function are taken over from the golden
+section optimum finder.
+
+\begin{listing} Smalltalk golden section optimum finder \label{ls:optimizerOneDim}
+\input{Smalltalk/Minimization/DhbOneVariableFunctionOptimizer}
+\end{listing}
+
+\subsection{Optimizing in one dimension --- Java implementation}
+\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
+OneVariableFunctionOptimizer} grayed.} Listing
+\ref{lj:optimizerOneDim} shows the class {\tt
+OneVariableFunctionOptimizer} implementing the search for an
+optimum of a one-variable function using the golden section search
+in Java. The following code example shows how to use this class to
+find the maximum of the gamma distribution discussed in section
+\ref{sec:gammadist}.
+\begin{codeExample}
+\begin{verbatim}
+
+    CauchyDistribution distr = new CauchyDistribution( 10, 5);
+    MaximizingPointFactory strategy = new MaximizingPointFactory();
+    OneVariableFunctionOptimizer finder =
+                new OneVariableFunctionOptimizer( distr, strategy);
+    finder.setDesiredPrecision( 1.0e-5);
+    finder.evaluate();
+    double result = finder.getResult();
+\end{verbatim}
+\end{codeExample}
+The first line creates an instance of a gamma distribution with
+parameters $\alpha = 2$ and $\beta = 5$. The next line creates an
+instance of a maximizing point factory. This factory is used as
+the strategy for the optimum finder created on the next line, the
+first argument of the constructor method being the function to
+maximize. A medium precision is given explicitly since the default
+provided by the class {\tt IterativeProcess} is likely to be
+meaningless (\cf \cite{Press}). Since no initial value is
+supplied, the search begins at a random point. After a call to the
+method {\tt evaluate} --- common to all iterative processes
+--- the result is retrieved on the last line.
+
+\noindent The class {\tt OneVariableFunctionOptimizer} is a
+subclass of the class {\tt FunctionalIterator} described in
+section \ref{sec:jiterrel}. It has the following instance
+variables
+\begin{description}
+  \item[\tt bestPoints] an array of 3 optimizing points corresponding
+  to the values $\lambda_0$, $\lambda_1$ and $\lambda_2$ in this order;
+  thus, the best is always the middle one;
+  \item[\tt pointFactory] the factory used to create optimizing
+  points (\cf section \ref{sec:jgeneralOpt}).
+\end{description}
+The private static variable {\tt goldenSection} holds the value of
+the golden section.
+
+The method {\tt evaluateIteration} determines which side of the
+braketing interval the bisecting step will be performed. The
+bisection step of the algorithm is performed within the method
+{\tt reducePoints}. The arguments of the method is either 0 or 2
+depending on the selected side. The precision returned by the
+method {\tt evaluateIteration} is of course calculated using
+relative precision.
+
+The method {\tt initializeIterations} uses the optimum bracket
+finder described in section \ref{sec:jbracket} to obtain the first
+bracketing interval. The search for the interval is conducted from
+the supplied initial value. The instance of the bracket finder is
+created by supplying the same goal function and same strategy as
+the initial golden section finder.
+
+\begin{listing} Java implementation of the golden section optimum search
+\label{lj:optimizerOneDim}
+\input{Java/DhbOptimizing/OneVariableFunctionOptimizer.java}
+\end{listing}
+
+\section{Bracketing the optimum in one dimension}
+\label{sec:bracket} As we have seen in section \ref{sec:optonedim}
+the golden section algorithm requires the knowledge of a
+bracketing interval. This section describes a very simple
+algorithm to obtain a bracketing interval with certainty if the
+function is continuous and does indeed have an optimum of the
+sought type.
+
+The algorithm goes as follows. Take two points $\lambda_0$ and
+$\lambda_1$. If they do not exist, pick up some random values
+(random generators are described in section \ref{sec:random}). Let
+us assume that $g\left(\lambda_1\right)$ is better than
+$g\left(\lambda_0\right)$.
+\begin{enumerate}
+  \item Let $\lambda_2=3\lambda_1-2\lambda_0$, that is, $\lambda_2$ is twice as far from $\lambda_1$ than
+$\lambda_0$ and is located on the other side, toward the optimum.
+  \item If $g\left(\lambda_1\right)$ is better than
+$g\left(\lambda_2\right)$ we have a bracketing interval; the
+algorithm is stopped.
+  \item Otherwise, set $\lambda_0=\lambda_1$ and $\lambda_1=\lambda_2$ and go back to step 1.
+\end{enumerate}
+The reader can see that the interval
+$\left[\lambda_0,\lambda_1\right]$ is increasing at each step.
+Thus, if the function has no optimum of the sought type, the
+algorithm will cause a floating overflow exception quite rapidly.
+
+\noindent The implementation in each language have too little in
+common. The common section is therefore omitted.
+
+\subsection{Bracketing the optimum --- Smalltalk implementation}
+\label{sec:sbracket} \marginpar{Figure
+\ref{fig:soptimizingclasses} with the box {\bf
+OptimizingBracketFinder} grayed.} Listing
+\ref{ls:optimizerbracket} shows the Smalltalk code of the class
+implementing the search algorithm for an optimizing bracket. The
+class {\tt DhbOptimizingBracketFinder} is a subclass of class {\tt
+DhbOneVariableFunctionOptimizer} from section
+\ref{ls:optimizerOneDim}. This was a convenient, but not
+necessary, choice to be able to reuse most of the management and
+accessor methods. The methods pertaining to the algorithm are of
+course quite different.
+
+Example of use of the optimizing bracket finder can be found in
+method {\tt computeInitialValues} of class {\tt
+DhbOneVariableFunctionOptimizer} (\cf listing
+\ref{ls:optimizerOneDim}).
+
+The method {\tt setInitialPoints:} allows to use the collection of
+best points of another optimizer inside the class. This breach to
+the rule of hiding the implementation can be tolerated here
+because the class {\tt DhbOptimizingBracketFinder} is used
+exclusively with the class {\tt DhbOneVariableFunctionOptimizer}.
+It allows the two class to use the same sorted collection of
+optimizing points. If no initial point has been supplied, it is
+obtained from a random generator.
+
+The {\sl precision} calculated in the method {\tt
+evaluateIteration} is a large number, which becomes negative as
+soon as the condition to terminate the algorithm is met. Having a
+negative precision causes an iterative process as defined in
+chapter \ref{ch:iteration} to stop.
+
+\begin{listing} Smalltalk optimum bracket finder \label{ls:optimizerbracket}
+\input{Smalltalk/Minimization/DhbOptimizingBracketFinder}
+\end{listing}
+
+\subsection{Bracketing the optimum --- Java implementation}
+\label{sec:jbracket} \marginpar{Figure
+\ref{fig:joptimizingclasses} with the box {\bf
+OptimizingBracketFinder} grayed.} Listing
+\ref{lj:optimizerbracket} shows the Smalltalk code of the class
+implementing the search algorithm for an optimizing bracket. The
+class {\tt OptimizingBracketFinder} is a subclass of the class
+{\tt FunctionalIterator} defined in section \ref{sec:jiterrel}. It
+has the same instance variables as the class {\tt
+OneVariableFunctionOptimizer}.
+
+The method {\tt initializeIterations} gets an initial value using
+a random generator if no initial value has been supplied. The
+other points of the initial interval are obtained from a random
+generator. At the end of the method, the array of best points
+contains 3 optimizing points sorted in ascending order of their
+position.
+
+The method {\tt evaluateIteration} first tests whether the optimum
+seems to be located toward negative or positive values. After the
+test the interval is expanded toward to corresponding direction by
+one of the methods {\tt moveTowardNegative} or  {\tt
+moveTowardPositive}.
+
+The method {\tt evaluateIteration} calcuate a pseudo precision: it
+is a large number, which becomes negative as soon as the condition
+to terminate the algorithm is met. Having a negative precision
+causes an iterative process as defined in chapter
+\ref{ch:iteration} to stop.
+
+The object using the bracket finder can retrieve the array of best
+points using the method {\tt getBestPoints}. This method
+constitutes a breach to the rule of hiding the implementation. In
+this case, however, this is an acceptable breach: the class {\tt
+OneVariableFunctionOptimizer} can retrieve the initial bracketing
+interval and use it immediately without having to evaluate again
+the function at these positions. After all, the bracketing
+interval {\sl is} the result of the optimizing bracket search.
+
+\begin{listing} Java optimum bracket finder
+\label{lj:optimizerbracket}
+\input{Java/DhbOptimizing/OptimizingBracketFinder.java}
+\end{listing}
+
+\section{Powell's algorithm}
+\label{sec:powell}Powell's algorithm is one of many hill climbing
+algorithms \cite{Press}. The idea underlying Powell's algorithm is
+that once an optimum has been found in one direction, the chance
+for the biggest improvement lies in the direction perpendicular to
+that direction. A mathematical formulation of this sentence can be
+found in \cite{Press} and references therein. Powell's algorithm
+provides a way to keep track of the next best direction at each
+iteration step.
+
+\noindent The original steps of Powell's algorithm are as follow:
+\begin{enumerate}
+  \item Let ${\bf x}_0$ the best point so far and initialize a
+  series of vectors ${\bf v}_1,\ldots,{\bf v}_n$ forming the system
+  of reference ($n$ is the
+  dimension of the vector ${\bf x}_0$); in
+  other words the components of the vector ${\bf v}_k$ are all
+  zero except for the $k\th$ components, which is one.
+  \item Set $k=1$.
+  \item Find the optimum of the goal function along the direction ${\bf
+  v}_k$ starting from point ${\bf x}_{k-1}$. Let ${\bf x}_k$  be
+  the position of that optimum.
+  \item Set $k=k+1$. If $k\leq n$, go back to step 3.
+  \item For $k=1,\ldots,n-1$, set ${\bf v}_k={\bf v}_{k-1}$.
+  \item Set ${\bf v}_n ={ {\bf x}_n-{\bf x}_0 \over \left| {\bf x}_n-{\bf x}_0\right|}$.
+  \item Find the optimum of the goal function along the direction ${\bf
+  v}_n$. Let ${\bf x}_{n+1}$  be the position of that optimum.
+  \item If $\left| {\bf x}_n-{\bf x}_0\right|$ is less than the
+  desired precision, terminate.
+  \item Otherwise, set ${\bf x}_0={\bf x}_{n+1}$ and go back to
+  step 1.
+\end{enumerate}
+There is actually two hill climbing algorithms within each other.
+The progression obtained by the inner loop is taken as the
+direction in which to continue the search.
+
+Powell recommends to use this algorithm on goal functions having a
+quadratic behaviour near the optimum. It is clear that this
+algorithm cannot be used safely on any function. If the goal
+function has narrow valleys, all directions ${\bf v}_1,\ldots,{\bf
+v}_n$ will become colinear when the algorithm ends up in such a
+valley. Thus, the search is likely to end up in a position where
+no optimum is located. Press et al. \cite{Press} mention two
+methods avoiding such problems: one method is quite complex and
+the other slows down the convergence of the algorithm.
+
+In spite of this {\it caveat}, we implement Powell's algorithm in
+its original form. However, we recommend its use only in the
+vicinity of the minimum. In section \ref{sec:multistrategy} we
+show how other techniques can be utilized to read the vicinity of
+the optimum, where Powell's algorithm can safely be used to make
+the final determination of the optimum's position.
+
+\subsection{Powell's algorithm --- General implementation}
+Since the class implementing the vector projected function
+$g\left(\lambda\right)$ described in sections
+\ref{sec:sgeneralOpt} and \ref{sec:jgeneralOpt} keep the vector
+${\bf x}_0$ and ${\bf v}$ in instance variables, there is no need
+to allocate explicit storage for the vectors ${\bf
+x}_1,\ldots,{\bf x}_n$ and ${\bf v}_1,\ldots,{\bf v}_n$. Instead,
+the class implementing Powell's algorithm keep an array of vector
+projected functions with the corresponding parameters. Then, the
+manipulation of the vector ${\bf x}_1,\ldots,{\bf x}_n$ and ${\bf
+v}_1,\ldots,{\bf v}_n$ is made directly on the projected function.
+
+Since the origin of the projected function is always the starting
+value, ${\bf x}_k$, the initial value for the search of the
+optimum of the function $g\left(\lambda\right)$ is always 0.
+
+The method {\tt initializeIterations} allocated a series of vector
+projected functions starting with the axes of the reference
+system. This method also creates an instance of a one dimensional
+optimum finder kept in the instance variable, {\tt
+unidimensionalFinder}. The goal function of the finder is
+alternatively assigned to each of the projected functions.
+
+We made a slight modification to Powell's algorithm. If the norm
+of the vector ${\bf x}_n-{\bf x}_0$ at step 6 is smaller than the
+desired precision, the directions are only rotated, the assignment
+of step 6 is not done and the search of step 7 is omitted.
+
+The precision computed  at the end of each iterations is the
+maximum of the relative change on all components between the
+vectors ${\bf x}_n$ and ${\bf x}_0$.
+
+\subsection{Powell's algorithm --- Smalltalk implementation}
+\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\bf
+HillClimbingOptimizer} grayed.} Listing \ref{ls:optimizerpowell}
+shows the implementation of Powell's algorithm in Smalltalk. The
+following code example shows how to find the maximum of a vector
+function
+\begin{codeExample}
+\label{ex:spowell}
+\begin{verbatim}
+
+ | fBlock educatedGuess hillClimber result |
+\end{verbatim}
+ {\tt fBlock :=<\sl the goal function\tt >}\hfil\break
+ {\tt educatedGuess :=<\sl a vector not too far from the optimum\tt >}
+\begin{verbatim}
+ hillClimber := DhbHillClimbingOptimizer maximizingFunction: fBlock.
+ hillClimber initialValue: educatedGuess.
+ result := hillClimber evaluate.
+\end{verbatim}
+\end{codeExample}
+The class {\tt DhbHillClimbingOptimizer} is a subclass of class
+{\tt DhbFunctionOptimizer}. It has only one additional instance
+variable, {\tt unidimensionalFinder}, to hold the one-dimensional
+optimizer used to find an optimum of the goal function along a
+given direction.
+
+The method {\tt evaluateIteration} uses the method {\tt
+inject:into:} to perform steps 2-4 of the algorithm. Similarly
+step 5 of the algorithm is performed with a method {\tt
+inject:into:} within the method {\tt shiftDirection}. This mode of
+using the iterator method {\tt inject:into:} --- performing an
+action involving two consecutive elements of an indexed collection
+--- is somewhat unusual, but highly convenient\cite{Beck}. The method {\tt
+minimizeDirection:} implements step 3 of the algorithm.
+
+\begin{listing} Smalltalk implementation of Powell's algorithm
+\label{ls:optimizerpowell}
+\input{Smalltalk/Minimization/DhbHillClimbingOptimizer}
+\end{listing}
+
+\subsection{Powell's algorithm --- Java implementation}
+\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
+HillClimbingOptimizer} grayed.} Listing \ref{lj:optimizerpowell}
+shows the implementation of Powell's algorithm in Java. The
+following code example shows how to use this class to find the
+maximum of a vector function.
+\begin{codeExample}
+\label{ex:jpowell}
+\begin{verbatim}
+\end{verbatim}
+{\tt ManyVariableFunction func = <\sl the goal function\tt
+>}\hfil\break
+ {\tt double[] educatedGuess =<\sl an array of double not too far from the optimum\tt >}
+\begin{verbatim}
+    MaximizingPointFactory strategy = new MaximizingPointFactory();
+    HillClimbingOptimizer hillClimber =
+                new HillClimbingOptimizer( func, strategy);
+    hillClimber.setInitialValue( educatedGuess);
+    hillClimber.evaluate();
+    double[] result = hillClimber.getResult();
+\end{verbatim}
+\end{codeExample}
+
+The class {\tt HillClimbingOptimizer} is a subclass of class {\tt
+MultiVariableOptimizer}. It has the following instance variables
+\begin{description}
+  \item[\tt unidimensionalFinder] an instance of the class {\tt
+  OneVariableFunctionOptimizer}; this instance is used to find the
+  optimum of the function in steps 3 and 7 of the algorithm;
+  \item[\tt projections] an array of projected functions.
+\end{description}
+
+\begin{listing} Java implementation of Powell's algorithm
+\label{lj:optimizerpowell}
+\input{Java/DhbOptimizing/HillClimbingOptimizer.java}
+\end{listing}
+
+\section{Simplex algorithm}
+\label{sec:simplex} The simplex algorithm, invented by Nelder and
+Mead, provides an efficient way to find a good approximation of
+the optimum of a function starting from any place \cite{Press}.
+The only trap into which the simplex algortihm can run into is a
+local optimum. On the other hand, this algorithm does not converge
+very well in the vicinity of the optimum. Thus, it must not be
+used with the desired precision set to a very low value. Once the
+optimum has been found with the simplex algorithm, other more
+precise algorithms can then be used, such as the ones describes in
+section \ref{sec:optimum} or \ref{sec:powell}. MINUIT uses a
+combination of simplex and Newton algorithms. Our implementation
+of general purpose optimizer uses a combination of simplex and
+Powell algorithms.
+
+A simplex in a $n$-dimensional space is a figure formed with $n+1$
+summits. For example, a simplex in a 2-dimensional space is a
+triangle; a simplex in a 3- dimensional space is a tetrahedron.
+Let us now discuss the algorithm for finding the optimum of a
+function with a simplex.
+\begin{enumerate}
+  \item Pick up $n+1$ points in the search space and evaluate
+  the goal function at each of them. Let ${\bf A}$ be the summit
+  yielding the worst function's value.
+  \item if the size of the simplex is smaller than the desired
+  precision, terminate the algorithm.
+  \item Calculate ${\bf G}$, the center of gravity of the $n$ best points,
+  that is all points except ${\bf A}$.
+  \item Calculate the location of the symmetric point of ${\bf A}$
+  relative to ${\bf G}$: ${\bf A}^{\prime}=2{\bf G}-{\bf A}$.
+  \item If $f\left({\bf A}^{\prime}\right)$ is not the best value
+  found so far go to step 9.
+  \item Calculate the point ${\bf A}^{\prime\prime}=2{\bf A}^{\prime}-{\bf
+  G}$, that is a point twice as far from ${\bf G}$ as ${\bf
+  A}^{\prime}$.
+  \item If $f\left({\bf A}^{\prime\prime}\right)$ is a
+  better value than $f\left({\bf A}^{\prime}\right)$ build a new
+  simplex with the point ${\bf A}$ replaced by the point ${\bf
+  A}^{\prime\prime}$ and go to step 2.
+  \item Otherwise, build a new
+  simplex with the point ${\bf A}$ replaced by the point ${\bf
+  A}^{\prime}$ and go to step 2.
+  \item Calculate the point ${\bf B}= {\displaystyle\left({\bf G}+{\bf
+A}\right)\over\displaystyle 2}$.
+  \item If $f\left({\bf B}\right)$ yields the best value found so far
+  build a new simplex with the point ${\bf A}$ replaced by the point ${\bf
+  A}^{\prime\prime}$ and go to step 2.
+  \item Otherwise build a new simplex obtained by dividing all
+  edges leading to the point yielding the best value by 2 and go
+  back to step 2.
+\end{enumerate}
+Figure \ref{fig:simplexsample} shows the meaning of the operations
+involved in the algorithm in the 3 dimensional case.
+\begin{figure}
+\center\psfig{figure=Figures/Simplex.eps, width=10cm}
+\caption{Operations of the simplex
+algorithm}\label{fig:simplexsample}
+\end{figure}
+Step 6 makes the simplex grow into the direction where the
+function is the best so far. Thus, the simplex becomes elongated
+in the expected direction of the optimum. Because of its
+geometrical shape, the next step is necessarily taken along
+another direction, causing an exploration of the regions
+surrounding the growth obtained at the preceding step. Over the
+iterations, the shape of the simplex adapts itself to narrow
+valleys where the hill climbing algorithms notoriously get into
+trouble. Steps 9 and 11 ensures the convergence of the algorithm
+when the optimum lies inside the simplex. In this mode the simplex
+works very much like the golden section search or the bisection
+algorithms.
+
+Finding the initial points can be done in several ways. If a good
+approximation of the region where the maximum might be located can
+be obtained one uses that approximation as a start and generate
+$n$ other points by finding the optimum of the function along each
+axis. Otherwise, one can generate random points and select $n+1$
+points yielding the best values to build the initial simplex. In
+all cases, one must make sure that the initial simplex has a
+non-vanishing size in all dimensions of the space. Otherwise the
+algorithm will not reach the optimum.
+
+\subsection{Simplex algorithm --- General implementation}
+The class implementing the simplex algorithm belong to the
+hierarchy of the iterative processes discussed in chapter
+\ref{ch:iteration}. The method {\tt evaluateIteration} directly
+implements the steps of the algorithm as described above. The
+points ${\bf G}$, ${\bf A}^{\prime}$, ${\bf A}^{\prime\prime}$ and
+${\bf B}$ are calculated using the vector operations described in
+section \ref{sec:linearalgebra}.
+
+The routine {\tt initializeIterations} assumes that an initial
+value has been provided. It then finds the location of an optimum
+of the goal function along each axis of the reference system
+starting each time from the supplied initial value, unlike hill
+climbing algorithms. Restarting from the initial value is
+necessary to avoid creating a simplex with a zero volume. Such
+mishaps can arise when the initial value is located on an axis of
+symmetry of the goal function. This can happen quite frequently
+with {\sl educated guesses}.
+
+\subsection{Simplex algorithm --- Smalltalk implementation}
+\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\bf
+SimplexOptimizer} grayed.} Listing \ref{ls:optimizersimplex} shows
+the Smalltalk implementation of the simplex algorithm. The
+following code example shows how to invoke the class to find the
+minimum of a vector function.
+\begin{codeExample}
+\begin{verbatim}
+
+ | fBlock educatedGuess simplex result |
+\end{verbatim}
+ {\tt fBlock :=<\sl the goal function\tt >}\hfil\break
+ {\tt educatedGuess :=<\sl a vector in the search space\tt >}
+\begin{verbatim}
+ simplex := DhbSimplexOptimizer minimizingFunction: fBlock.
+ simplex initialValue: educatedGuess.
+ result := simplex evaluate.
+\end{verbatim}
+\end{codeExample}
+Except for the line creating the instance of the simplex
+optimizer, this code example is identical to the example of
+Powell's hill climbing algorithm (code example \ref{ex:spowell}).
+
+The class {\tt DhbSimplexOptimizer} is a subclass of class {\tt
+DhbFunctionOptimizer}. In order to be able to use the iterator
+methods efficiently, the worst point of the simplex, ${\bf A}$, is
+held in a separate instance variable {\tt worstPoint}. As we do
+not need to know the function's value $f\left({\bf A}\right)$, it
+is kept as a vector. The remaining points of the simplex are kept
+in the instance variable {\tt bestPoints} of the superclass. Since
+this collection is sorted automatically when points are inserted
+to it, there is no explicit sorting step.
+
+\begin{listing} Smalltalk implementation of simplex algorithm
+\label{ls:optimizersimplex}
+\input{Smalltalk/Minimization/DhbSimplexOptimizer}
+\end{listing}
+\subsection{Simplex algorithm --- Java implementation}
+\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
+SimplexOptimizer} grayed.} Listing \ref{ls:optimizersimplex} shows
+the Java implementation of the simplex algorithm. The following
+code example shows how to invoke the class to find the minimum of
+a vector function.
+\begin{codeExample}
+\begin{verbatim}
+\end{verbatim}
+{\tt ManyVariableFunction func = <\sl the goal function\tt
+>}\hfil\break
+ {\tt double[] educatedGuess =<\sl an array of double representing one point in the search space\tt >}
+\begin{verbatim}
+    MinimizingPointFactory strategy = new MinimizingPointFactory();
+    SimplexOptimizer simplex = new SimplexOptimizer( func, strategy);
+    simplex.setInitialValue( educatedGuess);
+    simplex.evaluate();
+    double[] result = simplex.getResult();
+\end{verbatim}
+\end{codeExample}
+Except for the lines creating the strategy and the optimizer, this
+code example is identical to that of the Powell's algorithm (code
+example \ref{ex:jpowell}).
+
+The class {\tt SimplexOptimizer} is a subclass of class {\tt
+MultiVariableOptimizer}. The additional instance variable {\tt
+simplex} contains an array of optimizing vectors whose positions
+are the summit of the simplex.
+
+At the end of the contraction operation, the best points must be
+sorted --- using the method {\tt sortPoints} of the superclass ---
+because this transformation can alter the order of the points
+considerably. In all other case, one has found the best point so
+far; the method {\tt addBestPoint} is then used to discard to
+worst point, shift the remaining points and add the best point in
+the first position of the array {\tt simplex}.
+
+\begin{listing} Java implementation of simplex algorithm
+\label{lj:optimizersimplex}
+\input{Java/DhbOptimizing/SimplexOptimizer.java}
+\end{listing}
+
+\section{Genetic algorithm}
+All optimizing algorithm discussed so far have one common flaw:
+they all terminate when a local optimum is encountered. In most
+problems, however, one wants to find the absolute optimum of the
+function. This is especially true if the goal function represents
+some economical merit.
+
+\noindent One academic example is the maximization of the function
+\begin{equation}
+\label{eq:geneticCase}
+  f\left({\bf x}\right)={ \sin^2\left|{\bf x}\right| \over\left|{\bf
+  x}\right|^2}.
+\end{equation}
+This function has an absolute maximum at ${\bf x}=0$, but all
+algorithms discussed so far will end up inside a ring
+corresponding to $\left|{\bf x}\right|=n\pi/2$ where $n$ is any
+positive odd integer.
+
+In 1975 John Holland introduced a new type of algorithm --- dubbed
+genetic algorithm --- because it tries to mimic the evolutionary
+process identified as the cause for the diversity of living
+species by Charles Darwin. In a genetic algorithm the elements of
+the search space are considered as the chromosomes of individuals;
+the goal function is considered as the measure of the fitness of
+the individual to adapt itself to its
+environment\cite{BerLin}\cite{Koza}. The iterations are aping (pun
+intended) the Darwinian principle of survival and reproduction. At
+each iteration, the fittest individuals survive and reproduce
+themselves. To bring some variability to the algorithm mutation
+and crossover of chromosomes are taken into account.
+
+Mutation occurs when one gene of a chromosome is altered at
+reproduction time. Crossover occurs when two chromosomes break
+themselves and recombine with the piece coming from the other
+chromosome. These processes are illustrated on figure
+\ref{fig:crossover}.
+\begin{figure}
+\center\psfig{figure=Figures/Crossover.eps, width=11cm}
+\caption{Mutation and crossover reproduction of
+chromosomes}\label{fig:crossover}
+\end{figure}
+The point where the chromosomes are breaking is called the
+crossover point. Which individual survives and reproduces itself,
+when and where mutation occurs and when and where a crossover
+happens is determined randomly. This is precisely the random
+nature of the algorithm which gives it the ability to jump out of
+a local optimum to look further for the absolute optimum.
+
+\rubrique{Mapping the search space on chromosomes} To be able to
+implement a genetic algorithm one must establish how to represent
+the genes of a chromosome. At the smallest level the genes could
+be the bits of the structure representing the chromosome. If the
+search space of the goal function do cover the domain generated by
+all possible permutations of the bits, this is a good approach.
+However, this is not always a practical solution since some bit
+combinations may be forbidden by the structure. For example, some
+of the combinations of a 64 bit word do not correspond to a valid
+floating point number.
+
+In the case of the optimization of a vector function, the simplest
+choice is to take the components of the vector as the genes.
+Genetic algorithms are used quite often to adjust the parameters
+of a neural network \cite{BerLin}. In this case, the chromosomes
+are the coefficients of each neuron. Chromosomes can even be
+computer subprograms in the case of genetic programming
+\cite{Koza}. In this latter case, each individual is a computer
+program trying to solve a given problem.
+
+Figure \ref{fig:geneticFlow} shows a flow diagram of a general
+genetic algorithm.
+\begin{figure}
+\center\psfig{figure=Figures/GeneticFlow.eps, width=10cm}
+\caption{General purpose genetic algorithm}\label{fig:geneticFlow}
+\end{figure}
+The reproduction of the individual is taken literally: a copy of
+the reproducing individual is copied into the next generation. The
+important feature of a generic algorithm is that the building of
+the next generation is a random process. To ensure the survival of
+the fittest, the selection of the parents of the individuals of
+the next generation is performed at random with uneven
+probability: the fittest individuals have a larger probability of
+being selected than the others. Mutation enables the algorithm to
+create individuals having genes corresponding to unexplored
+regions of the search space. Most of the times such mutants will
+be discarded at the next iteration; but, in some cases, a mutation
+may uncover a better candidate. In the case of the function of
+equation \ref{eq:geneticCase}, this would correspond to jumping
+from one ring to another ring closer to the function's maximum.
+Finally the crossover operation mixes good genes in the hope of
+building a better individual out of the properties of good
+inidividuals. Like mutation the crossover operation gives a
+stochastic behavior to the algorithm enabling it to explore
+uncharted regions of the search space.
+
+\note{Because of its stochastic nature a genetic algorithm is the
+algorithm of choice when the goal function is expressed on
+integers.}
+
+\subsection{Genetic algorithm --- General implementation}
+\label{sec:gengenetic} The left hand side of the diagram of figure
+\ref{fig:geneticFlow} is quite similar to the flow diagram of an
+iterative process (\cf figure \ref{fig:itercoarse} in chapter
+\ref{ch:iteration}). Thus, the class implementing the genetic
+algorithm is a subclass of the iterative process class discussed
+in chapter \ref{ch:iteration}.
+
+The {\sl genetic} nature of the algorithm is located in the right
+hand side of the diagram of figure \ref{fig:geneticFlow}. As we
+have mentioned before the implementation of the chromosomes is
+highly problem dependent. All operations located in the top
+portion of the mentioned area can be expressed in generic terms
+without any knowledge of the chromosomic implementation. to handle
+the lower part of the right hand side of the diagram of figure
+\ref{fig:geneticFlow}, we shall implement a new object, the
+chromosome manager.
+
+One should also notice that the value of the function is not
+needed when the next generation is build. Thus, the chromosome
+manager does not need to have any knowledge of the goal function.
+The goal function comes into play when transfering the next
+generation to the {\sl mature} population, that is, the population
+used for reproduction at the next iteration . At the maturity
+stage, the value of the goal function is needed to identify the
+fittest individuals. In our implementation, the next generation is
+maintained by the chromosome manager whereas the population of
+mature individuals is maintained by the object in charge of the
+genetic algorithm which has the knowledge of the goal function.
+
+\noindent The chromosome manager has the following instance
+variables:
+\begin{description}
+  \item[\tt populationSize] contains the size of the population;
+  one should pick up a large enough number to be able to cover the
+  search space efficiently: the larger the dimension of the space
+  search space, the larger must be the population size;
+  \item[\tt rateOfMutation] contains the probability of having a
+  mutation while reproducing;
+  \item[\tt rateOfCrossover] contains the probability of having a
+  crossover while reproducing.
+\end{description}
+All of these variables have getter and setter accessor methods. In
+addition a convenience instance creation method is supplied to
+create a chromosome manager with given values for all three
+instance variables. The chromosome manager implements the
+following methods:
+\begin{description}
+  \item[\tt isFullyPopulated] to signal that a sufficient number of individuals
+  has been generated into the population;
+  \item[\tt process] to process a pair of individuals; this method
+  does the selection of the genetic operation and applies it;
+  individuals are processed by pair to always have a possibility
+  of crossover;
+  \item[\tt randomnizePopulation] to generate a random population;
+  \item[\tt reset] to create an empty population for the next
+  generation.
+\end{description}
+Finally the chromosome manager must also implement methods
+performing each of the genetic operations: reproduction, mutation
+and crossover. The Smalltalk implementation supplies methods that
+returns a new individual; the Java implementation supplies methods
+that add a new individual to the population. The reason for this
+difference come from the static typing requirements of Java.
+
+The genetic optimizer is the object implementing the genetic
+algorithm proper. It is a subclass of the iterative process class
+described in chapter \ref{sec:iterrel}. In addition to the
+handling of the iterations the genetic optimizer implements the
+steps of the algorithm drawn on the top part of the right hand
+side of the diagram of figure \ref{fig:geneticFlow}. It has one
+instance variable containing the chromosome manager with which it
+will interact. The instance creation method take three arguments:
+the function to optimize, the optimizing strategy and the
+chromosome manager.
+
+The method {\tt initializeIteration} asks the chromosome manager
+to supply a random population. The method {\tt evaluateIteration}
+performs the loop of the right hand side of the diagram of figure
+\ref{fig:geneticFlow}. It selects a pair of parents on which the
+chromosome manager performs the genetic operation.
+
+Selecting the genetic operation is performed with a random
+generator. The values of the goal function are used as weights.
+Let $f\left(p_i\right)$ be the value of the goal function for
+individual $p_i$ and let $p_b$ and $p_w$ be respectively the
+fittest and the lest fit individual found so far ($b$ stands for
+best and $w$ stands for worst). One first computes the
+unnormalized probability:
+\begin{equation}
+  \tilde{P}_i={\displaystyle f\left(p_i\right) - f\left(p_w\right)
+  \over\displaystyle f\left(p_b\right) - f\left(p_w\right)}.
+\end{equation}
+This definition ensures that $\tilde{P}_i$ is always comprised
+between 0 and 1 for any goal function. Then we can use the
+discrete probability
+\begin{equation}
+\label{eq:geneticprob}
+  P_i={\displaystyle  1
+  \over\displaystyle \sum\tilde{P}_i} \tilde{P}_i.
+\end{equation}
+The sum in equation \ref{eq:geneticprob} is taken over the entire
+population. An attentive reader will notice than this definition
+assigns a zero probability of selecting the worst individuals.
+This gives a slight bias to our implementation compared to the
+original algorithm. This is can be easily compensated by taking a
+sufficiently large population. The method {\tt randomScale}
+calculates the $P_i$ of equation \ref{eq:geneticprob} and returns
+an array containing the integrated sums:
+\begin{equation}
+  R_i=\sum_{k=0}^i P_i.
+\end{equation}
+The array $R_i$ is used to generate a random index to select
+individuals for reproduction.
+
+\noindent The transfer between the next generation and the mature
+population is performed by the method {\tt collectPoints}.
+
+In the general case, there is no possibility to decide when the
+terminate the algorithm. In practice, it is possible that the
+population stays stable for quite a while until suddenly a new
+individual is found to be better than the rest. Therefore a
+criteria based on the stability of the first best points is likely
+to be beat the purpose of the algorithm, namely to jump out of a
+local optimum. Some problems can define a threshold at which the
+goal function is considered sufficiently good. In this case, the
+algorithm can be stopped as soon as the value of the goal function
+for the fittest individual becomes better than that threshold. In
+the general case, however, the implementation of the genetic
+algorithm simply returns a constant pseudo precision
+--- set to one --- and runs until the maximum number of iterations
+becomes exhausted.
+
+\subsection{Genetic algorithm --- Smalltalk implementation}
+\marginpar{Figure \ref{fig:soptimizingclasses} with the boxes {\bf
+GeneticOptimizer}, {\bf ChromosomeManager} and {\bf
+VectorChromosomeManager} grayed.} Listing \ref{ls:chromosome}
+shows the code of an abstract chromosome manager in Smalltalk and
+of a concrete implementation for vector chromosomes. The class
+{\tt DhbChromosomeManager} has one instance variable in addition
+to the variables listed in section \ref{sec:gengenetic}: {\tt
+population}. This variable is an instance of an {\tt
+OrderedCollection} containing the individuals of the next
+generation being prepared.
+
+The class {\tt DhbVectorChromosomeManager} is a sublcass of class
+{\tt DhbChromosomeManager} implementing vector chromosomes. It has
+two instance variables
+\begin{description}
+  \item[\tt origin] a vector containing the minimum possible
+  values of the generated vectors;
+  \item[\tt range] a vector containing the range of the generated
+  vectors.
+\end{description}
+In other words {\tt origin} and {\tt range} are delimiting an
+hypercube defining the search space.
+
+\begin{listing} Smalltalk chromosome: abstract and concrete \label{ls:chromosome}
+\input{Smalltalk/Minimization/DhbChromosomeManager}
+\input{Smalltalk/Minimization/DhbVectorChromosomeManager}
+\end{listing}
+Listing \ref{ls:optimizerabsgen} shows how the genetic optimizer
+is implemented in Smalltalk. The following code example shows how
+to use a genetic optimizer to find the maximum of a vector
+function.
+\begin{codeExample}
+\begin{verbatim}
+
+    | fBlock optimizer manager origin range result |
+\end{verbatim}
+ {\tt fBlock :=<\sl the goal function\tt >}\hfil\break
+ {\tt origin :=<\sl a vector containing the minimum expected value of the component\tt >}\hfil\break
+ {\tt range :=<\sl a vector containing the expected range of the component\tt >}\hfil\break
+\begin{verbatim}
+    optimizer := DhbGeneticOptimizer maximizingFunction: fBlock.
+    manager := DhbVectorChromosomeManager new: 100 mutation: 0.1 crossover: 0.1.
+    manager origin: origin; range: range.
+    optimizer chromosomeManager: manager.
+    result := optimizer evaluate.
+\end{verbatim}
+\end{codeExample}
+After establishing the goal function and the search space, an
+instance of the genetic optimizer is created. The next line
+creates an instance of a vector chromosome manager for a
+population of 100 individuals (sufficient for a 2-3 dimensional
+space) and rates of mutation and crossover equal to $10\%$. The
+next line defines the search space into the chromosome manager.
+The final line performs the genetic search and returns the result.
+
+In Smalltalk the population of the next generation is maintained
+in the instance variable {\tt population}. Each time a next
+generation has been established, it is transferred into a
+collection of best points by the method {\tt collectPoints}. Each
+element of the collection {\tt bestPoints} is an instance of an
+subclass of {\tt OptimizingPoint}. The exact type of the class is
+determined by the search strategy. Since best points are sorted
+automatically, the result is always the position of the first
+element of  {\tt bestPoints}.
+
+\begin{listing} Smalltalk implementation of genetic algorithm \label{ls:optimizerabsgen}
+\input{Smalltalk/Minimization/DhbGeneticOptimizer}
+\end{listing}
+
+\subsection{Genetic algorithm --- Java abstract implementation}
+\marginpar{Figure \ref{fig:joptimizingclasses} with the boxes {\bf
+ChromosomeManager} and  {\bf GeneticOptimizer} grayed.} The Java
+implementation of the genetic algorithm is done in two parts
+because the type of the population is not known until one uses a
+concrete chromosome manager. One could use casting in order to
+preserve anonymity of the chromosome type at the level of the
+genetic algorithm. I tend to avoid cast operator like the plague
+and use them only when all other alternatives have failed. In this
+case, casting is avoided by maintaining a concrete implementation
+of the chromosome manager in pair with a class implementing the
+genetic algorithm. This section describes the features of the
+abstract classes. The code for these classes is shown in listings
+\ref{lj:chromosome} and \ref{lj:optimizerabsgen}. The next section
+describes a concrete implementation for vector functions.
+
+The class {\tt ChromosomeManager} has an additional instance
+variable --- called {\tt generator} --- used to keep an instance
+of a random generator. Our implementation uses the default random
+generator provided by Java. The method {\tt reset} allows the
+creation of an empty next generation. The current size of the next
+generation is obtained by calling method {\tt getPopulationSize}.
+Other methods are provided to provide interaction with the genetic
+algorithm class. The methods {\tt individualAt} returns the $k\th$
+individual of the next generation, where $k$ is the supplied
+integer argument. The methods {\tt addCloneOf}, {\tt
+addMutationOf} add a new individual to the next generation by
+applying respectively reproduction or mutation. The method {\tt
+addCrossoversOf} add the two crossover offsprings of two
+individuals. Here, the reader will see that casting becomes
+unavoidable by the subclasses. However, since the objects taken as
+arguments by the methods {\tt addCloneOf}, {\tt addMutationOf} and
+{\tt addCrossoversOf} are coming from the method {\tt
+individualAt} and only that method, the risk of error is minimal.
+
+\begin{listing} Java abstract implementation of a chromosome
+\label{lj:chromosome}
+\input{Java/DhbOptimizing/ChromosomeManager.java}
+\end{listing}
+
+The class {\tt GeneticOptimizer} is an abstract class. The methods
+providing the functionality to fill up the new population from the
+next generation established by the chromosome manager are all
+abstract methods. The method {\tt collectPoint} transfers a single
+individual from the next generation to the population of mature
+individuals.
+
+A method {\tt initializeIterations} with one integer argument is
+needed to allow the concrete class to initialize its memory for
+the desired population size. This allows the instance variable
+{\tt populationSize} to remain private.
+
+\begin{listing} Java implementation of genetic algorithm
+\label{lj:optimizerabsgen}
+\input{Java/DhbOptimizing/GeneticOptimizer.java}
+\end{listing}
+
+\subsection{Genetic algorithm --- Java implementation with vectors}
+\marginpar{Figure \ref{fig:joptimizingclasses} with the boxes {\bf
+VectorChromosomeManager} and  {\bf VectorGeneticOptimizer}
+grayed.} Listings \ref{lj:vectorchromosome} and
+\ref{lj:optimizervector} show the concrete Java classes for the
+chromosome manager and the genetic optimizer respectively. They
+provide a concrete implementation of a genetic algorithm for
+finding the optimum of a vector function. The following code
+example shows how to find the maximum of a vector function using
+these classes.
+\begin{codeExample}
+\begin{verbatim}
+\end{verbatim}
+{\tt ManyVariableFunction func = <\sl the goal function\tt
+>}\hfil\break
+ {\tt DhbVector origin =<\sl a vector containing the minimum expected value of the component\tt >}\hfil\break
+ {\tt DhbVector range =<\sl a vector containing the expected range of the component\tt >}\hfil\break
+\begin{verbatim}
+    MaximizingPointFactory strategy = new MaximizingPointFactory();
+    VectorChromosomeManager manager =
+                            new VectorChromosomeManager( 100, 0.1, 0.1);
+    manager.setOrigin( origin);
+    manager.setRange( range);
+    VectorGeneticOptimizer finder =
+                    new VectorGeneticOptimizer( func, strategy, manager);
+    finder.evaluate();
+    double[] result = finder.getResult();
+\end{verbatim}
+\end{codeExample}
+The line after the definition of the goal function and the
+hypercube defining the search space creates an instance of a
+maximizing vector. This will be the \patstyle{Strategy} of the
+genetic optimizer. The next statement creates an instance of a
+vector chromosome manager. Right after, two statements define the
+search space. Then, the instance of the genetic optimizer is
+created. The next statement performs the genetic algorithm and the
+last statement retrieves the result.
+
+The class {\tt VectorChromosomeManager} is a concrete subclass of
+the class {\tt ChromosomeManager}. It maintains the next
+generation in the instance variable {\tt population}. The instance
+variable {\tt fillIndex} is used as an index when filling up the
+next generation.
+
+\begin{listing} Java implementation of a vector chromosome
+\label{lj:vectorchromosome}
+\input{Java/DhbOptimizing/VectorChromosomeManager.java}
+\end{listing}
+The class {\tt VectorGeneticOptimizer} is a concrete subclass of
+the class {\tt GeneticOptimizer}. Our implementation chooses to
+sort the points when they are collected. This is not really needed
+as the algorithm for selecting the individual does not assumes
+that the individuals are sorted by fitness. This is quite
+practical, however, when following the behavior of the algorithm
+with the debugger. For heavy duty usage the sorting ought to be
+removed. If that is the case, the method {\tt getResult} must be
+rewritten to fetch the fittest individual of the mature
+population.
+\begin{listing} Java implementation of genetic algorithm for vectors
+\label{lj:optimizervector}
+\input{Java/DhbOptimizing/VectorGeneticOptimizer.java}
+\end{listing}
+
+\section{Multiple strategy approach}
+\label{sec:multistrategy} As we have seen most of the optimizing
+algorithms described so far have some limitation:
+\begin{itemize}
+  \item Hill climbing algorithms may get into trouble far from the
+  optimum and may get caught into a local optimum. This is exemplified in figure \ref{fig:hillvsrandom}.
+  \item The simplex algorithm may get caught into a local optimum
+  and does not converge well near the optimum.
+  \item Genetic algorithms do not have a clear convergence
+  criteria.
+\end{itemize}
+\begin{figure}
+\center\psfig{figure=Figures/OptimizingComparisonvsd.eps,
+width=12cm} \caption{Compared behavior of hill climbing and random
+based algorithms.}\label{fig:hillvsrandom}
+\end{figure}
+After reading the above summary of the pro and cons of each
+algorithm, the reader may have already come to the conclusion that
+mixing the three algorithms together can make a very efficient
+strategy to find the optimum of a wide variety of functions.
+
+One can start with a genetic optimizer for a sufficient number of
+iterations. This should ensure that the best points found at the
+end of the search does not lie too far from the absolute optimum.
+Then, one can use the simplex algorithm to get rapidly near the
+optimum. The final location of the optimum is obtained using a
+hill climbing optimizer.
+
+\subsection{Multiple strategy approach --- General implementation}
+This multiple strategy approach, inspired from the program MINUIT,
+has been adapted to the use of the algorithms discussed here. The
+class {\tt MultiVariableGeneralOptimizer} combines the three
+algorithms: genetic, simplex and hill climbing, in this order. We
+could have make it a subclass of {\tt Object}, but we decided to
+reuse all the management provided by the abstract optimizer class
+discussed in section \ref{sec:goptonedim}. Therefore, our general
+purpose optimizer is a subclass of the abstract optimizer class
+although it does not really uses the framework of an iterative
+process. We only need one additional instance variable: the range
+used to construct the hypercube search space for the vector
+genetic chromosome manager. A corresponding setting method is
+provided: {\tt setRange}.
+
+The method {\tt initializeIterations} performs search using the
+genetic algorithm as an option and, then, the simplex algorithm.
+Since the genetic algorithm require a great deal of function
+evaluate --- due to its stochastic nature --- it is a good idea to
+give the user the choice of by-passing the use of the genetic
+algorithm. If no range has been defined, only the simplex
+algorithm is used from the supplied initial value. Otherwise a
+search is made with the genetic algorithm using the initial value
+and the range to define the search space. Then the simplex
+algorithm is started from the best point found by the genetic
+algorithm. The precision for the simplex search is set to the
+square root of the precision for the final search. Less precision
+is required for this step because the final search will give a
+better precision.
+
+The method {\tt evaluateIteration} performs the hill climbing
+algorithm and returns it precision. As the desired precision of
+the hill climbing algorithm is set to that of the general purpose
+optimizer. As a consequence, there will only be a single
+iteration.
+
+Listing \ref{ls:optimizergeneral} shows the implementation in
+Smalltalk. Listing \ref{lj:optimizergeneral} gives the code for
+the Java implementation. At this point we shall abstain from
+commenting the code as the reader should have no more need for
+such thing$\ldots$ Hopefully!
+
+\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\bf
+MultiVariableGeneralOptimizer} grayed.}
+\begin{listing} Smalltalk
+implementation of a general optimizer \label{ls:optimizergeneral}
+\input{Smalltalk/Minimization/DhbMultiVariableGeneralOptimizer}
+\end{listing}
+
+\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
+MultiVariableGeneralOptimizer} grayed.}
+\begin{listing} Java
+implementation of a general optimizer \label{lj:optimizergeneral}
+\input{Java/DhbOptimizing/MultiVariableGeneralOptimizer.java}
+\end{listing}
+\ifx\wholebook\relax\else\end{document}\fi
