@@ -7,3 +7,6 @@ S. Ducasse and S. Stinckwich
 
 Currently latexing:
 	- centralmoments.tex
+	- datamining.tex
+	- distributions.tex
+	
