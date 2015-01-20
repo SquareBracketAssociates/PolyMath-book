@@ -1,0 +1,37 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbHistogram}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  minimum binWidth overflow underflow moments contents freeExtent cacheSize desiredNumberOfBins }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf chi2Against:} {\tt aScaledDistribution}
+\begin{verbatim}
+    | chi2 |
+    chi2 := 0.
+    self pointsAndErrorsDo:
+        [ :each | chi2 := ( each chi2Contribution: 
+                                         aScaledDistribution) + chi2].
+    ^chi2
+
+\end{verbatim}
+{\bf chi2ConfidenceLevelAgainst:} {\tt aScaledDistribution}
+\begin{verbatim}
+    ^( DhbChiSquareDistribution degreeOfFreedom: ( contents size - 
+                                 aScaledDistribution parameters size))
+            confidenceLevel: ( self chi2Against: aScaledDistribution)
+
+\end{verbatim}
+{\bf pointsAndErrorsDo:} {\tt aBlock}
+\begin{verbatim}
+    | x |
+    x := self minimum - ( self binWidth / 2).
+    contents do:
+        [ :each |
+          x := x + self binWidth.
+          aBlock value: ( DhbWeightedPoint point: x count: each).
+        ].
+
+\end{verbatim}
+

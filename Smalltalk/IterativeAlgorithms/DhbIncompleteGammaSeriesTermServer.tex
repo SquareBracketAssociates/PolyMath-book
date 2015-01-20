@@ -1,0 +1,28 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbIncompleteGammaSeriesTermServer}\cr
+{\sl Subclass of }&{\tt DhbSeriesTermServer}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha sum }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf initialTerm}
+\begin{verbatim}
+    lastTerm := 1 / alpha.
+    sum := alpha.
+    ^lastTerm
+
+\end{verbatim}
+{\bf setParameter:} {\tt aNumber}
+\begin{verbatim}
+    alpha := aNumber asFloat
+
+\end{verbatim}
+{\bf termAt:} {\tt anInteger}
+\begin{verbatim}
+    sum := sum + 1.
+    lastTerm := lastTerm * x / sum.
+    ^lastTerm
+
+\end{verbatim}
+

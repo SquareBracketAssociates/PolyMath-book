@@ -1,0 +1,176 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbFloatingPointMachine}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  defaultNumericalPrecision radix machinePrecision negativeMachinePrecision smallestNumber largestNumber smallNumber largestExponentArgument }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  UniqueInstance }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new}
+\begin{verbatim}
+    UniqueInstance = nil
+        ifTrue: [ UniqueInstance := super new].
+    ^UniqueInstance
+
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    UniqueInstance := nil.
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeLargestNumber}
+\begin{verbatim}
+    | zero one floatingRadix fullMantissaNumber |
+    zero := 0 asFloat.
+    one := 1 asFloat.
+    floatingRadix := self radix asFloat.
+    fullMantissaNumber := one - ( floatingRadix * self 
+                                            negativeMachinePrecision).
+    largestNumber := fullMantissaNumber.
+    [ [ fullMantissaNumber := fullMantissaNumber * floatingRadix.
+        largestNumber := fullMantissaNumber.
+        true] whileTrue: [ ].
+        ] when: ExAll do: [ :signal | signal exitWith: nil].
+
+\end{verbatim}
+{\bf computeMachinePrecision}
+\begin{verbatim}
+    | one zero a b inverseRadix tmp x |
+    one := 1 asFloat.
+    zero := 0 asFloat.
+    inverseRadix := one / self radix asFloat.
+    machinePrecision := one.
+    [ tmp := one + machinePrecision.
+      tmp - one = zero]
+        whileFalse:[  machinePrecision := machinePrecision * 
+                                                        inverseRadix].
+
+\end{verbatim}
+{\bf computeNegativeMachinePrecision}
+\begin{verbatim}
+    | one zero floatingRadix inverseRadix tmp |
+    one := 1 asFloat.
+    zero := 0 asFloat.
+    floatingRadix := self radix asFloat.
+    inverseRadix := one / floatingRadix.
+    negativeMachinePrecision := one.
+    [ tmp := one - negativeMachinePrecision.
+      tmp - one = zero]
+        whileFalse:[ negativeMachinePrecision := 
+                             negativeMachinePrecision * inverseRadix].
+
+\end{verbatim}
+{\bf computeRadix}
+\begin{verbatim}
+    | one zero a b tmp1 tmp2|
+    one := 1 asFloat.
+    zero := 0 asFloat.
+    a := one.
+    [ a := a + a.
+      tmp1 := a + one.
+      tmp2 := tmp1 - a.
+      tmp2 - one = zero] whileTrue:[].
+    b := one.
+    [ b := b + b.
+      tmp1 := a + b.
+      radix := ( tmp1 - a) truncated.
+      radix = 0 ] whileTrue: [].
+
+\end{verbatim}
+{\bf computeSmallestNumber}
+\begin{verbatim}
+    | zero one floatingRadix inverseRadix fullMantissaNumber |
+    zero := 0 asFloat.
+    one := 1 asFloat.
+    floatingRadix := self radix asFloat.
+    inverseRadix := one / floatingRadix.
+    fullMantissaNumber := one - ( floatingRadix * self 
+                                            negativeMachinePrecision).
+    smallestNumber := fullMantissaNumber.
+    [ [ fullMantissaNumber := fullMantissaNumber * inverseRadix.
+        smallestNumber := fullMantissaNumber.
+        true] whileTrue: [ ].
+        ] when: ExAll do: [ :signal | signal exitWith: nil].
+
+\end{verbatim}
+{\bf defaultNumericalPrecision}
+\begin{verbatim}
+    defaultNumericalPrecision isNil
+        ifTrue: [ defaultNumericalPrecision := self machinePrecision 
+                                                                sqrt].
+    ^defaultNumericalPrecision
+
+\end{verbatim}
+{\bf largestExponentArgument}
+\begin{verbatim}
+    largestExponentArgument isNil
+        ifTrue: [ largestExponentArgument := self largestNumber ln].
+    ^largestExponentArgument
+
+\end{verbatim}
+{\bf largestNumber}
+\begin{verbatim}
+    largestNumber isNil
+        ifTrue: [ self computeLargestNumber].
+    ^largestNumber
+
+\end{verbatim}
+{\bf machinePrecision}
+\begin{verbatim}
+    machinePrecision isNil
+        ifTrue: [ self computeMachinePrecision].
+    ^machinePrecision
+
+\end{verbatim}
+{\bf negativeMachinePrecision}
+\begin{verbatim}
+    negativeMachinePrecision isNil
+        ifTrue: [ self computeNegativeMachinePrecision].
+    ^negativeMachinePrecision
+
+\end{verbatim}
+{\bf radix}
+\begin{verbatim}
+    radix isNil
+        ifTrue: [ self computeRadix].
+    ^radix
+
+\end{verbatim}
+{\bf showParameters}
+\begin{verbatim}
+    Transcript cr; cr;
+            nextPutAll: 'Floating-point machine parameters'; cr;
+            nextPutAll: '---------------------------------';cr;
+            nextPutAll: 'Radix: '.
+    self radix printOn: Transcript.
+    Transcript cr; nextPutAll: 'Machine precision: '.
+    self machinePrecision printOn: Transcript.
+    Transcript cr; nextPutAll: 'Negative machine precision: '.
+    self negativeMachinePrecision printOn: Transcript.
+    Transcript cr; nextPutAll: 'Smallest number: '.
+    self smallestNumber printOn: Transcript.
+    Transcript cr; nextPutAll: 'Largest number: '.
+    self largestNumber printOn: Transcript.         
+
+\end{verbatim}
+{\bf smallestNumber}
+\begin{verbatim}
+    smallestNumber isNil
+        ifTrue: [ self computeSmallestNumber].
+    ^smallestNumber
+
+\end{verbatim}
+{\bf smallNumber}
+\begin{verbatim}
+    smallNumber isNil
+        ifTrue: [ smallNumber := self smallestNumber sqrt].
+    ^smallNumber
+
+\end{verbatim}
+

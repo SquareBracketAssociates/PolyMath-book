@@ -1,0 +1,53 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbOptimizingBracketFinder}\cr
+{\sl Subclass of }&{\tt DhbOneVariableFunctionOptimizer}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf initialPoints:} {\tt aSortedCollection} {\bf function:} {\tt aFunction}
+\begin{verbatim}
+    ^super new setInitialPoints: aSortedCollection; setFunction: 
+                                                             aFunction
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeInitialValues}
+\begin{verbatim}
+    [bestPoints size < 2] whileTrue: [self addPointAt: Number random]
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | x1 x2 |
+    x1 := ( bestPoints at: 1) position.
+    x2 := ( bestPoints at: 2) position.
+    self addPointAt: ( x1 * 3 - ( x2 * 2)).
+    precision := ( x2 - x1) * ( ( bestPoints at: 3) position - x1).
+    self hasConverged
+        ifFalse:[ bestPoints removeLast].
+    ^precision
+
+\end{verbatim}
+{\bf finalizeIterations}
+\begin{verbatim}
+    result := bestPoints.
+
+\end{verbatim}
+{\bf initializeForOptimizer:} {\tt aFunctionOptimizer}
+\begin{verbatim}
+    super initializeForOptimizer: aFunctionOptimizer.
+    bestPoints := aFunctionOptimizer bestPoints.
+    ^self
+
+\end{verbatim}
+{\bf setInitialPoints:} {\tt aSortedCollection}
+\begin{verbatim}
+    bestPoints := aSortedCollection.
+
+\end{verbatim}
+

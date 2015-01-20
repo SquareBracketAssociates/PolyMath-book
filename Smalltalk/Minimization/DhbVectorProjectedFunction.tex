@@ -1,0 +1,41 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbVectorProjectedFunction}\cr
+{\sl Subclass of }&{\tt DhbProjectedOneVariableFunction}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf argumentWith:} {\tt aNumber}
+\begin{verbatim}
+    ^aNumber * self direction + self origin
+
+\end{verbatim}
+{\bf direction}
+\begin{verbatim}
+    ^index
+
+\end{verbatim}
+{\bf direction:} {\tt aVector}
+\begin{verbatim}
+    index := aVector.
+
+\end{verbatim}
+{\bf origin}
+\begin{verbatim}
+    ^argument
+
+\end{verbatim}
+{\bf origin:} {\tt aVector}
+\begin{verbatim}
+    argument := aVector.
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    self origin printOn: aStream.
+    aStream nextPutAll: ' ('.
+    self direction printOn: aStream.
+    aStream nextPut: $).
+
+\end{verbatim}
+

@@ -1,0 +1,106 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbUniformDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  lowLimit highLimit }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Uniform distribution'
+
+\end{verbatim}
+{\bf from:} {\tt aNumber1} {\bf to:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 to: aNumber2
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | b c|
+    b := aHistogram standardDeviation * 1.73205080756888 
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self from: 0 to: 1
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^self privateAcceptanceBetween: aNumber1 and: aNumber2
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^( highLimit + lowLimit) / 2
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    lowLimit := lowLimit + ( aVector at: 1).
+    highLimit := highLimit + ( aVector at: 2).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    aNumber < lowLimit
+        ifTrue: [ ^0].
+    ^aNumber < highLimit
+        ifTrue: [ (aNumber - lowLimit) / ( highLimit - lowLimit)]
+        ifFalse:[ 1]
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf to:} {\tt aNumber2}
+\begin{verbatim}
+    aNumber1 < aNumber2
+        ifFalse: [ self error: 'Illegal distribution parameters'].
+    lowLimit := aNumber1.
+    highLimit := aNumber2.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^-12 / 10
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: lowLimit with: highLimit
+
+\end{verbatim}
+{\bf privateInverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^(highLimit - lowLimit) * aNumber + lowLimit
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^0
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^( highLimit - lowLimit) / 3.46410161513775 
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^( aNumber between: lowLimit and: highLimit)
+        ifTrue: [ 1/( highLimit - lowLimit)]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^( highLimit - lowLimit) squared / 12
+
+\end{verbatim}
+

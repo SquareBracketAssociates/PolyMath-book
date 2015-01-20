@@ -1,0 +1,26 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbStatisticalMoments}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  moments }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf fConfidenceLevel:} {\tt aStatisticalMomentsOrHistogram}
+\begin{verbatim}
+    | fValue |
+    fValue := self variance/ aStatisticalMomentsOrHistogram variance.
+    ^fValue < 1
+        ifTrue: [ (DhbFisherSnedecorDistribution degreeOfFreedom: 
+                                  aStatisticalMomentsOrHistogram count
+                        degreeOfFreedom: self count) 
+                                        confidenceLevel: fValue 
+                                                           reciprocal]
+        ifFalse:[ (DhbFisherSnedecorDistribution degreeOfFreedom: 
+                                                            self count
+                        degreeOfFreedom: 
+                                aStatisticalMomentsOrHistogram count) 
+                                        confidenceLevel: fValue]
+
+\end{verbatim}
+

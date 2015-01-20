@@ -1,0 +1,117 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLogNormalDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensityWithUnknownDistribution}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  normalDistribution }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Log normal distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | average variance sigma2 |
+    aHistogram minimum < 0
+        ifTrue: [ ^nil].
+    average := aHistogram average.
+    average > 0
+        ifFalse: [ ^nil].
+    variance := aHistogram variance.
+    sigma2 := ( variance / average squared + 1) ln.
+    sigma2 > 0
+        ifFalse: [ ^nil].
+    ^self new: ( average ln - (sigma2 * 0.5)) sigma: sigma2 sqrt
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self new: 0 sigma: 1
+
+\end{verbatim}
+{\bf new:} {\tt aNumber1} {\bf sigma:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 sigma: aNumber2
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf average}
+\begin{verbatim}
+    ^( normalDistribution variance * 0.5 + normalDistribution 
+                                                          average) exp
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    normalDistribution changeParametersBy: aVector.
+
+\end{verbatim}
+{\bf fourthCentralMoment}
+\begin{verbatim}
+    | y x |
+    y := normalDistribution average exp.
+    x := normalDistribution variance exp.
+    ^( y squared squared) * ( x squared)
+        * ( ( ( x squared * x - 4) * ( x squared) + 6) * x - 3)
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf sigma:} {\tt aNumber2}
+\begin{verbatim}
+    normalDistribution := DhbNormalDistribution new: aNumber1 sigma: 
+                                                             aNumber2.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    | x |
+    x := normalDistribution variance exp.
+    ^( ( x + 2) * x + 3) * ( x squared) - 6
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^normalDistribution parameters
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    ^normalDistribution random exp
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    | x |
+    x := normalDistribution variance exp.
+    ^(x - 1) sqrt * (x + 2)
+
+\end{verbatim}
+{\bf thirdCentralMoment}
+\begin{verbatim}
+    | y x |
+    y := normalDistribution average exp.
+    x := normalDistribution variance exp.
+    ^( y squared * y) * ( x raisedTo: (3/2))
+        * ( ( x squared negated + 3) * x - 2)
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^aNumber > 0
+        ifTrue: [ ( normalDistribution value: aNumber ln) / aNumber]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^( normalDistribution average * 2 + normalDistribution variance) 
+                          exp * ( normalDistribution variance exp - 1)
+
+\end{verbatim}
+

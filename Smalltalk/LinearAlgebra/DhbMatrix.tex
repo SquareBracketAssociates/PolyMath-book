@@ -1,0 +1,239 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMatrix}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  rows lupDecomposition }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new:} {\tt anInteger}
+\begin{verbatim}
+    ^self new initialize: anInteger
+
+\end{verbatim}
+{\bf rows:} {\tt anArrayOrVector}
+\begin{verbatim}
+    ^self new initializeRows: anArrayOrVector
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf *} {\tt aNumberOrMatrixOrVector}
+\begin{verbatim}
+    ^aNumberOrMatrixOrVector productWithMatrix: self
+
+\end{verbatim}
+{\bf +} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix addWithRegularMatrix: self
+
+\end{verbatim}
+{\bf -} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix subtractWithRegularMatrix: self
+
+\end{verbatim}
+{\bf accumulate:} {\tt aMatrix}
+\begin{verbatim}
+    | n |
+    n := 0.
+    self rowsCollect: [ :each | n := n + 1. each accumulate: ( 
+                                                    aMatrix rowAt: n)]
+
+\end{verbatim}
+{\bf accumulateNegated:} {\tt aMatrix}
+\begin{verbatim}
+    | n |
+    n := 0.
+    self rowsCollect: [ :each | n := n + 1. each accumulateNegated: ( 
+                                                    aMatrix rowAt: n)]
+
+\end{verbatim}
+{\bf addWithMatrix:} {\tt aMatrix} {\bf class:} {\tt aMatrixClass}
+\begin{verbatim}
+    | n |
+    n := 0.
+    ^aMatrixClass rows: ( self rowsCollect: [ :each | n := n + 1. 
+                                          each + ( aMatrix rowAt: n)])
+
+\end{verbatim}
+{\bf addWithRegularMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix addWithMatrix: self class: aMatrix class
+
+\end{verbatim}
+{\bf addWithSymmetricMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix addWithMatrix: self class: self class
+
+\end{verbatim}
+{\bf asSymmetricMatrix}
+\begin{verbatim}
+    ^DhbSymmetricMatrix rows: rows
+
+\end{verbatim}
+{\bf columnAt:} {\tt anInteger}
+\begin{verbatim}
+    ^rows collect: [ :each | each at: anInteger]
+
+\end{verbatim}
+{\bf columnsCollect:} {\tt aBlock}
+\begin{verbatim}
+    | n |
+    n := 0.
+    ^rows last collect: [ :each | n := n + 1. aBlock value: ( self 
+                                                         columnAt: n)]
+
+\end{verbatim}
+{\bf columnsDo:} {\tt aBlock}
+\begin{verbatim}
+    | n |
+    n := 0.
+    ^rows last do: [ :each | n := n + 1. aBlock value: ( self 
+                                                         columnAt: n)]
+
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    rows := ( 1 to: anInteger) asVector collect: [ :each | DhbVector 
+                                                      new: anInteger].
+
+\end{verbatim}
+{\bf initializeRows:} {\tt anArrayOrVector}
+\begin{verbatim}
+    rows := anArrayOrVector asVector collect: [ :each | each 
+                                                            asVector].
+
+\end{verbatim}
+{\bf isSquare}
+\begin{verbatim}
+    ^rows size = rows last size
+
+\end{verbatim}
+{\bf isSymmetric}
+\begin{verbatim}
+    ^false
+
+\end{verbatim}
+{\bf lupDecomposition}
+\begin{verbatim}
+    lupDecomposition isNil
+        ifTrue: [ lupDecomposition :=DhbLUPDecomposition equations: 
+                                                                rows].
+    ^lupDecomposition
+
+\end{verbatim}
+{\bf negate}
+\begin{verbatim}
+    rows do: [ :each |each negate].
+
+\end{verbatim}
+{\bf numberOfColumns}
+\begin{verbatim}
+    ^rows last size
+
+\end{verbatim}
+{\bf numberOfRows}
+\begin{verbatim}
+    ^rows size
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    | first |
+    first := true.
+    rows do: 
+        [ :each |
+          first ifTrue: [ first := false]
+                 ifFalse:[ aStream cr].
+          each printOn: aStream.
+        ].
+
+\end{verbatim}
+{\bf productWithMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^self productWithMatrixFinal: aMatrix
+
+\end{verbatim}
+{\bf productWithMatrixFinal:} {\tt aMatrix}
+\begin{verbatim}
+    ^self class rows: ( aMatrix rowsCollect: [ :row | self 
+                                 columnsCollect: [ :col | row * col]])
+
+\end{verbatim}
+{\bf productWithSymmetricMatrix:} {\tt aSymmetricMatrix}
+\begin{verbatim}
+    ^self class rows: ( self rowsCollect: [ :row | aSymmetricMatrix 
+                                 columnsCollect: [ :col | row * col]])
+
+\end{verbatim}
+{\bf productWithTransposeMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^self class rows: ( self rowsCollect: [ :row | aMatrix 
+                                    rowsCollect: [ :col | row * col]])
+
+\end{verbatim}
+{\bf productWithVector:} {\tt aVector}
+\begin{verbatim}
+    ^self columnsCollect: [ :each | each * aVector]
+
+\end{verbatim}
+{\bf rowAt:} {\tt anInteger}
+\begin{verbatim}
+    ^rows at: anInteger
+
+\end{verbatim}
+{\bf rowsCollect:} {\tt aBlock}
+\begin{verbatim}
+    ^rows collect: aBlock
+
+\end{verbatim}
+{\bf rowsDo:} {\tt aBlock}
+\begin{verbatim}
+    ^rows do: aBlock
+
+\end{verbatim}
+{\bf scaleBy:} {\tt aNumber}
+\begin{verbatim}
+    rows do: [ :each | each scaleBy: aNumber].
+
+\end{verbatim}
+{\bf squared}
+\begin{verbatim}
+    ^DhbSymmetricMatrix rows: ( self columnsCollect: [ :col | self 
+                               columnsCollect: [ :colT | col * colT]])
+
+\end{verbatim}
+{\bf subtractWithMatrix:} {\tt aMatrix} {\bf class:} {\tt aMatrixClass}
+\begin{verbatim}
+    | n |
+    n := 0.
+    ^aMatrixClass rows: ( self rowsCollect: [ :each | n := n + 1. 
+                                          each - ( aMatrix rowAt: n)])
+
+\end{verbatim}
+{\bf subtractWithRegularMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix subtractWithMatrix: self class: aMatrix class
+
+\end{verbatim}
+{\bf subtractWithSymmetricMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix subtractWithMatrix: self class: self class
+
+\end{verbatim}
+{\bf transpose}
+\begin{verbatim}
+    ^self class rows: ( self columnsCollect: [ :each | each])
+
+\end{verbatim}
+{\bf transposeProductWithMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^self class rows: ( self columnsCollect: [ :row | aMatrix 
+                                 columnsCollect: [ :col | row * col]])
+
+\end{verbatim}
+

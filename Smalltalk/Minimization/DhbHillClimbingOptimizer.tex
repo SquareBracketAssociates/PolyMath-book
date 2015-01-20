@@ -1,0 +1,88 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbHillClimbingOptimizer}\cr
+{\sl Subclass of }&{\tt DhbFunctionOptimizer}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  unidimensionalFinder }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeInitialValues}
+\begin{verbatim}
+    unidimensionalFinder := DhbOneVariableFunctionOptimizer
+                                                   forOptimizer: self.
+    unidimensionalFinder desiredPrecision: desiredPrecision.
+    bestPoints := ( 1 to: result size)
+                 collect: [ :n | ( DhbVectorProjectedFunction
+                                      function: functionBlock)
+                                     direction: ( ( DhbVector
+                                                     new: result size)
+                                                         atAllPut: 0;
+                                                         at: n put: 1;
+                                                         yourself);
+                                            yourself
+                          ].
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | oldResult |
+    precision := 1.
+    bestPoints inject: result
+                 into: [ :prev :each | ( self minimizeDirection: each
+                                                         from: prev)].
+    self shiftDirections.
+    self minimizeDirection: bestPoints last.
+    oldResult := result.
+    result := bestPoints last origin.
+    precision := 0.
+    result with: oldResult do:
+        [ :x0 :x1 |
+          precision := ( self precisionOf: (x0 - x1) abs relativeTo:
+                                               x0 abs) max: precision.
+        ].
+    ^precision
+
+\end{verbatim}
+{\bf finalizeIterations}
+\begin{verbatim}
+
+\end{verbatim}
+{\bf minimizeDirection:} {\tt aVectorFunction}
+\begin{verbatim}
+    ^unidimensionalFinder
+        reset;
+        setFunction: aVectorFunction;
+        addPointAt: 0;
+        addPointAt: precision;
+        addPointAt: precision negated;
+        evaluate
+
+\end{verbatim}
+{\bf minimizeDirection:} {\tt aVectorFunction} {\bf from:} {\tt aVector}
+\begin{verbatim}
+Function from: aVector
+    ^aVectorFunction
+        origin: aVector;
+        argumentWith: ( self minimizeDirection: aVectorFunction)
+
+\end{verbatim}
+{\bf shiftDirections}
+\begin{verbatim}
+    | position delta firstDirection |
+    firstDirection := bestPoints first direction.
+    bestPoints inject: nil
+                    into: [ :prev :each |
+                            position isNil
+                                ifTrue: [ position := each origin]
+                                ifFalse:[ prev direction: each
+                                                           direction].
+                            each
+                            ].
+    position := bestPoints last origin - position.
+    delta := position norm.
+    delta > desiredPrecision
+        ifTrue: [ bestPoints last direction: (position scaleBy: (1 /
+                                                              delta))]
+        ifFalse:[ bestPoints last direction: firstDirection].
+
+\end{verbatim}

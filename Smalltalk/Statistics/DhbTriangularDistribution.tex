@@ -1,0 +1,155 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbTriangularDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  lowLimit highLimit peak }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Triangular distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | b c|
+    b := aHistogram standardDeviation * 1.73205080756888 
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self new: (1 / 2) from: 0 to: 1
+
+\end{verbatim}
+{\bf new:} {\tt aNumber1} {\bf from:} {\tt aNumber2} {\bf to:} {\tt aNumber3}
+\begin{verbatim}
+    ^super new initialize: aNumber1 from: aNumber2 to: aNumber3
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^self privateAcceptanceBetween: aNumber1 and: aNumber2
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^(lowLimit + peak + highLimit) / 3
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    lowLimit := lowLimit + ( aVector at: 1).
+    highLimit := highLimit + ( aVector at: 2).
+    peak := peak + ( aVector at: 3).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    | norm |
+    ^( aNumber between: lowLimit and: highLimit)
+        ifTrue: [ aNumber < peak
+                        ifTrue: [ norm := ( highLimit - lowLimit) * ( 
+                                                     peak - lowLimit).
+                                     ( aNumber - lowLimit) squared / 
+                                                                  norm
+                                    ]
+                        ifFalse:[ aNumber > peak
+                                        ifTrue: [ norm := ( highLimit 
+                                    - lowLimit) * ( highLimit - peak).
+                                                     1 - ( ( 
+                                  highLimit - aNumber) squared / norm)
+                                                    ]
+                                        ifFalse:[ ( peak - lowLimit) 
+                                            / ( highLimit - lowLimit)]
+                                    ]
+                   ]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf from:} {\tt aNumber2} {\bf to:} {\tt aNumber3}
+\begin{verbatim}
+    ( aNumber2 < aNumber3 and: [ aNumber1 between: aNumber2 and: 
+                                                            aNumber3])
+        ifFalse: [ self error: 'Illegal distribution parameters'].
+    peak := aNumber1.
+    lowLimit := aNumber2.
+    highLimit := aNumber3.
+    ^self
+
+\end{verbatim}
+{\bf inverseAcceptanceAfterPeak:} {\tt aNumber}
+\begin{verbatim}
+    ^ highLimit - ( ( ( 1 - aNumber) * ( highLimit - lowLimit) * ( 
+                                              highLimit - peak)) sqrt)
+
+\end{verbatim}
+{\bf inverseAcceptanceBeforePeak:} {\tt aNumber}
+\begin{verbatim}
+    ^ ( aNumber * ( highLimit - lowLimit) * ( peak - lowLimit)) sqrt 
+                                                            + lowLimit
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^(-6/10)
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: lowLimit with: highLimit with: peak
+
+\end{verbatim}
+{\bf privateInverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^( peak - lowLimit) / ( highLimit - lowLimit) > aNumber
+            ifTrue: [ self inverseAcceptanceBeforePeak: aNumber]
+            ifFalse: [ self inverseAcceptanceAfterPeak: aNumber]
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^(((lowLimit squared * lowLimit + ( peak squared * peak) + ( 
+                               highLimit squared * highLimit) ) / 135)
+    -(((lowLimit squared * peak) + (lowLimit squared * highLimit) + 
+  (peak squared * lowLimit) + (peak squared * highLimit) + (highLimit 
+  squared * lowLimit) + (highLimit squared * peak))/90)
+    +( 2 * lowLimit * peak * highLimit / 45)) / ( self 
+                                 standardDeviation raisedToInteger: 3)
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | norm |
+    ^( aNumber between: lowLimit and: highLimit)
+        ifTrue: [ aNumber < peak
+                        ifTrue: [ norm := ( highLimit - lowLimit) * ( 
+                                                     peak - lowLimit).
+                                     2 * ( aNumber - lowLimit) / norm
+                                    ]
+                        ifFalse:[ aNumber > peak
+                                        ifTrue: [ norm := ( highLimit 
+                                    - lowLimit) * ( highLimit - peak).
+                                                     2 * ( highLimit 
+                                                     - aNumber) / norm
+                                                    ]
+                                        ifFalse:[ 2 / ( highLimit - 
+                                                            lowLimit)]
+                                    ]
+                   ]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^(lowLimit squared + peak squared + highLimit squared - ( 
+  lowLimit * peak) - ( lowLimit * highLimit) - ( peak * highLimit)) / 
+  18
+
+\end{verbatim}
+

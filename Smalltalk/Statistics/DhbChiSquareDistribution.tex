@@ -1,0 +1,58 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbChiSquareDistribution}\cr
+{\sl Subclass of }&{\tt DhbGammaDistribution}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf degreeOfFreedom:} {\tt anInteger}
+\begin{verbatim}
+    ^anInteger > 40
+        ifTrue: [ DhbAsymptoticChiSquareDistribution degreeOfFreedom: 
+                                                            anInteger]
+        ifFalse:[ super shape: anInteger / 2 scale: 2]
+
+\end{verbatim}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Chi square distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | dof |
+    aHistogram minimum < 0
+        ifTrue: [ ^nil].
+    dof := aHistogram average rounded.
+    ^dof > 0 ifTrue: [ self degreeOfFreedom: aHistogram average 
+                                                              rounded]
+             ifFalse:[ nil]
+
+\end{verbatim}
+{\bf shape:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    ^self error: 'Illegal creation message for this class'
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    super changeParametersBy: (Array with: aVector first / 2 with: 
+                                                                   0).
+
+\end{verbatim}
+{\bf confidenceLevel:} {\tt aNumber}
+\begin{verbatim}
+    ^( 1 - ( self distributionValue: aNumber)) *100
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: alpha * 2
+
+\end{verbatim}
+

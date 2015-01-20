@@ -1,0 +1,82 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLagrangeInterpolator}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  pointCollection }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new}
+\begin{verbatim}
+    ^super new initialize
+
+\end{verbatim}
+{\bf points:} {\tt aCollectionOfPoints}
+\begin{verbatim}
+    ^self new initialize: aCollectionOfPoints
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf add:} {\tt aPoint}
+\begin{verbatim}
+    ^pointCollection add: aPoint
+
+\end{verbatim}
+{\bf defaultSamplePoints}
+\begin{verbatim}
+    ^OrderedCollection new
+
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    ^self initialize: self defaultSamplePoints
+
+\end{verbatim}
+{\bf initialize:} {\tt aCollectionOfPoints}
+\begin{verbatim}
+    pointCollection := aCollectionOfPoints.
+    ^self
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | norm dx products answer size |
+    norm := 1.
+    size := pointCollection size.
+    products := Array new: size.
+    products atAllPut: 1.
+    1 to: size
+        do: [ :n |
+              dx := aNumber - ( self xPointAt: n).
+              dx = 0
+                ifTrue: [ ^( self yPointAt: n)].
+              norm := norm * dx.
+              1 to: size
+                do: [ :m |
+                      m = n
+                        ifFalse:[ products at: m put: ( (( self 
+            xPointAt: m) - ( self xPointAt: n)) * ( products at: m))].
+                    ].
+            ].
+    answer := 0.
+    1 to: size do:
+        [ :n | answer := ( self yPointAt: n) / ( ( products at: n) * 
+                          ( aNumber - ( self xPointAt: n))) + answer].
+    ^norm * answer
+
+\end{verbatim}
+{\bf xPointAt:} {\tt anInteger}
+\begin{verbatim}
+    ^( pointCollection at: anInteger) x
+
+\end{verbatim}
+{\bf yPointAt:} {\tt anInteger}
+\begin{verbatim}
+    ^( pointCollection at: anInteger) y
+
+\end{verbatim}
+

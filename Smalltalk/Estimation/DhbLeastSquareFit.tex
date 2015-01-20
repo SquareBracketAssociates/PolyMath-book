@@ -1,0 +1,167 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLeastSquareFit}\cr
+{\sl Subclass of }&{\tt DhbIterativeProcess}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  dataHolder errorMatrix chiSquare equations constants degreeOfFreedom }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf histogram:} {\tt aHistogram} {\bf distributionClass:} {\tt aProbabilityDensityFunctionClass}
+\begin{verbatim}
+    ^self points: aHistogram
+        function: (DhbScaledProbabilityDensityFunction histogram: 
+                                                            aHistogram
+                distributionClass: aProbabilityDensityFunctionClass)
+
+\end{verbatim}
+{\bf points:} {\tt aDataHolder} {\bf function:} {\tt aParametricFunction}
+\begin{verbatim}
+    ^aParametricFunction ifNotNil: [ :dp | super new initialize: 
+                                                 aDataHolder data: dp]
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aWeightedPoint}
+\begin{verbatim}
+    | f g |
+    f := result valueAndGradient: aWeightedPoint xValue.
+    g := f last.
+    f := f first.
+    constants accumulate: g * ( ( aWeightedPoint yValue - f) * 
+                                               aWeightedPoint weight).
+    1 to: g size do:
+        [ :k |
+          ( equations at: k) accumulate: g * ( ( g at: k) * 
+                                               aWeightedPoint weight).
+        ].
+
+\end{verbatim}
+{\bf accumulateEquationSystem}
+\begin{verbatim}
+    dataHolder pointsAndErrorsDo: [ :each | self accumulate: each].
+
+\end{verbatim}
+{\bf chiSquare}
+\begin{verbatim}
+    chiSquare isNil
+        ifTrue: [ self computeChiSquare].
+    ^chiSquare
+
+\end{verbatim}
+{\bf computeChanges}
+\begin{verbatim}
+    errorMatrix := DhbLUPDecomposition direct: equations.
+    ^errorMatrix solve: constants
+
+\end{verbatim}
+{\bf computeChiSquare}
+\begin{verbatim}
+    chiSquare := 0.
+    degreeOfFreedom := self numberOfFreeParameters negated.
+    dataHolder pointsAndErrorsDo:
+        [ :each |
+          chiSquare := ( each chi2Contribution: result) + chiSquare.
+          degreeOfFreedom := degreeOfFreedom + 1.
+        ].
+
+\end{verbatim}
+{\bf computeEquationSystem}
+\begin{verbatim}
+    constants atAllPut: 0.
+    equations do: [ :each | each atAllPut: 0].
+    self accumulateEquationSystem.
+
+\end{verbatim}
+{\bf confidenceLevel}
+\begin{verbatim}
+    ^( DhbChiSquareDistribution degreeOfFreedom: self 
+                      degreeOfFreedom) confidenceLevel: self chiSquare
+
+\end{verbatim}
+{\bf degreeOfFreedom}
+\begin{verbatim}
+    degreeOfFreedom isNil
+        ifTrue: [ self computeChiSquare].
+    ^degreeOfFreedom
+
+\end{verbatim}
+{\bf errorMatrix}
+\begin{verbatim}
+    ^DhbSymmetricMatrix rows: errorMatrix inverseMatrixComponents
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | changes maxChange|
+    self computeEquationSystem.
+    changes := self computeChanges.
+    result changeParametersBy: changes.
+    maxChange := 0.
+    result parameters with: changes do: 
+        [ :r :d | maxChange := ( d / r) abs max: maxChange].
+    ^maxChange
+
+\end{verbatim}
+{\bf finalizeIterations}
+\begin{verbatim}
+    equations := nil.
+    constants := nil.
+    degreeOfFreedom := nil.
+    chiSquare := nil
+
+\end{verbatim}
+{\bf fitType}
+\begin{verbatim}
+    ^'Least square fit'
+
+\end{verbatim}
+{\bf initialize:} {\tt aDataHolder} {\bf data:} {\tt aParametricFunction}
+\begin{verbatim}
+    dataHolder := aDataHolder.
+    result := aParametricFunction.
+    ^self
+
+\end{verbatim}
+{\bf initializeIterations}
+\begin{verbatim}
+    | n |
+    n := self numberOfParameters.
+    constants := (DhbVector new: n)
+                atAllPut: 0;
+                yourself.
+    equations := (1 to: n) collect: 
+                    [:k | 
+                    (DhbVector new: n)
+                        atAllPut: 0;
+                        yourself]
+
+\end{verbatim}
+{\bf numberOfFreeParameters}
+\begin{verbatim}
+    ^self numberOfParameters
+
+\end{verbatim}
+{\bf numberOfParameters}
+\begin{verbatim}
+    ^result parameters size
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^result value: aNumber
+
+\end{verbatim}
+{\bf valueAndError:} {\tt aNumber}
+\begin{verbatim}
+    | valueGradient |
+    valueGradient := result valueAndGradient: aNumber.
+    ^Array with: valueGradient first
+           with: ( valueGradient last * ( self errorMatrix * 
+                                             valueGradient last)) sqrt
+
+\end{verbatim}
+

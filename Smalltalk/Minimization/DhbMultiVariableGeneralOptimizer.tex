@@ -1,0 +1,66 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMultiVariableGeneralOptimizer}\cr
+{\sl Subclass of }&{\tt DhbFunctionOptimizer}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeInitialValues}
+\begin{verbatim}
+    self range notNil
+        ifTrue: [ self performGeneticOptimization].
+    self performSimplexOptimization.
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | optimizer |
+    optimizer := DhbHillClimbingOptimizer forOptimizer: self.
+    optimizer desiredPrecision: desiredPrecision;
+              maximumIterations: maximumIterations.
+    result := optimizer evaluate.
+    ^optimizer precision
+
+\end{verbatim}
+{\bf origin}
+\begin{verbatim}
+    ^result
+
+\end{verbatim}
+{\bf origin:} {\tt anArrayOrVector}
+\begin{verbatim}
+    result := anArrayOrVector.
+
+\end{verbatim}
+{\bf performGeneticOptimization}
+\begin{verbatim}
+    | optimizer manager |
+    optimizer := DhbGeneticOptimizer forOptimizer: functionBlock.
+    manager := DhbVectorChromosomeManager new: 100 mutation: 0.1 
+                                                       crossover: 0.1.
+    manager origin: self origin asVector; range: self range asVector.
+    optimizer chromosomeManager: manager.
+    result := optimizer evaluate.
+
+\end{verbatim}
+{\bf performSimplexOptimization}
+\begin{verbatim}
+    | optimizer manager |
+    optimizer := DhbSimplexOptimizer forOptimizer: self.
+    optimizer desiredPrecision: desiredPrecision sqrt;
+              maximumIterations: maximumIterations;
+              initialValue: result asVector.
+    result := optimizer evaluate.
+
+\end{verbatim}
+{\bf range}
+\begin{verbatim}
+    ^self bestPoints
+
+\end{verbatim}
+{\bf range:} {\tt anArrayOrVector}
+\begin{verbatim}
+    bestPoints := anArrayOrVector.
+
+\end{verbatim}
+

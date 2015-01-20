@@ -1,0 +1,117 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbNormalDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  mu sigma nextRandom }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  NextRandom }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Normal distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    ^self new: aHistogram average sigma: aHistogram standardDeviation
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self new: 0 sigma: 1
+
+\end{verbatim}
+{\bf new:} {\tt aNumber1} {\bf sigma:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 sigma: aNumber2
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    | v1 v2 w y |
+    NextRandom isNil
+        ifTrue: [ [ v1 := Number random * 2 - 1.
+                    v2 := Number random * 2 - 1.
+                    w := v1 squared + v2 squared.
+                    w > 1 ] whileTrue: [].
+                  y := ( ( w ln * 2 negated) / w) sqrt.
+                v1 := y * v1.
+                NextRandom := y * v2.
+                ]
+        ifFalse:[ v1 :=NextRandom.
+                  NextRandom := nil.
+                ].
+    ^v1
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf average}
+\begin{verbatim}
+    ^mu
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    mu := mu + ( aVector at: 1).
+    sigma := sigma + ( aVector at: 2).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^DhbErfApproximation new value: ( ( aNumber - mu) / sigma)
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf sigma:} {\tt aNumber2}
+\begin{verbatim}
+    mu := aNumber1.
+    sigma := aNumber2.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^0
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: mu with: sigma
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    ^self class random * sigma + mu
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^0
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^sigma
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^( DhbErfApproximation new normal: (aNumber - mu) / sigma) / 
+                                                                 sigma
+
+\end{verbatim}
+{\bf valueAndGradient:} {\tt aNumber}
+\begin{verbatim}
+    | dp y |
+    y := ( aNumber - mu) / sigma.
+    dp := ( DhbErfApproximation new normal: y) / sigma.
+    ^Array with: dp
+           with: ( DhbVector with: dp * y / sigma
+                             with: dp * ( y squared - 1) / sigma)
+
+\end{verbatim}
+

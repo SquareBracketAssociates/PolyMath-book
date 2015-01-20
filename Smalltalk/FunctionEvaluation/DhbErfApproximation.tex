@@ -1,0 +1,51 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbErfApproximation}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  constant series norm }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  UniqueInstance }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new}
+\begin{verbatim}
+    UniqueInstance isNil
+        ifTrue: [ UniqueInstance := super new.
+                     UniqueInstance initialize.
+                    ].
+    ^UniqueInstance
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf initialize}
+\begin{verbatim}
+    constant := 0.2316419.
+    norm := 1 / ( Float pi * 2) sqrt.
+    series := DhbPolynomial coefficients: #( 0.31938153 -0.356563782 
+                               1.781477937 -1.821255978 1.330274429). 
+
+\end{verbatim}
+{\bf normal:} {\tt aNumber}
+\begin{verbatim}
+    ^[ ( aNumber squared * -0.5) exp * norm]
+            when: ExAll do: [ :signal | signal exitWith: 0]
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | t |
+    aNumber = 0
+        ifTrue: [ ^0.5].
+    aNumber > 0
+        ifTrue: [ ^1- ( self value: aNumber negated)].
+    aNumber < -20
+        ifTrue: [ ^0].
+    t := 1 / (1 - (constant * aNumber)).
+    ^( series value: t) * t * (self normal: aNumber)
+
+\end{verbatim}
+

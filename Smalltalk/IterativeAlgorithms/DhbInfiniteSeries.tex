@@ -1,0 +1,38 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbInfiniteSeries}\cr
+{\sl Subclass of }&{\tt DhbIterativeProcess}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  termServer }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf server:} {\tt aTermServer}
+\begin{verbatim}
+    ^self new initialize: aTermServer
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | delta |
+    delta := termServer termAt: iterations.
+    result := result + delta.
+    ^self precisionOf: delta abs relativeTo: result abs
+
+\end{verbatim}
+{\bf initialize:} {\tt aTermServer}
+\begin{verbatim}
+    termServer := aTermServer.
+    ^self
+
+\end{verbatim}
+{\bf initializeIterations}
+\begin{verbatim}
+    result := termServer initialTerm
+
+\end{verbatim}
+

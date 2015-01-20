@@ -1,0 +1,199 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbPolynomial}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  coefficients }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf coefficients:} {\tt anArray}
+\begin{verbatim}
+    ^self new initialize: anArray reverse
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf *} {\tt aNumberOrPolynomial}
+\begin{verbatim}
+    ^aNumberOrPolynomial timesPolynomial: self
+
+\end{verbatim}
+{\bf +} {\tt aNumberOrPolynomial}
+\begin{verbatim}
+    ^aNumberOrPolynomial addPolynomial: self
+
+\end{verbatim}
+{\bf -} {\tt aNumberOrPolynomial}
+\begin{verbatim}
+    ^aNumberOrPolynomial subtractToPolynomial: self
+
+\end{verbatim}
+{\bf /} {\tt aNumberOrPolynomial}
+\begin{verbatim}
+    ^aNumberOrPolynomial dividingPolynomial: self
+
+\end{verbatim}
+{\bf addNumber:} {\tt aNumber}
+\begin{verbatim}
+    | newCoefficients |
+    newCoefficients := coefficients reverse.
+    newCoefficients at: 1 put: newCoefficients first + aNumber.
+    ^self class new: newCoefficients
+
+\end{verbatim}
+{\bf addPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^self class new: ( ( 0 to: (self degree max: aPolynomial degree)) 
+                collect: [ :n | ( aPolynomial at: n) + ( self at: n)])
+
+\end{verbatim}
+{\bf at:} {\tt anInteger}
+\begin{verbatim}
+    ^anInteger < coefficients size
+        ifTrue: [ coefficients at: ( coefficients size - anInteger)]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf coefficients}
+\begin{verbatim}
+    ^coefficients deepCopy
+
+\end{verbatim}
+{\bf degree}
+\begin{verbatim}
+    ^coefficients size - 1
+
+\end{verbatim}
+{\bf derivative}
+\begin{verbatim}
+    | n |
+    n := coefficients size.
+    ^self class new: ( ( coefficients collect: [ :each | n := n - 1. 
+                 each * n]) reverse copyFrom: 2 to: coefficients size)
+
+\end{verbatim}
+{\bf dividingPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^( self dividingPolynomialWithRemainder: aPolynomial) first
+
+\end{verbatim}
+{\bf dividingPolynomialWithRemainder:} {\tt aPolynomial}
+\begin{verbatim}
+    | remainderCoefficients quotientCoefficients n m norm 
+                                                      quotientDegree |
+    n := self degree.
+    m := aPolynomial degree.
+    quotientDegree := m - n.
+    quotientDegree < 0
+        ifTrue: [ ^Array with: ( self class new: #(0)) with: 
+                                                         aPolynomial].
+    quotientCoefficients := Array new: quotientDegree + 1.
+    remainderCoefficients := ( 0 to: m) collect: [ :k | aPolynomial 
+                                                               at: k].
+    norm := 1 / coefficients first.
+    quotientDegree to: 0 by: -1
+        do: [ :k | | x |
+              x := ( remainderCoefficients at: n + k + 1) * norm.
+              quotientCoefficients at: (quotientDegree + 1 - k) put: 
+                                                                    x.
+              (n + k - 1) to: k by: -1
+                do: [ :j | 
+                remainderCoefficients at: j + 1 put: 
+                            ( ( remainderCoefficients at: j + 1) - ( 
+                                                x * (self at: j - k)))
+                ].
+            ].
+    ^Array with: ( self class new: quotientCoefficients reverse)
+           with: ( self class new: ( remainderCoefficients copyFrom: 
+                                                             1 to: n))
+
+\end{verbatim}
+{\bf initialize:} {\tt anArray}
+\begin{verbatim}
+    coefficients := anArray.
+    ^self
+
+\end{verbatim}
+{\bf integral}
+\begin{verbatim}
+    ^self integral: 0
+
+\end{verbatim}
+{\bf integral:} {\tt aValue}
+\begin{verbatim}
+    | n |
+    n := coefficients size + 1.
+    ^self class new: ( ( coefficients collect: [ :each | n := n - 1. 
+                                  each / n]) copyWith: aValue) reverse
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    | n firstNonZeroCoefficientPrinted  |
+    n := 0.
+    firstNonZeroCoefficientPrinted := false.
+    coefficients reverse do:
+        [ :each |
+          each = 0
+            ifFalse:[ firstNonZeroCoefficientPrinted
+                            ifTrue: [ aStream space.
+                                         each < 0
+                                            ifFalse:[ aStream 
+                                                         nextPut: $+].
+                                         aStream space.
+                                        ]
+                            ifFalse:[ firstNonZeroCoefficientPrinted 
+                                                             := true].
+                          ( each = 1 and: [ n > 0])
+                            ifFalse:[ each printOn: aStream].
+                          n > 0
+                            ifTrue: [ aStream nextPutAll: ' X'.
+                                         n > 1
+                                            ifTrue: [ aStream 
+                                                          nextPut: $^.
+                                                         n printOn: 
+                                                              aStream.
+                                                        ].
+                                        ].
+                        ].
+         n := n + 1.
+        ].
+
+\end{verbatim}
+{\bf subtractToPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^self class new: ( ( 0 to: (self degree max: aPolynomial degree)) 
+                collect: [ :n | ( aPolynomial at: n) - ( self at: n)])
+
+\end{verbatim}
+{\bf timesNumber:} {\tt aNumber}
+\begin{verbatim}
+    ^self class new: ( coefficients reverse collect: [ :each | each * 
+                                                             aNumber])
+
+\end{verbatim}
+{\bf timesPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    | productCoefficients degree|
+    degree := aPolynomial degree + self degree.
+    productCoefficients := ( degree to: 0 by: -1)
+            collect:[ :n | | sum |
+                      sum := 0.
+                      0 to: (degree - n)
+                        do: [ :k | sum := (self at: k) * (aPolynomial 
+                                        at: ( degree - n - k)) + sum].
+                      sum
+                    ].
+    ^self class new: productCoefficients
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^coefficients inject: 0 into: [ :sum :each | sum * aNumber + 
+                                                                 each]
+
+\end{verbatim}
+

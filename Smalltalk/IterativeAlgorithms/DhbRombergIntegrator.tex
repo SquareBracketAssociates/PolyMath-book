@@ -1,0 +1,53 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbRombergIntegrator}\cr
+{\sl Subclass of }&{\tt DhbTrapezeIntegrator}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  order points interpolator }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultOrder}
+\begin{verbatim}
+    ^5
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeInitialValues}
+\begin{verbatim}
+    super computeInitialValues.
+    points := OrderedCollection new: order.
+    interpolator := DhbNevilleInterpolator points: points.
+    points add: 1 @ sum.
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | interpolation |
+    points addLast: (points last x * 0.25) @ self higherOrderSum.
+    points size < order
+        ifTrue: [ ^1].
+    interpolation := interpolator valueAndError: 0.
+    points removeFirst.
+    result := interpolation at: 1.
+    ^self relativePrecision: ( interpolation at: 2) abs
+
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    order := self class defaultOrder.
+    ^super initialize
+
+\end{verbatim}
+{\bf order:} {\tt anInteger}
+\begin{verbatim}
+    anInteger < 2
+        ifTrue: [ self error: 'Order for Romberg integration must be 
+                                                      larger than 1'].
+    order := anInteger.
+
+\end{verbatim}
+

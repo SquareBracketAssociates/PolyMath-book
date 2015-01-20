@@ -1,0 +1,79 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbPolynomialLeastSquareFit}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  pointCollection degreePlusOne }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new:} {\tt anInteger}
+\begin{verbatim}
+    ^super new initialize: anInteger
+
+\end{verbatim}
+{\bf new:} {\tt anInteger} {\bf on:} {\tt aCollectionOfPoints}
+\begin{verbatim}
+    ^super new initialize: anInteger on: aCollectionOfPoints
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aWeightedPoint} {\bf into:} {\tt aVectorOfVectors} {\bf and:} {\tt aVector}
+\begin{verbatim}
+OfVectors and: aVector
+    | t p powers |
+    p := 1.0.
+    powers := aVector collect: [ :each | t := p. p := p * 
+                                            aWeightedPoint xValue. t].
+    aVector accumulate: powers * ( aWeightedPoint yValue * 
+                                               aWeightedPoint weight).
+    1 to: aVector size do:
+        [ :k |
+          ( aVectorOfVectors at: k) accumulate: powers * ( ( powers 
+                                      at: k) * aWeightedPoint weight).
+        ].
+
+\end{verbatim}
+{\bf add:} {\tt aWeightedPoint}
+\begin{verbatim}
+    ^pointCollection add: aWeightedPoint
+
+\end{verbatim}
+{\bf computeEquations}
+\begin{verbatim}
+    | rows vector |
+    vector := ( DhbVector new: degreePlusOne) atAllPut: 0 ; yourself.
+    rows := ( 1 to: degreePlusOne) collect: [ :k | ( DhbVector new: 
+                               degreePlusOne) atAllPut: 0 ; yourself].
+    pointCollection do:
+        [ :each | self accumulate: each into: rows and: vector].
+    ^Array with: ( DhbSymmetricMatrix rows: rows) with: vector
+
+\end{verbatim}
+{\bf evaluate}
+\begin{verbatim}
+    | system errorMatrix |
+    system := self computeEquations.
+    errorMatrix := ( system at: 1) inverse.
+    ^( DhbEstimatedPolynomial coefficients: errorMatrix * (system at: 
+                                                                   2))
+            errorMatrix: errorMatrix;
+            yourself
+
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    ^self initialize: anInteger on: OrderedCollection new
+
+\end{verbatim}
+{\bf initialize:} {\tt anInteger} {\bf on:} {\tt aCollectionOfPoints}
+\begin{verbatim}
+    pointCollection := aCollectionOfPoints.
+    degreePlusOne := anInteger + 1.
+    ^self
+
+\end{verbatim}
+

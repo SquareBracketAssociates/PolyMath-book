@@ -1,0 +1,392 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbHistogram}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  minimum binWidth overflow underflow moments contents freeExtent cacheSize desiredNumberOfBins }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultCacheSize}
+\begin{verbatim}
+    ^100
+
+\end{verbatim}
+{\bf defaultNumberOfBins}
+\begin{verbatim}
+    ^50
+
+\end{verbatim}
+{\bf integerScales}
+\begin{verbatim}
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^super new initialize
+
+\end{verbatim}
+{\bf scales}
+\begin{verbatim}
+
+\end{verbatim}
+{\bf semiIntegerScales}
+\begin{verbatim}
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aNumber}
+\begin{verbatim}
+    | bin |
+    self isCached
+        ifTrue: [ ^self accumulateInCache: aNumber].
+    bin := self binIndex: aNumber.
+    ( bin between: 1 and: contents size)
+        ifTrue: [ contents at: bin put: ( contents at: bin) + 1.
+                     moments accumulate: aNumber.
+                   ]
+        ifFalse:[ self processOverflows: bin for: aNumber].
+
+\end{verbatim}
+{\bf accumulateInCache:} {\tt aNumber}
+\begin{verbatim}
+    contents add: aNumber.
+    contents size > cacheSize
+        ifTrue: [ self flushCache].
+
+\end{verbatim}
+{\bf adjustDimensionUpTo:} {\tt aNumber}
+\begin{verbatim}
+    | maximum |
+    binWidth := self roundToScale: ( aNumber - minimum) / 
+                                                  desiredNumberOfBins.
+    minimum := ( minimum / binWidth) floor * binWidth.
+    maximum := ( aNumber / binWidth) ceiling * binWidth.
+    contents := Array new: ( ( maximum - minimum) / binWidth) 
+                                                              ceiling.
+    contents atAllPut: 0.
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^moments average
+
+\end{verbatim}
+{\bf binIndex:} {\tt aNumber}
+\begin{verbatim}
+    ^( ( aNumber - minimum) / binWidth) floor + 1
+
+\end{verbatim}
+{\bf binWidth}
+\begin{verbatim}
+    self isCached
+        ifTrue: [ self flushCache].
+    ^binWidth
+
+\end{verbatim}
+{\bf collectIntegralPoints:} {\tt aBlock}
+\begin{verbatim}
+    | answer bin lastContents integral norm x |
+    self isCached
+        ifTrue: [ self flushCache].
+    answer := OrderedCollection new: ( contents size * 2 + 1).
+    bin := self minimum.
+    answer add: ( aBlock value: bin @ 0).
+    integral := self underflow.
+    norm := self totalCount.
+    contents do:
+        [ :each |
+          integral := integral + each.
+          x := integral / norm.
+          answer add: ( aBlock value: bin @ x).
+          bin := bin + binWidth.
+          answer add: ( aBlock value: bin @ x).
+        ].
+    answer add: ( aBlock value: bin @ 0).
+    ^answer asArray
+
+\end{verbatim}
+{\bf collectPoints:} {\tt aBlock}
+\begin{verbatim}
+    | answer bin lastContents |
+    self isCached
+        ifTrue: [ self flushCache].
+    answer := OrderedCollection new: ( contents size * 2 + 1).
+    bin := self minimum.
+    answer add: ( aBlock value: bin @ 0).
+    contents do:
+        [ :each |
+          answer add: ( aBlock value: bin @ each).
+          bin := bin + binWidth.
+          answer add: ( aBlock value: bin @ each).
+        ].
+    answer add: ( aBlock value: bin @ 0).
+    ^answer asArray
+
+\end{verbatim}
+{\bf count}
+\begin{verbatim}
+    ^moments count
+
+\end{verbatim}
+{\bf countAt:} {\tt aNumber}
+\begin{verbatim}
+    | n |
+    n := self binIndex: aNumber.
+    ^( n between: 1 and: contents size)
+            ifTrue: [ contents at: n]
+            ifFalse:[ 0]
+
+\end{verbatim}
+{\bf countOverflows:} {\tt anInteger}
+\begin{verbatim}
+    anInteger > 0
+        ifTrue: [ overflow := overflow + 1]
+        ifFalse:[ underflow := underflow + 1].
+
+\end{verbatim}
+{\bf countsBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    | n1 n2 answer |
+    n1 := self binIndex: aNumber1.
+    n2 := self binIndex: aNumber2.
+    answer := ( contents at: n1) * ( ( binWidth * n1 + minimum) - 
+                                                 aNumber1) / binWidth.
+    n2 > contents size
+        ifTrue: [ n2 := contents size + 1]
+        ifFalse:[ answer := answer + ( ( contents at: n2) * ( 
+      aNumber2 - ( binWidth * ( n2 - 1) + self maximum)) / binWidth)].
+    ( n1 + 1) to: ( n2 - 1) do: [ :n | answer := answer + ( contents 
+                                                              at: n)].
+    ^answer
+
+\end{verbatim}
+{\bf countsUpTo:} {\tt aNumber}
+\begin{verbatim}
+    | n answer |
+    n := self binIndex: aNumber.
+    n > contents size
+        ifTrue: [ ^self count].
+    answer := ( contents at: n) * ( aNumber - ( binWidth * ( n - 1) + 
+                                            self minimum)) / binWidth.
+    1 to: ( n - 1) do: [ :m | answer := answer + ( contents at: m)].
+    ^answer + underflow
+
+\end{verbatim}
+{\bf errorOnAverage}
+\begin{verbatim}
+    ^moments errorOnAverage
+
+\end{verbatim}
+{\bf flushCache}
+\begin{verbatim}
+    | maximum values |
+    minimum isNil
+        ifTrue: [ minimum := contents isEmpty ifTrue: [ 0]
+                                                                      
+                                            ifFalse:[ contents first].
+                   ].
+    maximum := minimum.
+    contents do:
+        [ :each |
+          each < minimum
+            ifTrue: [ minimum := each]
+            ifFalse:[ each > maximum
+                            ifTrue: [ maximum := each].
+                        ].
+        ].
+    maximum = minimum
+        ifTrue: [ maximum := minimum + desiredNumberOfBins].
+    values := contents.
+    self adjustDimensionUpTo: maximum.
+    values do: [ :each | self accumulate: each].
+
+\end{verbatim}
+{\bf freeExtent:} {\tt aBoolean}
+\begin{verbatim}
+    ( underflow = 0 and: [ overflow = 0])
+        ifFalse: [ self error: 'Histogram extent cannot be 
+                                                          redefined'].
+    freeExtent := aBoolean.
+
+\end{verbatim}
+{\bf growContents:} {\tt anInteger}
+\begin{verbatim}
+    anInteger > 0
+        ifTrue: [ self growPositiveContents: anInteger]
+        ifFalse:[ self growNegativeContents: anInteger].
+
+\end{verbatim}
+{\bf growNegativeContents:} {\tt anInteger}
+\begin{verbatim}
+    | n newSize newContents |
+    n := 1 - anInteger.
+    newSize := contents size + n.
+    newContents := Array new: newSize.
+    newContents
+            at: 1 put: 1;
+            replaceFrom: 2 to: n withObject: 0;
+            replaceFrom: ( n + 1) to: newSize with: contents.
+    contents := newContents.
+    minimum := ( anInteger - 1) * binWidth + minimum.
+
+\end{verbatim}
+{\bf growPositiveContents:} {\tt anInteger}
+\begin{verbatim}
+    | n newContents |
+    n := contents size.
+    newContents := Array new: anInteger.
+    newContents
+            replaceFrom: 1 to: n with: contents;
+            replaceFrom: ( n + 1) to: ( anInteger - 1) withObject: 0;
+            at: anInteger put: 1.
+    contents := newContents.
+
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    freeExtent := false.
+    cacheSize := self class defaultCacheSize.
+    desiredNumberOfBins := self class defaultNumberOfBins.
+    contents := OrderedCollection new: cacheSize.
+    moments := DhbFixedStatisticalMoments new.
+    overflow := 0.
+    underflow := 0.
+    ^self
+
+\end{verbatim}
+{\bf inverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    | count x integral |
+    count := self count * aNumber.
+    x := self minimum.
+    integral := 0.
+    contents do:
+        [ :each | | delta |
+          delta := count - integral.
+          each > delta
+            ifTrue: [ ^self binWidth * delta / each + x].
+          integral := integral + each.
+          x := self binWidth + x.
+        ].
+    ^self maximum
+
+\end{verbatim}
+{\bf isCached}
+\begin{verbatim}
+    ^binWidth isNil
+
+\end{verbatim}
+{\bf isEmpty}
+\begin{verbatim}
+    ^false
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^moments kurtosis
+
+\end{verbatim}
+{\bf lowBinLimitAt:} {\tt anInteger}
+\begin{verbatim}
+    ^( anInteger - 1) * binWidth + minimum
+
+\end{verbatim}
+{\bf maximum}
+\begin{verbatim}
+    self isCached
+        ifTrue: [ self flushCache].
+    ^contents size * binWidth + minimum
+
+\end{verbatim}
+{\bf maximumCount}
+\begin{verbatim}
+    self isCached
+        ifTrue: [ self flushCache].
+    ^contents inject: ( contents isEmpty ifTrue: [ 1] ifFalse:[ 
+                                                      contents at: 1])
+                    into: [ :max :each | max max: each]
+
+\end{verbatim}
+{\bf minimum}
+\begin{verbatim}
+    self isCached
+        ifTrue: [ self flushCache].
+    ^minimum
+
+\end{verbatim}
+{\bf overflow}
+\begin{verbatim}
+    ^overflow
+
+\end{verbatim}
+{\bf processOverflows:} {\tt anInteger} {\bf for:} {\tt aNumber}
+\begin{verbatim}
+    freeExtent
+        ifTrue: [ self growContents: anInteger.
+                     moments accumulate: aNumber
+                   ]
+        ifFalse:[ self countOverflows: anInteger].
+
+\end{verbatim}
+{\bf roundToScale:} {\tt aNumber}
+\begin{verbatim}
+
+\end{verbatim}
+{\bf setDesiredNumberOfBins:} {\tt anInteger}
+\begin{verbatim}
+    anInteger > 0
+        ifFalse:[ self error: 'Desired number of bins must be 
+                                                           positive'].
+    desiredNumberOfBins := anInteger.
+
+\end{verbatim}
+{\bf setRangeFrom:} {\tt aNumber1} {\bf to:} {\tt aNumber2} {\bf bins:} {\tt anInteger}
+\begin{verbatim}
+    self isCached
+        ifFalse: [ self error: 'Histogram limits cannot be 
+                                                          redefined'].
+    minimum := aNumber1.
+    self setDesiredNumberOfBins: anInteger;
+           adjustDimensionUpTo: aNumber2.
+
+\end{verbatim}
+{\bf setWidth:} {\tt aNumber1} {\bf from:} {\tt aNumber2} {\bf bins:} {\tt anInteger}
+\begin{verbatim}
+    self isCached
+        ifFalse: [ self error: 'Histogram limits cannot be 
+                                                          redefined'].
+    minimum := aNumber2.
+    self setDesiredNumberOfBins: anInteger;
+           adjustDimensionUpTo: ( aNumber1 * anInteger + aNumber2).
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^moments skewness
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^moments standardDeviation
+
+\end{verbatim}
+{\bf totalCount}
+\begin{verbatim}
+    ^moments count + underflow + overflow
+
+\end{verbatim}
+{\bf underflow}
+\begin{verbatim}
+    ^underflow
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^moments variance
+
+\end{verbatim}
+

@@ -1,0 +1,73 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMahalanobisCenter}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  center inverseCovariance accumulator }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new:} {\tt anInteger}
+\begin{verbatim}
+    ^self new initialize: anInteger
+
+\end{verbatim}
+{\bf onVector:} {\tt aVector}
+\begin{verbatim}
+    ^self new center: aVector
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aVector}
+\begin{verbatim}
+    accumulator accumulate: aVector.
+
+\end{verbatim}
+{\bf center:} {\tt aVector}
+\begin{verbatim}
+    accumulator := DhbCovarianceAccumulator new: aVector size.
+    center := aVector.
+    inverseCovariance := DhbSymmetricMatrix identity: aVector size.
+    ^self
+
+\end{verbatim}
+{\bf computeParameters}
+\begin{verbatim}
+    center := accumulator average copy.
+    inverseCovariance := accumulator covarianceMatrix inverse.
+
+\end{verbatim}
+{\bf count}
+\begin{verbatim}
+    ^accumulator count
+
+\end{verbatim}
+{\bf distanceTo:} {\tt aVector}
+\begin{verbatim}
+    | delta |
+    delta := aVector - center.
+    ^delta * inverseCovariance * delta
+
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    accumulator := DhbCovarianceAccumulator new: anInteger.
+    ^self
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    accumulator count printOn: aStream.
+    aStream nextPutAll: ': '.
+    center printOn: aStream.
+
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    accumulator reset.
+
+\end{verbatim}
+

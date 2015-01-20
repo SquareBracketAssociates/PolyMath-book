@@ -1,0 +1,61 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLanczosFormula}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  coefficients sqrt2Pi }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  UniqueInstance }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new}
+\begin{verbatim}
+    UniqueInstance isNil
+        ifTrue: [ UniqueInstance := super new.
+                     UniqueInstance initialize.
+                    ].
+    ^UniqueInstance
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf gamma:} {\tt aNumber}
+\begin{verbatim}
+    ^( self leadingFactor: aNumber) exp * ( self series: aNumber) * 
+                                                     sqrt2Pi / aNumber
+
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    sqrt2Pi := ( Float pi * 2) sqrt.
+    coefficients := #( 76.18009172947146 -86.50532032941677 
+           24.01409824083091 -1.231739572450155 0.1208650973866179e-2 
+           -0.5395239384953e-5).
+    ^self
+
+\end{verbatim}
+{\bf leadingFactor:} {\tt aNumber}
+\begin{verbatim}
+    | temp |
+    temp := aNumber + 5.5.
+    ^( temp ln * ( aNumber + 0.5) - temp)
+
+\end{verbatim}
+{\bf logGamma:} {\tt aNumber}
+\begin{verbatim}
+    ^( self leadingFactor: aNumber) + ( ( self series: aNumber) * 
+                                                 sqrt2Pi / aNumber) ln
+
+\end{verbatim}
+{\bf series:} {\tt aNumber}
+\begin{verbatim}
+    | term |
+    term := aNumber.
+    ^coefficients inject: 1.000000000190015
+                        into: [ :sum :each | term := term + 1. each / 
+                                                           term + sum]
+
+\end{verbatim}
+

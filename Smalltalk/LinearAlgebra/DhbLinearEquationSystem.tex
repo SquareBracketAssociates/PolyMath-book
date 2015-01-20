@@ -1,0 +1,150 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLinearEquationSystem}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  rows solutions }\cr\noalign{\vskip 1ex}
+{\sl Pool dictionaries:}&\parbox[t]{4 in}{\tt  SystemExceptions }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf equations:} {\tt anArrayOfArrays} {\bf constant:} {\tt anArray}
+\begin{verbatim}
+OfArrays constant: anArray 
+    ^self new initialize: anArrayOfArrays constants: (Array with: 
+                                                              anArray)
+
+\end{verbatim}
+{\bf equations:} {\tt anArrayOfArrays} {\bf constants:} {\tt anArrayOfConstantArrays}
+\begin{verbatim}
+    ^self new initialize: anArrayOfArrays constants: 
+                                               anArrayOfConstantArrays
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf backSubstitutionAt:} {\tt anInteger}
+\begin{verbatim}
+    | size answer accumulator |
+    size := rows size.
+    answer := Array new: size.
+    size to: 1 by: -1 do:
+        [ :n |
+          accumulator := (rows at: n) at: (anInteger + size).
+          ( n + 1) to: size
+            do: [ :m | accumulator := accumulator - ( ( answer at: m) 
+                                           * ( ( rows at: n) at: m))].
+          answer at: n put: ( accumulator / ( ( rows at: n) at: n)).
+        ].
+    solutions at: anInteger put: answer.
+
+\end{verbatim}
+{\bf initialize:} {\tt anArrayOfArrays} {\bf constants:} {\tt anArrayOfConstantArrays}
+\begin{verbatim}
+    | n |
+    n := 0.
+    rows := anArrayOfArrays collect: [ :each | n := n + 1. each, ( 
+                   anArrayOfConstantArrays collect: [ :c | c at: n])].
+    ^self
+
+\end{verbatim}
+{\bf largestPivotFrom:} {\tt anInteger}
+\begin{verbatim}
+    | valueOfMaximum indexOfMaximum |
+    valueOfMaximum := ( rows at: anInteger) at: anInteger.
+    indexOfMaximum := anInteger.
+    ( anInteger + 2) to: rows size do:
+        [ :n |
+          ( ( rows at: n) at: anInteger) > valueOfMaximum
+                ifTrue: [ valueOfMaximum := ( rows at: n) at: 
+                                                            anInteger.
+                             indexOfMaximum := n.
+                           ].
+        ].
+    ^indexOfMaximum 
+
+\end{verbatim}
+{\bf pivotAt:} {\tt anInteger}
+\begin{verbatim}
+    | inversePivot rowPivotValue row pivotRow |
+    pivotRow := rows at: anInteger.
+    inversePivot := 1 / ( pivotRow at: anInteger).
+    ( anInteger + 1) to: rows size do:
+        [ :n |
+          row := rows at: n.
+          rowPivotValue := ( row at: anInteger) * inversePivot.
+          anInteger to: row size do:
+            [ :m |
+              row at: m put: ( ( row at: m) - (( pivotRow at: m) * 
+                                                      rowPivotValue)).
+            ].
+        ].
+
+\end{verbatim}
+{\bf pivotStepAt:} {\tt anInteger}
+\begin{verbatim}
+    self swapRow: anInteger withRow: ( self largestPivotFrom: 
+                                                           anInteger);
+           pivotAt: anInteger.
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    | first delimitingString n k |
+    n := rows size.
+    first := true.
+    rows do:
+        [ :row |
+          first ifTrue: [ first := false]
+                 ifFalse:[ aStream cr].
+          delimitingString := '('.
+          k := 0.
+          row do:
+            [ :each |
+                aStream nextPutAll: delimitingString.
+                each printOn: aStream.
+                k := k + 1.
+                delimitingString := k < n ifTrue: [ ' '] ifFalse: [ ' 
+                                                                 : '].
+            ].
+          aStream nextPut: $).
+        ].
+
+\end{verbatim}
+{\bf solution}
+\begin{verbatim}
+    ^self solutionAt: 1
+
+\end{verbatim}
+{\bf solutionAt:} {\tt anInteger}
+\begin{verbatim}
+    solutions isNil
+        ifTrue: [ [self solve] when: ExError do: [ :signal |solutions 
+                                       := 0. signal exitWith: nil.] ].
+    solutions = 0
+        ifTrue: [ ^nil].
+    ( solutions at: anInteger) isNil
+        ifTrue: [ self backSubstitutionAt: anInteger].
+    ^solutions at: anInteger
+
+\end{verbatim}
+{\bf solve}
+\begin{verbatim}
+    1 to: rows size do: [ :n | self pivotStepAt: n].
+    solutions := Array new: ( (rows at: 1) size - rows size).
+
+\end{verbatim}
+{\bf swapRow:} {\tt anInteger1} {\bf withRow:} {\tt anInteger2}
+\begin{verbatim}
+    | swappedRow |
+    anInteger1 = anInteger2
+        ifFalse:[ swappedRow := rows at: anInteger1.
+                      rows at: anInteger1 put: ( rows at: 
+                                                          anInteger2).
+                      rows at: anInteger2 put: swappedRow.
+                    ].
+
+\end{verbatim}
+

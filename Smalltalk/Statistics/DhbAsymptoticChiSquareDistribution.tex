@@ -1,0 +1,97 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbAsymptoticChiSquareDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  degreeOfFreedom reducedDOF normalDistribution }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf degreeOfFreedom:} {\tt anInteger}
+\begin{verbatim}
+    ^super new initialize: anInteger
+
+\end{verbatim}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Chi square distribution'
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self error: 'Illegal creation message for this class'
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf average}
+\begin{verbatim}
+    ^degreeOfFreedom
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    normalDistribution changeParametersBy: aVector.
+
+\end{verbatim}
+{\bf confidenceLevel:} {\tt aNumber}
+\begin{verbatim}
+    ^( 1 - ( self distributionValue: aNumber)) *100
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    | x |
+    ^aNumber > 0
+        ifTrue: [ x := (aNumber * 2) sqrt.
+                  ( DhbErfApproximation new value: (x - reducedDOF))
+                ]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    degreeOfFreedom := anInteger.
+    reducedDOF := ( degreeOfFreedom * 2 - 1) sqrt.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^12 / degreeOfFreedom
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: degreeOfFreedom
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    ^( DhbNormalDistribution random + reducedDOF) squared / 2
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^( 2 / degreeOfFreedom) sqrt * 2
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | x |
+    ^aNumber > 0
+        ifTrue: [ x := (aNumber * 2) sqrt.
+                  ( DhbErfApproximation new normal: (x - reducedDOF)) 
+                                                                   / x
+                ]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^degreeOfFreedom * 2
+
+\end{verbatim}
+

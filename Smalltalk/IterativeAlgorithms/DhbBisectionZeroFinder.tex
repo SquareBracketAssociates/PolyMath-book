@@ -1,0 +1,68 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbBisectionZeroFinder}\cr
+{\sl Subclass of }&{\tt DhbFunctionalIterator}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  positiveX negativeX }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeInitialValues}
+\begin{verbatim}
+    positiveX isNil
+        ifTrue: [ self error: 'No positive value supplied'].
+    negativeX isNil
+        ifTrue: [ self error: 'No negative value supplied'].
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    result := ( positiveX + negativeX) * 0.5.
+    ( functionBlock value: result) > 0
+        ifTrue: [ positiveX := result]
+        ifFalse:[ negativeX := result].
+    ^self relativePrecision: ( positiveX - negativeX) abs
+
+\end{verbatim}
+{\bf findNegativeXFrom:} {\tt aNumber1} {\bf range:} {\tt aNumber2}
+\begin{verbatim}
+    | n |
+    n := 0.
+    [ negativeX := Number random * aNumber2 + aNumber1.
+      ( functionBlock value: negativeX) < 0
+        ] whileFalse: [ n := n + 0.1.
+                        n > maximumIterations
+                            ifTrue: [ self error: 'Unable to find a 
+                                            negative function value'].
+                      ].
+
+\end{verbatim}
+{\bf findPositiveXFrom:} {\tt aNumber1} {\bf range:} {\tt aNumber2}
+\begin{verbatim}
+    | n |
+    n := 0.
+    [ positiveX := Number random * aNumber2 + aNumber1.
+      ( functionBlock value: positiveX) > 0
+        ] whileFalse: [ n := n + 1.
+                        n > maximumIterations
+                            ifTrue: [ self error: 'Unable to find a 
+                                            positive function value'].
+                      ].
+
+\end{verbatim}
+{\bf setNegativeX:} {\tt aNumber}
+\begin{verbatim}
+    ( functionBlock value: aNumber) < 0
+        ifFalse:[ self error: 'Function is not negative at x = ', 
+                                                 aNumber printString].
+    negativeX := aNumber.
+
+\end{verbatim}
+{\bf setPositiveX:} {\tt aNumber}
+\begin{verbatim}
+    ( functionBlock value: aNumber) > 0
+        ifFalse:[ self error: 'Function is not positive at x = ', 
+                                                 aNumber printString].
+    positiveX := aNumber.
+
+\end{verbatim}
+

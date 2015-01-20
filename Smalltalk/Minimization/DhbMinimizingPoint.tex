@@ -1,0 +1,58 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMinimizingPoint}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  value position }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new:} {\tt aVector} {\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^self new vector: aVector; value: aNumber; yourself
+
+\end{verbatim}
+{\bf vector:} {\tt aVector} {\bf function:} {\tt aFunction}
+\begin{verbatim}
+    ^self new: aVector value: (aFunction value: aVector)
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf betterThan:} {\tt anOptimizingPoint}
+\begin{verbatim}
+    ^value < anOptimizingPoint value
+
+\end{verbatim}
+{\bf position}
+\begin{verbatim}
+    ^position
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    position printOn: aStream.
+    aStream
+        nextPut: $:;
+        space.
+    value printOn: aStream
+
+\end{verbatim}
+{\bf value}
+\begin{verbatim}
+    ^value
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    value := aNumber.
+
+\end{verbatim}
+{\bf vector:} {\tt aVector}
+\begin{verbatim}
+    position := aVector
+
+\end{verbatim}
+

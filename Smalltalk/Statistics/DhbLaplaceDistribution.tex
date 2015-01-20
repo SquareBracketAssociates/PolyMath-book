@@ -1,0 +1,104 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLaplaceDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  mu beta }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Laplace distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    ^self shape: aHistogram average scale: (aHistogram variance / 2) 
+                                                                  sqrt
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self shape: 0 scale: 1
+
+\end{verbatim}
+{\bf shape:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 scale: aNumber2
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf average}
+\begin{verbatim}
+    ^mu
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    mu := mu + ( aVector at: 1).
+    beta := beta + ( aVector at: 2).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^aNumber > mu
+        ifTrue: [ 1 - ( ( ( aNumber - mu) / beta) negated exp / 2)]
+        ifFalse:[ ( ( ( aNumber - mu) / beta) exp / 2)]
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    mu := aNumber1.
+    beta := aNumber2.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^3
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: mu with: beta
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    | r |
+    r := DhbMitchellMooreGenerator new floatValue ln * beta negated.
+    ^DhbMitchellMooreGenerator new floatValue > 0.5
+        ifTrue: [ mu + r]
+        ifFalse:[ mu - r]
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^0
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^beta * ( 2 sqrt)
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^( ( aNumber - mu) / beta) abs negated exp / ( 2 * beta)
+
+\end{verbatim}
+{\bf valueAndGradient:} {\tt aNumber}
+\begin{verbatim}
+    | dp |
+    dp := self value: aNumber.
+    ^Array  with: dp
+            with: ( DhbVector with: ( aNumber - mu) sign * dp / beta
+                              with: ( ( ( aNumber - mu) abs / beta - 
+                                                      1) * dp / beta))
+
+\end{verbatim}
+

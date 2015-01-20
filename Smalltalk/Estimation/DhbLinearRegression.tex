@@ -1,0 +1,139 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLinearRegression}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  sum1 sumX sumY sumXX sumYY sumXY slope intercept correlationCoefficient }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new}
+\begin{verbatim}
+    ^( super new) reset; yourself
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf add:} {\tt aPoint}
+\begin{verbatim}
+    self add: aPoint weight: 1.
+
+\end{verbatim}
+{\bf add:} {\tt aPoint} {\bf weight:} {\tt aNumber}
+\begin{verbatim}
+    sum1 := sum1 + aNumber.
+    sumX := sumX + (aPoint x * aNumber).
+    sumY := sumY + (aPoint y * aNumber).
+    sumXX := sumXX + (aPoint x squared * aNumber).
+    sumYY := sumYY + (aPoint y squared * aNumber).
+    sumXY := sumXY + (aPoint x * aPoint y * aNumber).
+    self resetResults
+
+\end{verbatim}
+{\bf asEstimatedPolynomial}
+\begin{verbatim}
+    ^( DhbEstimatedPolynomial coefficients: self coefficients)
+            errorMatrix: self errorMatrix;
+            yourself
+
+\end{verbatim}
+{\bf asPolynomial}
+\begin{verbatim}
+    ^DhbPolynomial coefficients: self coefficients
+
+\end{verbatim}
+{\bf coefficients}
+\begin{verbatim}
+    ^Array with: self intercept with: self slope
+
+\end{verbatim}
+{\bf computeResults}
+\begin{verbatim}
+    | xNorm xyNorm |
+    xNorm := sumXX * sum1 - (sumX * sumX).
+    xyNorm := sumXY * sum1 - (sumX * sumY).
+    slope := xyNorm / xNorm.
+    intercept := (sumXX * sumY - (sumXY * sumX)) / xNorm.
+    correlationCoefficient := xyNorm 
+                / (xNorm * (sumYY * sum1 - (sumY * sumY))) sqrt
+
+\end{verbatim}
+{\bf correlationCoefficient}
+\begin{verbatim}
+    correlationCoefficient isNil
+        ifTrue: [ self computeResults].
+    ^correlationCoefficient
+
+\end{verbatim}
+{\bf errorMatrix}
+\begin{verbatim}
+    | c1 cx cxx |
+    c1 := 1.0 / (sumXX * sum1 - sumX squared).
+    cx := sumX negated * c1.
+    cxx := sumXX * c1.
+    c1 := sum1 * c1.
+    ^DhbSymmetricMatrix rows: (Array with: (Array with: cxx with: cx)
+                with: (Array with: cx with: c1))
+
+\end{verbatim}
+{\bf errorOnIntercept}
+\begin{verbatim}
+    ^(sumXX / (sumXX * sum1 - sumX squared)) sqrt
+
+\end{verbatim}
+{\bf errorOnSlope}
+\begin{verbatim}
+    ^(sum1 / (sumXX * sum1 - sumX squared)) sqrt
+
+\end{verbatim}
+{\bf intercept}
+\begin{verbatim}
+    intercept isNil
+        ifTrue: [ self computeResults].
+    ^intercept
+
+\end{verbatim}
+{\bf remove:} {\tt aPoint}
+\begin{verbatim}
+    sum1 := sum1 - 1.
+    sumX := sumX - aPoint x.
+    sumY := sumY - aPoint y.
+    sumXX := sumXX - aPoint x squared.
+    sumYY := sumYY - aPoint y squared.
+    sumXY := sumXY - (aPoint x * aPoint y).
+    self resetResults
+
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    sum1 := 0.
+    sumX := 0.
+    sumY := 0.
+    sumXX := 0.
+    sumYY := 0.
+    sumXY := 0.
+    self resetResults
+
+\end{verbatim}
+{\bf resetResults}
+\begin{verbatim}
+    slope := nil.
+    intercept := nil.
+    correlationCoefficient := nil.
+
+\end{verbatim}
+{\bf slope}
+\begin{verbatim}
+    slope isNil
+        ifTrue: [ self computeResults].
+    ^slope
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^aNumber * self slope + self intercept
+
+\end{verbatim}
+

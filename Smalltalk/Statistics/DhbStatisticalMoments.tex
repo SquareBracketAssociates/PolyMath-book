@@ -1,0 +1,134 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbStatisticalMoments}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  moments }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new}
+\begin{verbatim}
+    ^self new: 4
+
+\end{verbatim}
+{\bf new:} {\tt anInteger}
+\begin{verbatim}
+    ^super new initialize: anInteger + 1
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aNumber}
+\begin{verbatim}
+    | correction n n1 oldSums pascal nTerm cTerm term |
+    n := moments at: 1.
+    n1 := n + 1.
+    correction := ((moments at: 2) - aNumber) / n1.
+    oldSums := moments copyFrom: 1 to: moments size.
+    moments
+        at: 1 put: n1;
+        at: 2 put: (moments at: 2) - correction.
+    pascal := Array new: moments size.
+    pascal atAllPut: 0.
+    pascal
+        at: 1 put: 1;
+        at: 2 put: 1.
+    nTerm := -1.
+    cTerm := correction.
+    n1 := n / n1.
+    n := n negated.
+    3 to: moments size
+        do: 
+            [:k | 
+            cTerm := cTerm * correction.
+            nTerm := n * nTerm.
+            term := cTerm * (1 + nTerm).
+            k to: 3
+                by: -1
+                do: 
+                    [:l | 
+                    pascal at: l put: (pascal at: l - 1) + (pascal 
+                                                               at: l).
+                    term := (pascal at: l) * (oldSums at: l) + term.
+                    oldSums at: l put: (oldSums at: l) * correction].
+            pascal at: 2 put: (pascal at: 1) + (pascal at: 2).
+            moments at: k put: term * n1]
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    self count = 0 ifTrue: [^nil].
+    ^moments at: 2
+
+\end{verbatim}
+{\bf centralMoment:} {\tt anInteger}
+\begin{verbatim}
+    ^moments at: anInteger + 1
+
+\end{verbatim}
+{\bf count}
+\begin{verbatim}
+    ^moments at: 1
+
+\end{verbatim}
+{\bf errorOnAverage}
+\begin{verbatim}
+    ^( self variance / self count) sqrt
+
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    moments := Array new: anInteger.
+    self reset.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    | n n1 n23 |
+    n := self count.
+    n < 4 ifTrue: [^nil].
+    n23 := (n - 2) * (n - 3).
+    n1 := n - 1.
+    ^((moments at: 5) * n squared * (n + 1) / (self variance squared 
+                                                                * n1) 
+        - (n1 squared * 3)) / n23
+
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    moments atAllPut: 0
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    | n v |
+    n := self count.
+    n < 3 ifTrue: [^nil].
+    v := self variance.
+    ^(moments at: 4) * n squared / ((n - 1) * (n - 2) * (v sqrt * v))
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^self variance sqrt
+
+\end{verbatim}
+{\bf unnormalizedVariance}
+\begin{verbatim}
+    ^( self centralMoment: 2) * self count
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    | n |
+    n := self count.
+    n < 2
+        ifTrue: [ ^nil].
+    ^self unnormalizedVariance / ( n - 1)
+
+\end{verbatim}
+

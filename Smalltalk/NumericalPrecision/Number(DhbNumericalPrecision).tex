@@ -1,0 +1,22 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf Number}\cr
+{\sl Subclass of }&{\tt Magnitude}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf equalsTo:} {\tt aNumber}
+\begin{verbatim}
+    ^self relativelyEqualsTo: aNumber upTo: DhbFloatingPointMachine 
+                                         new defaultNumericalPrecision
+
+\end{verbatim}
+{\bf relativelyEqualsTo:} {\tt aNumber} {\bf upTo:} {\tt aSmallNumber}
+\begin{verbatim}
+    | norm |
+    norm := self abs max: aNumber abs.
+    ^norm <= DhbFloatingPointMachine new defaultNumericalPrecision
+        or: [ (self - aNumber) abs < ( aSmallNumber * norm)]
+
+\end{verbatim}
+
