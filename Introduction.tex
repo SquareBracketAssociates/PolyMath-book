@@ -6,7 +6,6 @@
 \begin{document}
 \fi
 
-
 \chapter{Introduction} \vspace{1 ex}
 \label{ch:introduction}
 \begin{flushright}
@@ -624,8 +623,7 @@ Age For Smalltalk\tm.} to detect the underflow and the overflow.
 \noindent The method {\tt showParameters} can be used to print the
 values of the parameters onto the Transcript window.
 
-\begin{listing}
-%  \caption{Smalltalk code to find the machine precision}
+\begin{listing} Smalltalk code to find the machine precision
   \label{ls:floatmachine}
   \input{Smalltalk/NumericalPrecision/DhbFloatingPointMachine}
 \end{listing}
@@ -660,13 +658,12 @@ console.
 $$\hbox{\tt DhbFloatingPointMachine.printParameters(
 System.out)}$$
 
-\begin{figure}
-\begin{listing}[h!]
+\begin{listing}
+Java code to find the machine precision
 \label{lj:floatmachine}
 \input{Java/DhbFunctionEvaluation/DhbMath.java}
 \end{listing}
-\caption{Java code to find the machine precision}
-\end{figure}
+
 \begin{quote}
 {\bf Note:} The two methods {\tt equal} --- one with 2 arguments,
 one with 3
@@ -716,13 +713,11 @@ one can determine the precision of each number, then the method
 In Smalltalk this means adding a new method to the class Number as
 shown in Listing \ref{ls:fltcompare}.
 
-\begin{figure}
 \begin{listing}
+Comparison of floating point numbers in Smalltalk
 \label{ls:fltcompare}
 \input{Smalltalk/NumericalPrecision/Number(DhbNumericalPrecision)}
 \end{listing}
-\caption{Comparison of floating point numbers in Smalltalk}
-\end{figure}
 
 \subsection{Comparing floating point numbers --- Java code}
 \label{sec:eqfltjava} In Java the methods have been added to the
