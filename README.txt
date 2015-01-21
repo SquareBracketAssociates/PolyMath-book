@@ -4,9 +4,3 @@ We thank him for his gift to the community.
 We are currently making it latex as of January 2015.
 
 S. Ducasse and S. Stinckwich
-
-Currently latexing:
-	- centralmoments.tex
-	- datamining.tex
-	- distributions.tex
-	
