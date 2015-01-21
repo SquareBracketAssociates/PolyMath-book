@@ -141,13 +141,13 @@ the required interface.
 
 Listing \ref{lj:function} shows the implementation of the Java
 interface {\tt OneVariableFunction}.
-\begin{figure}
+
 \begin{listing}
-\caption{Java implementation of the interface {\tt OneVariableFunction}}
+Java implementation of the interface {\tt OneVariableFunction}
 \label{lj:function}
 \input{Java/DhbInterfaces/OneVariableFunction.java}
 \end{listing}
-\end{figure}
+
 If the function is simple enough, it can be implemented as an
 inner class\footnote{Inner classes are a feature of Java 1.1 and
 higher versions.}. For example, the definition of the inverse
@@ -190,13 +190,12 @@ are indeed correct.
 
 Example of use of the class FunctionDerivative is shown in section
 \ref{sec:jnewton}.
-\begin{figure}
 \begin{listing}
-\caption{Java implementation of a generic derivative evaluation}
+Java implementation of a generic derivative evaluation
 \label{lj:derivative}
 \input{Java/DhbFunctionEvaluation/FunctionDerivative.java}
 \end{listing}
-\end{figure}
+
 
 \section{Polynomials}
 \label{sec:polynomial}
@@ -482,25 +481,21 @@ implementation of polynomial is also valid for polynomials with
 complex coefficients. This is not the case in Java which requires
 explicit typing.}
 
-\begin{figure}
 \begin{listing}
-\caption{Smalltalk implementation of the polynomial class}
+Smalltalk implementation of the polynomial class
 \label{ls:polynomial}
 \input{Smalltalk/FunctionEvaluation/DhbPolynomial}
 \end{listing}
-\end{figure}
 
 Listing \ref{ls:polynomialNumber} shows the listing of the methods
 used by the class Number as part of the double dispatching of the
 arithmetic operations on polynomials.
 
-\begin{figure}
 \begin{listing}
-\caption{Method of class {\tt Number} related to polynomials}
+Method of class {\tt Number} related to polynomials
 \label{ls:polynomialNumber}
 \input{Smalltalk/FunctionEvaluation/Number(DhbFunctionEvaluation)}
 \end{listing}
-\end{figure}
 
 \subsection{Polynomial --- Java implementation}
 \marginpar{Figure \ref{fig:functionj} with the box {\bf
@@ -548,13 +543,11 @@ in Java.}.
 Finally the method {\tt toString()} is implemented for the same
 reasons than a method {\tt printOn:} was implemented in Smalltalk.
 
-\begin{figure}
 \begin{listing}
-\caption{Java implementation of the polynomial class}
+Java implementation of the polynomial class
 \label{lj:polynomial}
 \input{Java/DhbFunctionEvaluation/PolynomialFunction.java}
 \end{listing}
-\end{figure}
 \begin{quote}
 {\bf Note:} The three methods {\tt deflate} and {\tt roots} ({\tt
 roots} having two variants) are discussed in section
@@ -733,14 +726,12 @@ definition of the class. So, the use of a singleton class is
 preferable. A more detailed discussion of this topic can be found
 in \cite{StDesPat}.
 
-\begin{figure}
 \begin{listing}
-\caption{Smalltalk implementation of the Error function}
+Smalltalk implementation of the Error function
 \label{ls:errorFunction}
 \input{Smalltalk/FunctionEvaluation/Number(DhbErrorFunction).tex}
 \input{Smalltalk/FunctionEvaluation/DhbErfApproximation}
 \end{listing}
-\end{figure}
 
 \subsection{Error function --- Java implementation}
 \marginpar{Figure \ref{fig:functionj} with the box {\bf
@@ -780,14 +771,12 @@ the error function.
 The class {\tt NormalDistribution} is tagged as {\tt final}
 because it does not make sense that this class has any subclass.
 
-\begin{figure}
 \begin{listing}
-\caption{Java implementation of the Error function (partial
-listing)}
+Java implementation of the Error function (partial
+listing)
 \label{lj:errorFunction}
 \input{Java/DhbFunctionEvaluation/ErrorFunction.java}
 \end{listing}
-\end{figure}
 
 \section{Gamma function}
 The gamma function is used in many mathematical functions. In this
@@ -938,15 +927,13 @@ subclasses of {\tt Number}: {\tt Float} and {\tt Fraction}.
 
 The execution time to compute the gamma function for floating
 argument given in Table \ref{tb:speed} in section \ref{sec:speed}.
-\begin{figure}
 \begin{listing}
-\caption{Smalltalk implementation of the gamma function}
+Smalltalk implementation of the gamma function
 \label{ls:gammafunc}
 \input{Smalltalk/FunctionEvaluation/Integer(DhbGammaFunction).tex}
 \input{Smalltalk/FunctionEvaluation/Number(DhbGammaFunction).tex}
 \input{Smalltalk/FunctionEvaluation/DhbLanczosFormula.tex}
 \end{listing}
-\end{figure}
 
 \subsection{Gamma function --- Java implementation}
 \marginpar{Figure \ref{fig:functionj} with the box {\bf
@@ -991,13 +978,11 @@ Strangely enough, Java does not implement an Integer.NaN. Thus,
 the method factorial has no other choice than raising an exception
 when it is called with a negative integer argument.
 
-\begin{figure}
 \begin{listing}
-\caption{Java implementation of the gamma function}
+Java implementation of the gamma function
 \label{lj:gammafunc}
 \input{Java/DhbFunctionEvaluation/GammaFunction.java}
 \end{listing}
-\end{figure}
 \begin{quote}
 Note: Listing \ref{lj:gammafunc} also contains the method beta
 needed to compute the beta function discussed in section
@@ -1048,13 +1033,12 @@ simply coded as:
 \end{codeExample}
 Listing \ref{ls:betafunc} shows the
 implementation of the beta function in Smalltalk.
-\begin{figure}
+
 \begin{listing}
-\caption{Smalltalk implementation of the beta function}
+Smalltalk implementation of the beta function
 \label{ls:betafunc}
 \input{Smalltalk/FunctionEvaluation/Number(DhbBetaFunction).tex}
 \end{listing}
-\end{figure}
 
 \subsection{Beta function --- Java implementation}
 \label{secj:betafunc}\marginpar{Figure \ref{fig:functionj} with
