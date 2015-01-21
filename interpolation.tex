@@ -335,14 +335,11 @@ collection of points. If one needs to change the implementation of
 the point collection in a subclass, however, only these two
 methods need to be modified. Introducing this kind of construct
 can go a long way in program maintenance.
-\begin{figure}
 \begin{listing}
-\caption{Smalltalk implementation of the Lagrange
-interpolation}
+Smalltalk implementation of the Lagrange interpolation
 \label{ls:lagrange}
 \input{Smalltalk/FunctionEvaluation/DhbLagrangeInterpolator}
 \end{listing}
-\end{figure}
 
 \subsection{Lagrange interpolation --- Java implementation}
 \label{sec:jlagrange}\marginpar{Figure \ref{cls:interpolation}
@@ -356,19 +353,21 @@ defined for integer values.
 Thus, an interface called {\tt PointSeries} was created to define
 the behavior of the object containing the sample points. This
 interface is shown in Listing \ref{lj:pointseries}.
-\begin{figure}\begin{listing} \caption{Java interface for point series}
+
+\begin{listing}
+Java interface for point series
 \label{lj:pointseries}
 \input{Java/DhbInterfaces/PointSeries.java}
-\end{listing}\end{figure}
+\end{listing}
 Listing \ref{lj:curve} shows the class {\tt Curve} implementing
 the minimum functionality of the interface {\tt PointSeries}. This
 class is used in a variety of problems where handling geometrical
 points is required.
-\begin{figure}\begin{listing} \caption{A possible concrete implementation of the interface {\tt
-PointSeries}}
+\begin{listing}
+A possible concrete implementation of the interface {\tt PointSeries}
 \label{lj:curve}
 \input{Java/DhbScientificCurves/Curve.java}
-\end{listing}\end{figure}
+\end{listing}
 The object implementing Lagrange interpolation should implement
 the interface {\tt OneVariableFunction} discussed in section
 \ref{sec:stFunction}. This completes the public interface to the
@@ -428,11 +427,11 @@ programming standards. In this case, however, there is no
 compelling reason to split any portion of the algorithm into a
 separate method. Moreover, splitting the method would increase the
 computing time.
-\begin{figure}\begin{listing} \caption{Java implementation of the Lagrange
-interpolation}
+\begin{listing}
+Java implementation of the Lagrange interpolation
 \label{lj:lagrange}
 \input{Java/DhbInterpolation/LagrangeInterpolator.java}
-\end{listing}\end{figure}
+\end{listing}
 
 \section{Newton interpolation}
 \label{sec:newtoninterpol} If one must evaluate the Lagrange
@@ -543,10 +542,11 @@ track of the index to retrieve the sample point corresponding to
 each coefficient. Thus, one gains very little in compactness.
 
 
-\begin{figure}\begin{listing} \caption{Smalltalk implementation of the Newton interpolation}
+\begin{listing}
+  Smalltalk implementation of the Newton interpolation
 \label{ls:newtonint}
 \input{Smalltalk/FunctionEvaluation/DhbNewtonInterpolator}
-\end{listing}\end{figure}
+\end{listing}
 
 \subsection{Newton interpolation --- Java implementation}
 Listing \ref{lj:newtonint} shows the complete implementation in
@@ -563,10 +563,11 @@ detach the link between \patstyle{Observer} and
 \patstyle{Observable} when the interpolator is no longer needed.
 Our simple implementation does not require finalization.
 
-\begin{figure}\begin{listing} \caption{Java implementation of the Newton interpolation}
+\begin{listing}
+  Java implementation of the Newton interpolation
 \label{lj:newtonint}
 \input{Java/DhbInterpolation/NewtonInterpolator.java}
-\end{listing}\end{figure}
+\end{listing}
 
 \section{Neville interpolation}
 \label{sec:neville} Neville's algorithm uses a successive
@@ -672,10 +673,11 @@ The method {\tt defaultSamplePoints} overrides that of the
 superclass to return a sorted collection. Thus, each point added
 to the implicit collection is automatically sorted by increasing
 abscissa as required by Neville's algorithm.
-\begin{figure}\begin{listing} \caption{Smalltalk implementation of Neville's algorithm}
+\begin{listing}
+  Smalltalk implementation of Neville's algorithm
 \label{ls:neville}
 \input{Smalltalk/FunctionEvaluation/DhbNevilleInterpolator}
-\end{listing}\end{figure}
+\end{listing}
 
 \subsection{Neville interpolation --- Java implementation}
 Listing \ref{lj:neville} shows the implementation of Neville's
@@ -691,10 +693,10 @@ given in section \ref{sec:jromberg}.
 supposes that the calling application supplies the point sorted by
 ascending value of the abscissa.}
 
-\begin{figure}\begin{listing} \caption{Java implementation of Neville interpolation}
+\begin{listing}Java implementation of Neville interpolation
 \label{lj:neville}
 \input{Java/DhbInterpolation/NevilleInterpolator.java}
-\end{listing}\end{figure}
+\end{listing}
 
 \section{Bulirsch-Stoer interpolation}
 If the function to interpolate is known to have
@@ -813,10 +815,11 @@ DhbNevilleInterpolator}. The code examples \ref{ex:lagrangeS1} and
 \ref{ex:lagrangeS2} can directly be applied to Bulirsch-Stoer
 interpolation after replacing the class name {\tt
 DhbLagrangeInterpolator} with {\tt DhbBulirschStoerInterpolator}.
-\begin{figure}\begin{listing} \caption{Smalltalk implementation of Bulirsch-Stoer interpolation}
+\begin{listing}
+  Smalltalk implementation of Bulirsch-Stoer interpolation
 \label{ls:bustoer}
 \input{Smalltalk/FunctionEvaluation/DhbBulirschStoerInterpolator}
-\end{listing}\end{figure}
+\end{listing}
 
 \subsection{Bulirsch-Stoer interpolation --- Java implementation}
 Listing \ref{lj:bustoer} shows the implementation of
@@ -826,10 +829,11 @@ NevilleInterpolator}. The code examples \ref{ex:lagrangeJ1} and
 \ref{ex:lagrangeJ2} can directly be applied to Bulirsch-Stoer
 interpolation after replacing the class name {\tt
 LagrangeInterpolator} with {\tt BulirschStoerInterpolator}.
-\begin{figure}\begin{listing} \caption{Java implementation of Bulirsch-Stoer interpolation}
+\begin{listing}
+  Java implementation of Bulirsch-Stoer interpolation
 \label{lj:bustoer}
 \input{Java/DhbInterpolation/BulirschStoerInterpolator.java}
-\end{listing}\end{figure}
+\end{listing}
 
 \section{Cubic spline interpolation}
 The Lagrange interpolation polynomial is defined globally over the
@@ -1011,9 +1015,11 @@ added to the implicit collection, the collection of sample points
 remains in increasing order of abscissa as required by the cubic
 spline algorithm.
 
-\begin{figure}\begin{listing} \caption{Smalltalk implementation of cubic spline interpolation} \label{ls:spline}
+\begin{listing}
+  Smalltalk implementation of cubic spline interpolation
+  \label{ls:spline}
 \input{Smalltalk/FunctionEvaluation/DhbSplineInterpolator}
-\end{listing}\end{figure}
+\end{listing}
 
 \subsection{Cubic spline interpolation --- Java implementation}
 Listing \ref{lj:spline} shows the implementation of cubic spline
@@ -1030,11 +1036,12 @@ flagged with the special Java value {\tt Double.NaN}.
 supposes that the calling application supplies the point sorted by
 ascending value of the abscissa.}
 
-\begin{figure}\begin{listing} \caption{Java implementation of cubic spline
-interpolation}
+\begin{listing}
+  Java implementation of cubic spline
+interpolation
 \label{lj:spline}
 \input{Java/DhbInterpolation/SplineInterpolator.java}
-\end{listing}\end{figure}
+\end{listing}
 
 \section{Which method to choose?}
 At this point some reader might experience some difficulty in
