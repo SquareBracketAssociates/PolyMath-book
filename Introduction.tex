@@ -1,7 +1,7 @@
 \ifx\wholebook\relax\else
 \documentclass[twoside]{book}
 \usepackage[active]{srcltx}
-\usepackage[LY1]{em}
+\usepackage[LY1]{fontenc}
 \input{DhbDefinitions}
 \begin{document}
 \fi
@@ -12,7 +12,7 @@
 \begin{flushright}
 {\sl Science sans conscience n'est que ruine de
 l'\^ame.}\footnote{Science without consciousness just ruins the
-soul.}\\ François Rabelais
+soul.}\\ Fran\c{c}ois Rabelais
 \end{flushright}
 \vspace{1 ex} Teaching numerical methods was a major discipline of
 computer science at a time computers were only used by a very
@@ -491,10 +491,10 @@ admiration for the note added to his publication that places his
 result in perspective. He noted that the precision of his
 determination of the number $\pi$ was such that,
 \begin{quote}{\it the error
-in computing the perimeter of a circle with a radius 600’000 times
-that of earth would be less than the thickness of a horse’s hair}.
+in computing the perimeter of a circle with a radius 600ï¿½000 times
+that of earth would be less than the thickness of a horseï¿½s hair}.
 \end{quote}
-The reader should know that the {\it thickness of a horse’s
+The reader should know that the {\it thickness of a horseï¿½s
 hair\/} was a legal unit of measure in ancient Persia
 corresponding to roughly 0.7 mm. Using present-day knowledge of
 astronomy, the radius of the circle corresponding to the error
@@ -508,7 +508,7 @@ decimals}. When dealing with numerical precision, you should ask
 yourself the following question:
 \begin{quote}
 {\sl Do I really need to know the length of Pluto's orbit to a
-third of the thickness of a horse’s hair?}
+third of the thickness of a horseï¿½s hair?}
 \end{quote}
 
 \section{Finding the numerical precision of a computer}
@@ -625,9 +625,9 @@ Age For Smalltalk\tm.} to detect the underflow and the overflow.
 values of the parameters onto the Transcript window.
 
 \begin{listing}
-\lcaption{Smalltalk code to find the machine precision}
-\label{ls:floatmachine}
-\input{Smalltalk/NumericalPrecision/DhbFloatingPointMachine}
+%  \caption{Smalltalk code to find the machine precision}
+  \label{ls:floatmachine}
+  \input{Smalltalk/NumericalPrecision/DhbFloatingPointMachine}
 \end{listing}
 
 \subsection{Computer numerical precision --- Java implementation}
@@ -660,11 +660,13 @@ console.
 $$\hbox{\tt DhbFloatingPointMachine.printParameters(
 System.out)}$$
 
-\begin{listing}
-\lcaption{Java code to find the machine precision}
+\begin{figure}
+\begin{listing}[h!]
 \label{lj:floatmachine}
 \input{Java/DhbFunctionEvaluation/DhbMath.java}
 \end{listing}
+\caption{Java code to find the machine precision}
+\end{figure}
 \begin{quote}
 {\bf Note:} The two methods {\tt equal} --- one with 2 arguments,
 one with 3
@@ -714,12 +716,13 @@ one can determine the precision of each number, then the method
 In Smalltalk this means adding a new method to the class Number as
 shown in Listing \ref{ls:fltcompare}.
 
+\begin{figure}
 \begin{listing}
-\lcaption{Comparison of floating point numbers in Smalltalk}
 \label{ls:fltcompare}
 \input{Smalltalk/NumericalPrecision/Number(DhbNumericalPrecision)}
 \end{listing}
-
+\caption{Comparison of floating point numbers in Smalltalk}
+\end{figure}
 
 \subsection{Comparing floating point numbers --- Java code}
 \label{sec:eqfltjava} In Java the methods have been added to the
