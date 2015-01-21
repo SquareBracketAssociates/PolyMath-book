@@ -1,7 +1,7 @@
 \documentclass[twoside]{book}
 \usepackage[active]{srcltx}
-\usepackage[LY1]{em}
-\usepackage{listing}
+\usepackage[LY1]{fontenc}
+%\usepackage{listing}
 \input{DhbDefinitions}
 \let\wholebook=\relax
 %\renewcommand{\baselinestretch}{2} % to produce double-spaced reference document
@@ -14,7 +14,8 @@
 \maketitle \pagenumbering{roman}
 \input{preface}
 {\parskip 0pt \tableofcontents \listoffigures \listoftables
-\listoflistings} \cleardoublepage\pagenumbering{arabic}
+%\listoflistings
+} \cleardoublepage\pagenumbering{arabic}
 \input{introduction}
 \input{function}
 \input{interpolation}
@@ -30,7 +31,7 @@
 \appendix
 \input{floatingpointsimulation}
 \input{smalltalkprimer}
-\input{javaprimer}
+%\input{javaprimer} Missing file
 \input{distributions}
 \input{centralmoments}
 \input{cdrom}
