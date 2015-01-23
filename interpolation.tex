@@ -341,98 +341,6 @@ Smalltalk implementation of the Lagrange interpolation
 \input{Smalltalk/FunctionEvaluation/DhbLagrangeInterpolator}
 \end{listing}
 
-\subsection{Lagrange interpolation --- Java implementation}
-\label{sec:jlagrange}\marginpar{Figure \ref{cls:interpolation}
-with the box {\bf LagrangeInterpolator} grayed.} The object
-responsible to implement Lagrange interpolation is defined
-uniquely by the sample points over which the interpolation is
-performed. Unlike in Smalltalk, however, point objects cannot be
-used to hold the values because the Java class {\tt Point} is only
-defined for integer values.
-
-Thus, an interface called {\tt PointSeries} was created to define
-the behavior of the object containing the sample points. This
-interface is shown in Listing \ref{lj:pointseries}.
-
-\begin{listing}
-Java interface for point series
-\label{lj:pointseries}
-\input{Java/DhbInterfaces/PointSeries.java}
-\end{listing}
-Listing \ref{lj:curve} shows the class {\tt Curve} implementing
-the minimum functionality of the interface {\tt PointSeries}. This
-class is used in a variety of problems where handling geometrical
-points is required.
-\begin{listing}
-A possible concrete implementation of the interface {\tt PointSeries}
-\label{lj:curve}
-\input{Java/DhbScientificCurves/Curve.java}
-\end{listing}
-The object implementing Lagrange interpolation should implement
-the interface {\tt OneVariableFunction} discussed in section
-\ref{sec:stFunction}. This completes the public interface to the
-object. Thus an example of linear interpolation behaves as
-follows:
-\begin{codeExample} \label{ex:lagrangeJ1}
-\begin{verbatim}
-
-DhbScientificCurves.Curve points = new DhbScientificCurves.Curve();
-points.addPoint( 1, 2);
-points.addPoint( 3, 1);
-(new LagrangeInterpolator( points)).value( 2.2)
-\end{verbatim}
-\end{codeExample}
-The first line creates the collection of sample points. The next
-two lines populate the collection with given sample points. The
-last line creates an instance of the class {\tt
-LagrangeInterpolator} and evaluates its value at the desired
-point.
-
-The next example shows how to tabulate a function.
-\begin{codeExample} \label{ex:lagrangeJ2}
-\begin{verbatim}
-
- double radian = Math.PI / 180;
- DhbScientificCurves.Curve points = new DhbScientificCurves.Curve();
- for( int i = 1; i <= 45; i += 2)
-        points.addPoint( i, Math.sin( i * radian));
- LagrangeInterpolator interpolator =
-                                new LagrangeInterpolator( points);
- double deviation =interpolator.value( 8) -
-                        Math.sin( 8 * radian);
-\end{verbatim}
-\end{codeExample}
-The code above creates an instance of {\tt Curve}, an object
-containing the sample points. This object is then populated with
-the values of the sine function for odd degree values between 1
-and 45 degree. Then, an instance of the class {\tt
-LagrangeInterpolator} is created on the sample points. The last
-line of the code computes the difference between the interpolated
-value and the exact value.
-
-Listing \ref{lj:lagrange} shows the full code of the class
-implementing the interface shown above.
-
-The class {\tt LagrangeInterpolator} is implemented with a single
-instance variable containing the sample points. Each point
-contains the pair of values $\left(x_i,y_i\right)$ defining the
-function. The object containing the sample points can be any
-object implementing the interface {\tt PointSeries}. The single
-constructor method takes the object containing the sample points
-as sole argument.
-
-The interpolation itself is implemented within the single method
-{\tt value:}. This method is unusually long by object-oriented
-programming standards. In this case, however, there is no
-compelling reason to split any portion of the algorithm into a
-separate method. Moreover, splitting the method would increase the
-computing time.
-\begin{listing}
-Java implementation of the Lagrange interpolation
-\label{lj:lagrange}
-\input{Java/DhbInterpolation/LagrangeInterpolator.java}
-\end{listing}
-
 \section{Newton interpolation}
 \label{sec:newtoninterpol} If one must evaluate the Lagrange
 interpolation polynomial for several values, it is clear that the
@@ -548,26 +456,6 @@ each coefficient. Thus, one gains very little in compactness.
 \input{Smalltalk/FunctionEvaluation/DhbNewtonInterpolator}
 \end{listing}
 
-\subsection{Newton interpolation --- Java implementation}
-Listing \ref{lj:newtonint} shows the complete implementation in
-Java. The class {\tt NewtonInterpolator} is a subclass of class
-{\tt LagrangeInterpolator}. The code examples \ref{ex:lagrangeJ1}
-and \ref{ex:lagrangeJ2} can directly be applied to Newton
-interpolation after replacing the class name {\tt
-LagrangeInterpolator} with {\tt NewtonInterpolator}.
-
-Java has an additional argument against implementing a
-\patstyle{Observable/Observer} pattern to automatically reset the
-coefficients: an explicit finalization method is required to
-detach the link between \patstyle{Observer} and
-\patstyle{Observable} when the interpolator is no longer needed.
-Our simple implementation does not require finalization.
-
-\begin{listing}
-  Java implementation of the Newton interpolation
-\label{lj:newtonint}
-\input{Java/DhbInterpolation/NewtonInterpolator.java}
-\end{listing}
 
 \section{Neville interpolation}
 \label{sec:neville} Neville's algorithm uses a successive
@@ -677,25 +565,6 @@ abscissa as required by Neville's algorithm.
   Smalltalk implementation of Neville's algorithm
 \label{ls:neville}
 \input{Smalltalk/FunctionEvaluation/DhbNevilleInterpolator}
-\end{listing}
-
-\subsection{Neville interpolation --- Java implementation}
-Listing \ref{lj:neville} shows the implementation of Neville's
-algorithm in Java. The class {\tt NevilleInterpolator} is a
-subclass of class {\tt LagrangeInterpolator}. The code examples
-\ref{ex:lagrangeJ1} and \ref{ex:lagrangeJ2} can directly be
-applied to Neville interpolation after replacing the class name
-{\tt LagrangeInterpolator} with {\tt NevilleInterpolator}. An
-example of interpolation using the returned estimated error is
-given in section \ref{sec:jromberg}.
-
-\note{Since there is no sorted collection is Java, this class
-supposes that the calling application supplies the point sorted by
-ascending value of the abscissa.}
-
-\begin{listing}Java implementation of Neville interpolation
-\label{lj:neville}
-\input{Java/DhbInterpolation/NevilleInterpolator.java}
 \end{listing}
 
 \section{Bulirsch-Stoer interpolation}
@@ -821,19 +690,6 @@ DhbLagrangeInterpolator} with {\tt DhbBulirschStoerInterpolator}.
 \input{Smalltalk/FunctionEvaluation/DhbBulirschStoerInterpolator}
 \end{listing}
 
-\subsection{Bulirsch-Stoer interpolation --- Java implementation}
-Listing \ref{lj:bustoer} shows the implementation of
-Bulirsch-Stoer interpolation in Java. The class {\tt
-BulirschStoerInterpolator} is a subclass of class {\tt
-NevilleInterpolator}. The code examples \ref{ex:lagrangeJ1} and
-\ref{ex:lagrangeJ2} can directly be applied to Bulirsch-Stoer
-interpolation after replacing the class name {\tt
-LagrangeInterpolator} with {\tt BulirschStoerInterpolator}.
-\begin{listing}
-  Java implementation of Bulirsch-Stoer interpolation
-\label{lj:bustoer}
-\input{Java/DhbInterpolation/BulirschStoerInterpolator.java}
-\end{listing}
 
 \section{Cubic spline interpolation}
 The Lagrange interpolation polynomial is defined globally over the
@@ -1021,27 +877,6 @@ spline algorithm.
 \input{Smalltalk/FunctionEvaluation/DhbSplineInterpolator}
 \end{listing}
 
-\subsection{Cubic spline interpolation --- Java implementation}
-Listing \ref{lj:spline} shows the implementation of cubic spline
-interpolation in Java. The class {\tt SplineInterpolator} is a
-subclass of class {\tt NewtonInterpolator}.  The code examples
-\ref{ex:lagrangeJ1} and \ref{ex:lagrangeJ2} can directly be
-applied to cubic spline interpolation after replacing the class
-name {\tt LagrangeInterpolator} with {\tt SplineInterpolator}.
-
-The fact that an end-point derivative has not been supplied is
-flagged with the special Java value {\tt Double.NaN}.
-
-\note{Since there is no sorted collection is Java, this class
-supposes that the calling application supplies the point sorted by
-ascending value of the abscissa.}
-
-\begin{listing}
-  Java implementation of cubic spline
-interpolation
-\label{lj:spline}
-\input{Java/DhbInterpolation/SplineInterpolator.java}
-\end{listing}
 
 \section{Which method to choose?}
 At this point some reader might experience some difficulty in
