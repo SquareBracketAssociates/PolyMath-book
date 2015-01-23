@@ -198,52 +198,6 @@ properly defined.
 \input{Smalltalk/IterativeAlgorithms/DhbBisectionZeroFinder}
 \end{listing}
 
-\subsection{Bisection algorithm --- Java  implementation}
-Finding the zero of a function is performed by creating an
-instance of the class {\tt BisectionZeroFinder} and giving the
-function as the argument of the constructor method as explained in
-section \ref{sec:jiterrel}. For example the following code finds
-the solution of equation \ref{eq:centile90}.
-\begin{codeExample}
-\begin{verbatim}
-
- BisectionZeroFinder zeroFinder = new BisectionZeroFinder( new
-        OneVariableFunction() { public double value( double x)
-        { return NormalDistribution.errorFunction(x)-0.9;}});
- try { zeroFinder.setNegativeX( 0);
-       zeroFinder. setPositiveX ( 5);
-     } catch( IllegalArgumentException e) { return};
- zeroFinder.evaluate();
- double result = zeroFinder.getResult();
-\end{verbatim}
-\end{codeExample}
-The first line creates the object responsible to find the zero. It
-uses an inner class to define the logarithm function. The second
-line defines the initial values, $x_{\mathop{\rm pos}}$ and
-$x_{\mathop{\rm neg}}$ within an exception catching construct
-({\tt try$\ldots$catch}). The line before last performs the
-algorithm. The last line retrieves the result assuming the
-algorithm has converged.
-
-Listing \ref{lj:bisection} shows the implementation of the
-bisection zero finding algorithm in Java.
-
-The class {\tt BisectionZeroFinder} is a subclass of the class
-{\tt FunctionalIterator}. As one can see only a few methods need
-to be implemented. Most of them pertain to the definition of the
-initial interval.
-
-The methods defining the initial value, $x_{\mathop{\rm pos}}$ and
-$x_{\mathop{\rm neg}}$, are respectively {\tt setPositiveX} and
-{\tt setNegativeX}. Both of them throw an illegal argument
-exception if the function's value does not have the proper sign.
-The convenience methods to find random starting values are
-respectively {\tt findPositiveX} and {\tt findNegativeX}.
-
-\begin{listing} Java implementation of a generic
-derivative evaluation \label{lj:bisection}
-\input{Java/DhbIterations/BisectionZeroFinder.java}
-\end{listing}
 
 \section{Finding the zero of a function --- Newton's method}
 \label{sec:newton}\marginpar{Figure \ref{cl:zeroFinding} with the
@@ -361,47 +315,6 @@ algorithm have been already implemented in the superclasses.
 \end{listing}
 
 
-\subsection{Newton's method --- Java implementation}
-\label{sec:jnewton} The class is a subclass of the class {\tt
-FunctionalIterator} described in section \ref{ls:iterrel}. For
-example the following code finds the solution of equation
-\ref{eq:centile90}.
-\begin{verbatim}
-NewtonZeroFinder zeroFinder = new NewtonZeroFinder(
-    new OneVariableFunction() { public double value( double x)
-    { return NormalDistribution.errorFunction(x) - 0.9;}});
-zeroFinder.setDerivative(new OneVariableFunction()
-    { public double value( double x){ return NormalDistribution.normal(x);}});
-zeroFinder. setStartingValue( 1.0); zeroFinder.evaluate();
-double result = zeroFinder.getResult();
-\end{verbatim}
-The first line creates the object responsible to find the zero. It
-uses an inner class to define the error function. The second line
-defines the derivative also defined as an inner class. The third
-line defines the starting value. The line before last performs the
-algorithm. The last line retrieves the result assuming the
-algorithm has converged.
-
-Listing \ref{lj:newtonZero} shows the complete implementation in
-Java.
-
-The strong typing of Java saves us the need for checking supplied
-parameters. The supplied function and derivative must implement
-the {\tt OneVariableFunction} interface (\cf section
-\ref{sec:jvFunction}). If the derivative function is not supplied,
-an object constructed with the class {\tt FunctionDerivative} (\cf
-section \ref{sec:jvFunction}) is used instead.
-
-Since the superclass of {\tt NewtonZeroFinder} is an abstract
-class, two constructor methods are supplied. One defines the
-function and the initial value, the second defines also the
-derivative.
-
-Otherwise the code is similar to that of the Smalltalk
-implementation.
-\begin{listing} Java implementation of Newton's zero-finding method \label{lj:newtonZero}
-\input{Java/DhbIterations/NewtonZeroFinder.java}
-\end{listing}
 
 
 \section{Example of zero-finding --- Roots of polynomials}
@@ -481,36 +394,6 @@ numerical machine precision as discussed in section
 \begin{listing} Smalltalk implementation of finding the roots of a polynomial \label{ls:polroots}
 \input{Smalltalk/IterativeAlgorithms/DhbPolynomial(DhbIterativeAlgorithms)}
 \end{listing}
-
-
-\subsection{Roots of polynomials --- Java implementation}
-\label{sec:polrootsjava} Roots of a polynomial can be obtained as
-an array. For example, the following code sample retrieves the
-roots of the polynomial $x^3-2x^2-13x-10$:
-\begin{codeExample}
-\begin{verbatim}
-
-\end{verbatim}
-{\tt double[] coef = \{ -10, -13, -2, 1\};}\\ {\tt
-PolynomialFunction p = new PolynomialFunction( coef);}\\ {\tt
-double[] roots = p.roots();}\\
-\end{codeExample}
-Finding the roots of a polynomial in Java is implemented in three
-methods --- {\tt deflate} and {\tt roots} (two flavor of this one)
---- of listing \ref{lj:polynomial} (on page \pageref{lj:polynomial}).
-The implementation follows that of Smalltalk.
-
-Since the number of roots in a polynomial is not known at the
-beginning of the method, roots are kept in a Java {\tt Vector}
-object. A {\tt Vector} object is an array, which can grow its
-size. The manipulation of {\tt Vector} objects, however, differs
-significantly from that of an array. First, the elements of a {\tt
-Vector} object are instances of class {\tt Object}. Thus, using
-the elements always requires casting into the proper class. The
-roots are primitive types (double) so they must first be cast into
-the corresponding wrapper class {\tt Double}. Looping over the
-elements of a {\tt Vector} object must be made using an
-enumeration instead of the conventional {\tt for} loop.
 
 \section{Which method to choose}
 There are other zero-finding techniques: {\it regula falsi}, Brent
