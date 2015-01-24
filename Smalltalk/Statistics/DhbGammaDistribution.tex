@@ -8,8 +8,7 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf distributionName}
 \begin{verbatim}
-    ^'Gamma distribution'
-
+    ^ 'Gamma distribution'
 \end{verbatim}
 {\bf fromHistogram:} {\tt aHistogram}
 \begin{verbatim}
@@ -18,29 +17,23 @@ Class methods
         ifTrue: [ ^nil].
     alpha := aHistogram average.
     beta := aHistogram variance / alpha.
-    ^[ self shape: alpha / beta scale: beta] when: ExAll do: [ 
+    ^ [ self shape: alpha / beta scale: beta] when: ExAll do: [ 
                                        :signal | signal exitWith: nil]
-
 \end{verbatim}
 {\bf new}
 \begin{verbatim}
-    ^self error: 'Illegal creation message for this class'
-
+    ^ self error: 'Illegal creation message for this class'
 \end{verbatim}
 {\bf shape:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
 \begin{verbatim}
-    ^super new initialize: aNumber1 scale: aNumber2
-
+    ^ super new initialize: aNumber1 scale: aNumber2
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
 {\bf average}
 \begin{verbatim}
-    ^alpha * beta
-
+    ^ alpha * beta
 \end{verbatim}
 {\bf changeParametersBy:} {\tt aVector}
 \begin{verbatim}
@@ -49,36 +42,31 @@ Instance methods
     self computeNorm.
     incompleteGammaFunction := nil.
     randomCoefficients := nil.
-
 \end{verbatim}
 {\bf computeNorm}
 \begin{verbatim}
     norm := beta ln * alpha + alpha logGamma.
-
 \end{verbatim}
 {\bf distributionValue:} {\tt aNumber}
 \begin{verbatim}
-    ^self incompleteGammaFunction value: aNumber / beta
-
+    ^ self incompleteGammaFunction value: aNumber / beta
 \end{verbatim}
 {\bf incompleteGammaFunction}
 \begin{verbatim}
     incompleteGammaFunction isNil 
         ifTrue: 
-            [incompleteGammaFunction := DhbIncompleteGammaFunction 
-                                                        shape: alpha].
-    ^incompleteGammaFunction
-
+            [ incompleteGammaFunction := DhbIncompleteGammaFunction 
+                                                        shape: alpha ].
+    ^ incompleteGammaFunction
 \end{verbatim}
 {\bf initialize:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
 \begin{verbatim}
-    ( aNumber1 > 0 and: [ aNumber2 > 0])
+    (aNumber1 > 0 and: [ aNumber2 > 0])
         ifFalse: [ self error: 'Illegal distribution parameters'].
     alpha := aNumber1.
     beta := aNumber2.
     self computeNorm.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf initializeRandomCoefficientsForLargeAlpha}
 \begin{verbatim}
@@ -87,52 +75,44 @@ Instance methods
     b := alpha - (4 ln).
     q := 1 / a + alpha.
     d := 4.5 ln + 1.
-    ^Array with: a with: b with: q with: d
-
+    ^ Array with: a with: b with: q with: d
 \end{verbatim}
 {\bf initializeRandomCoefficientsForSmallAlpha}
 \begin{verbatim}
     | e |
     e := 1 exp.
-    ^( e + alpha) / e
-
+    ^ (e + alpha) / e
 \end{verbatim}
 {\bf kurtosis}
 \begin{verbatim}
-    ^6 / alpha
-
+    ^ 6 / alpha
 \end{verbatim}
 {\bf parameters}
 \begin{verbatim}
-    ^Array with: alpha with: beta
-
+    ^ Array with: alpha with: beta
 \end{verbatim}
 {\bf random}
 \begin{verbatim}
-    ^( alpha > 1 ifTrue: [ self randomForLargeAlpha]
+    ^ ( alpha > 1 ifTrue: [ self randomForLargeAlpha]
                         ifFalse:[ self randomForSmallAlpha]) * beta
-
 \end{verbatim}
 {\bf randomCoefficientsForLargeAlpha}
 \begin{verbatim}
     randomCoefficients isNil
-        ifTrue: [ randomCoefficients := self 
-                           initializeRandomCoefficientsForLargeAlpha].
-    ^randomCoefficients
-
+        ifTrue: [ randomCoefficients := self initializeRandomCoefficientsForLargeAlpha].
+    ^ randomCoefficients
 \end{verbatim}
 {\bf randomCoefficientsForSmallAlpha}
 \begin{verbatim}
     randomCoefficients isNil
         ifTrue: [ randomCoefficients := self 
                            initializeRandomCoefficientsForSmallAlpha].
-    ^randomCoefficients
-
+    ^ randomCoefficients
 \end{verbatim}
 {\bf randomForLargeAlpha}
 \begin{verbatim}
     [ true] whileTrue: [
-    | u1 u2 c v y z w|
+    | u1 u2 c v y z w |
     u1 := DhbMitchellMooreGenerator new floatValue.
     u2 := DhbMitchellMooreGenerator new floatValue.
     c := self randomCoefficientsForLargeAlpha.
@@ -142,8 +122,7 @@ Instance methods
     w := ( c at: 3) * v + ( c at: 2) - y.
     ( c at: 4) + w >= ( 4.5 * z) ifTrue: [ ^y].
     z ln <= w ifTrue: [ ^y].
-                                ].
-
+    ].
 \end{verbatim}
 {\bf randomForSmallAlpha}
 \begin{verbatim}
@@ -165,25 +144,21 @@ Instance methods
                                                           negated exp)
                         ifTrue: [ ^y].
                      ].
-                                ].
-
+    ].
 \end{verbatim}
 {\bf skewness}
 \begin{verbatim}
-    ^2 / alpha sqrt
-
+    ^ 2 / alpha sqrt
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
-    ^aNumber > 0
+    ^ aNumber > 0
         ifTrue: [ ( aNumber ln * (alpha - 1) - (aNumber / beta) - 
-                                                            norm) exp]
-        ifFalse:[ 0].
-
+                                                            norm) exp ]
+        ifFalse:[ 0 ].
 \end{verbatim}
 {\bf variance}
 \begin{verbatim}
-    ^beta squared * alpha
-
+    ^ beta squared * alpha
 \end{verbatim}
 

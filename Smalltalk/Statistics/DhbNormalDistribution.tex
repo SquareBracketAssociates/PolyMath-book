@@ -9,23 +9,19 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf distributionName}
 \begin{verbatim}
-    ^'Normal distribution'
-
+    ^ 'Normal distribution'
 \end{verbatim}
 {\bf fromHistogram:} {\tt aHistogram}
 \begin{verbatim}
-    ^self new: aHistogram average sigma: aHistogram standardDeviation
-
+    ^ self new: aHistogram average sigma: aHistogram standardDeviation
 \end{verbatim}
 {\bf new}
 \begin{verbatim}
     ^self new: 0 sigma: 1
-
 \end{verbatim}
 {\bf new:} {\tt aNumber1} {\bf sigma:} {\tt aNumber2}
 \begin{verbatim}
-    ^super new initialize: aNumber1 sigma: aNumber2
-
+    ^ super new initialize: aNumber1 sigma: aNumber2
 \end{verbatim}
 {\bf random}
 \begin{verbatim}
@@ -42,41 +38,33 @@ Class methods
         ifFalse:[ v1 :=NextRandom.
                   NextRandom := nil.
                 ].
-    ^v1
-
+    ^ v1
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
 {\bf average}
 \begin{verbatim}
-    ^mu
-
+    ^ mu
 \end{verbatim}
 {\bf changeParametersBy:} {\tt aVector}
 \begin{verbatim}
     mu := mu + ( aVector at: 1).
     sigma := sigma + ( aVector at: 2).
-
 \end{verbatim}
 {\bf distributionValue:} {\tt aNumber}
 \begin{verbatim}
-    ^DhbErfApproximation new value: ( ( aNumber - mu) / sigma)
-
+    ^ DhbErfApproximation new value: ( ( aNumber - mu) / sigma)
 \end{verbatim}
 {\bf initialize:} {\tt aNumber1} {\bf sigma:} {\tt aNumber2}
 \begin{verbatim}
     mu := aNumber1.
     sigma := aNumber2.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf kurtosis}
 \begin{verbatim}
-    ^0
-
+    ^ 0
 \end{verbatim}
 {\bf parameters}
 \begin{verbatim}
@@ -85,33 +73,28 @@ Instance methods
 \end{verbatim}
 {\bf random}
 \begin{verbatim}
-    ^self class random * sigma + mu
-
+    ^ self class random * sigma + mu
 \end{verbatim}
 {\bf skewness}
 \begin{verbatim}
-    ^0
-
+    ^ 0
 \end{verbatim}
 {\bf standardDeviation}
 \begin{verbatim}
-    ^sigma
-
+    ^ sigma
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
-    ^( DhbErfApproximation new normal: (aNumber - mu) / sigma) / 
+    ^ (DhbErfApproximation new normal: (aNumber - mu) / sigma) / 
                                                                  sigma
-
 \end{verbatim}
 {\bf valueAndGradient:} {\tt aNumber}
 \begin{verbatim}
     | dp y |
-    y := ( aNumber - mu) / sigma.
-    dp := ( DhbErfApproximation new normal: y) / sigma.
-    ^Array with: dp
+    y := (aNumber - mu) / sigma.
+    dp := (DhbErfApproximation new normal: y) / sigma.
+    ^ Array with: dp
            with: ( DhbVector with: dp * y / sigma
                              with: dp * ( y squared - 1) / sigma)
-
 \end{verbatim}
 

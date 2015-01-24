@@ -7,16 +7,12 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf new}
 \begin{verbatim}
-    ^super new: 4
-
+    ^ super new: 4
 \end{verbatim}
 {\bf new:} {\tt anInteger}
 \begin{verbatim}
-    ^self error: 'Illegal creation message for this class'
-
+    ^ self error: 'Illegal creation message for this class'
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -43,6 +39,5 @@ Instance methods
         at: 3 put: ((moments at: 3) + (c2 * (1 + n))) * n / n1;
         at: 2 put: (moments at: 2) - correction;
         at: 1 put: n1
-
 \end{verbatim}
 

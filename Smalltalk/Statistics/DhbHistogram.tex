@@ -8,33 +8,16 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf defaultCacheSize}
 \begin{verbatim}
-    ^100
-
+    ^ 100
 \end{verbatim}
 {\bf defaultNumberOfBins}
 \begin{verbatim}
-    ^50
-
+    ^ 50
 \end{verbatim}
 {\bf integerScales}
 \begin{verbatim}
-
+   ^ self
 \end{verbatim}
-{\bf new}
-\begin{verbatim}
-    ^super new initialize
-
-\end{verbatim}
-{\bf scales}
-\begin{verbatim}
-
-\end{verbatim}
-{\bf semiIntegerScales}
-\begin{verbatim}
-
-\end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -42,21 +25,19 @@ Instance methods
 \begin{verbatim}
     | bin |
     self isCached
-        ifTrue: [ ^self accumulateInCache: aNumber].
+        ifTrue: [ ^self accumulateInCache: aNumber ].
     bin := self binIndex: aNumber.
     ( bin between: 1 and: contents size)
         ifTrue: [ contents at: bin put: ( contents at: bin) + 1.
                      moments accumulate: aNumber.
                    ]
-        ifFalse:[ self processOverflows: bin for: aNumber].
-
+        ifFalse:[ self processOverflows: bin for: aNumber ].
 \end{verbatim}
 {\bf accumulateInCache:} {\tt aNumber}
 \begin{verbatim}
     contents add: aNumber.
     contents size > cacheSize
-        ifTrue: [ self flushCache].
-
+        ifTrue: [ self flushCache ].
 \end{verbatim}
 {\bf adjustDimensionUpTo:} {\tt aNumber}
 \begin{verbatim}
@@ -68,24 +49,20 @@ Instance methods
     contents := Array new: ( ( maximum - minimum) / binWidth) 
                                                               ceiling.
     contents atAllPut: 0.
-
 \end{verbatim}
 {\bf average}
 \begin{verbatim}
-    ^moments average
-
+    ^ moments average
 \end{verbatim}
 {\bf binIndex:} {\tt aNumber}
 \begin{verbatim}
     ^( ( aNumber - minimum) / binWidth) floor + 1
-
 \end{verbatim}
 {\bf binWidth}
 \begin{verbatim}
     self isCached
         ifTrue: [ self flushCache].
     ^binWidth
-
 \end{verbatim}
 {\bf collectIntegralPoints:} {\tt aBlock}
 \begin{verbatim}
@@ -106,47 +83,42 @@ Instance methods
           answer add: ( aBlock value: bin @ x).
         ].
     answer add: ( aBlock value: bin @ 0).
-    ^answer asArray
-
+    ^ answer asArray
 \end{verbatim}
 {\bf collectPoints:} {\tt aBlock}
 \begin{verbatim}
     | answer bin lastContents |
     self isCached
-        ifTrue: [ self flushCache].
+        ifTrue: [ self flushCache ].
     answer := OrderedCollection new: ( contents size * 2 + 1).
     bin := self minimum.
-    answer add: ( aBlock value: bin @ 0).
+    answer add: (aBlock value: bin @ 0).
     contents do:
         [ :each |
-          answer add: ( aBlock value: bin @ each).
+          answer add: (aBlock value: bin @ each).
           bin := bin + binWidth.
-          answer add: ( aBlock value: bin @ each).
+          answer add: (aBlock value: bin @ each).
         ].
-    answer add: ( aBlock value: bin @ 0).
-    ^answer asArray
-
+    answer add: (aBlock value: bin @ 0).
+    ^ answer asArray
 \end{verbatim}
 {\bf count}
 \begin{verbatim}
-    ^moments count
-
+    ^ moments count
 \end{verbatim}
 {\bf countAt:} {\tt aNumber}
 \begin{verbatim}
     | n |
     n := self binIndex: aNumber.
-    ^( n between: 1 and: contents size)
-            ifTrue: [ contents at: n]
-            ifFalse:[ 0]
-
+    ^ (n between: 1 and: contents size)
+            ifTrue: [ contents at: n ]
+            ifFalse: [ 0 ]
 \end{verbatim}
 {\bf countOverflows:} {\tt anInteger}
 \begin{verbatim}
     anInteger > 0
-        ifTrue: [ overflow := overflow + 1]
-        ifFalse:[ underflow := underflow + 1].
-
+        ifTrue: [ overflow := overflow + 1 ]
+        ifFalse:[ underflow := underflow + 1 ].
 \end{verbatim}
 {\bf countsBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
 \begin{verbatim}
@@ -161,8 +133,7 @@ Instance methods
       aNumber2 - ( binWidth * ( n2 - 1) + self maximum)) / binWidth)].
     ( n1 + 1) to: ( n2 - 1) do: [ :n | answer := answer + ( contents 
                                                               at: n)].
-    ^answer
-
+    ^ answer
 \end{verbatim}
 {\bf countsUpTo:} {\tt aNumber}
 \begin{verbatim}
@@ -173,13 +144,11 @@ Instance methods
     answer := ( contents at: n) * ( aNumber - ( binWidth * ( n - 1) + 
                                             self minimum)) / binWidth.
     1 to: ( n - 1) do: [ :m | answer := answer + ( contents at: m)].
-    ^answer + underflow
-
+    ^ answer + underflow
 \end{verbatim}
 {\bf errorOnAverage}
 \begin{verbatim}
-    ^moments errorOnAverage
-
+    ^ moments errorOnAverage
 \end{verbatim}
 {\bf flushCache}
 \begin{verbatim}
@@ -202,8 +171,7 @@ Instance methods
         ifTrue: [ maximum := minimum + desiredNumberOfBins].
     values := contents.
     self adjustDimensionUpTo: maximum.
-    values do: [ :each | self accumulate: each].
-
+    values do: [ :each | self accumulate: each ].
 \end{verbatim}
 {\bf freeExtent:} {\tt aBoolean}
 \begin{verbatim}
@@ -211,14 +179,12 @@ Instance methods
         ifFalse: [ self error: 'Histogram extent cannot be 
                                                           redefined'].
     freeExtent := aBoolean.
-
 \end{verbatim}
 {\bf growContents:} {\tt anInteger}
 \begin{verbatim}
     anInteger > 0
-        ifTrue: [ self growPositiveContents: anInteger]
-        ifFalse:[ self growNegativeContents: anInteger].
-
+        ifTrue: [ self growPositiveContents: anInteger ]
+        ifFalse: [ self growNegativeContents: anInteger ].
 \end{verbatim}
 {\bf growNegativeContents:} {\tt anInteger}
 \begin{verbatim}
@@ -232,7 +198,6 @@ Instance methods
             replaceFrom: ( n + 1) to: newSize with: contents.
     contents := newContents.
     minimum := ( anInteger - 1) * binWidth + minimum.
-
 \end{verbatim}
 {\bf growPositiveContents:} {\tt anInteger}
 \begin{verbatim}
@@ -244,7 +209,6 @@ Instance methods
             replaceFrom: ( n + 1) to: ( anInteger - 1) withObject: 0;
             at: anInteger put: 1.
     contents := newContents.
-
 \end{verbatim}
 {\bf initialize}
 \begin{verbatim}
@@ -255,8 +219,7 @@ Instance methods
     moments := DhbFixedStatisticalMoments new.
     overflow := 0.
     underflow := 0.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf inverseDistributionValue:} {\tt aNumber}
 \begin{verbatim}
@@ -272,56 +235,47 @@ Instance methods
           integral := integral + each.
           x := self binWidth + x.
         ].
-    ^self maximum
-
+    ^ self maximum
 \end{verbatim}
 {\bf isCached}
 \begin{verbatim}
-    ^binWidth isNil
-
+    ^ binWidth isNil
 \end{verbatim}
 {\bf isEmpty}
 \begin{verbatim}
-    ^false
-
+    ^ false
 \end{verbatim}
 {\bf kurtosis}
 \begin{verbatim}
-    ^moments kurtosis
-
+    ^ moments kurtosis
 \end{verbatim}
 {\bf lowBinLimitAt:} {\tt anInteger}
 \begin{verbatim}
-    ^( anInteger - 1) * binWidth + minimum
-
+    ^ (anInteger - 1) * binWidth + minimum
 \end{verbatim}
 {\bf maximum}
 \begin{verbatim}
     self isCached
-        ifTrue: [ self flushCache].
-    ^contents size * binWidth + minimum
-
+        ifTrue: [ self flushCache ].
+    ^ contents size * binWidth + minimum
 \end{verbatim}
 {\bf maximumCount}
 \begin{verbatim}
     self isCached
-        ifTrue: [ self flushCache].
+        ifTrue: [ self flushCache ].
     ^contents inject: ( contents isEmpty ifTrue: [ 1] ifFalse:[ 
                                                       contents at: 1])
                     into: [ :max :each | max max: each]
-
 \end{verbatim}
 {\bf minimum}
 \begin{verbatim}
     self isCached
-        ifTrue: [ self flushCache].
-    ^minimum
-
+        ifTrue: [ self flushCache ].
+    ^ minimum
 \end{verbatim}
 {\bf overflow}
 \begin{verbatim}
-    ^overflow
-
+    ^ overflow
 \end{verbatim}
 {\bf processOverflows:} {\tt anInteger} {\bf for:} {\tt aNumber}
 \begin{verbatim}
@@ -329,12 +283,7 @@ Instance methods
         ifTrue: [ self growContents: anInteger.
                      moments accumulate: aNumber
                    ]
-        ifFalse:[ self countOverflows: anInteger].
-
-\end{verbatim}
-{\bf roundToScale:} {\tt aNumber}
-\begin{verbatim}
-
+        ifFalse:[ self countOverflows: anInteger ].
 \end{verbatim}
 {\bf setDesiredNumberOfBins:} {\tt anInteger}
 \begin{verbatim}
@@ -342,7 +291,6 @@ Instance methods
         ifFalse:[ self error: 'Desired number of bins must be 
                                                            positive'].
     desiredNumberOfBins := anInteger.
-
 \end{verbatim}
 {\bf setRangeFrom:} {\tt aNumber1} {\bf to:} {\tt aNumber2} {\bf bins:} {\tt anInteger}
 \begin{verbatim}
@@ -352,7 +300,6 @@ Instance methods
     minimum := aNumber1.
     self setDesiredNumberOfBins: anInteger;
            adjustDimensionUpTo: aNumber2.
-
 \end{verbatim}
 {\bf setWidth:} {\tt aNumber1} {\bf from:} {\tt aNumber2} {\bf bins:} {\tt anInteger}
 \begin{verbatim}
@@ -362,31 +309,25 @@ Instance methods
     minimum := aNumber2.
     self setDesiredNumberOfBins: anInteger;
            adjustDimensionUpTo: ( aNumber1 * anInteger + aNumber2).
-
 \end{verbatim}
 {\bf skewness}
 \begin{verbatim}
-    ^moments skewness
-
+    ^ moments skewness
 \end{verbatim}
 {\bf standardDeviation}
 \begin{verbatim}
-    ^moments standardDeviation
-
+    ^ moments standardDeviation
 \end{verbatim}
 {\bf totalCount}
 \begin{verbatim}
-    ^moments count + underflow + overflow
-
+    ^ moments count + underflow + overflow
 \end{verbatim}
 {\bf underflow}
 \begin{verbatim}
-    ^underflow
-
+    ^ underflow
 \end{verbatim}
 {\bf variance}
 \begin{verbatim}
-    ^moments variance
-
+    ^ moments variance
 \end{verbatim}
 

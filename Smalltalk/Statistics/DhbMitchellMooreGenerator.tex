@@ -17,8 +17,7 @@ Class methods
     | congruentialGenerator |
     congruentialGenerator := DhbCongruentialRandomNumberGenerator 
                                                                   new.
-    ^self generateSeeds: congruentialGenerator
-
+    ^ self generateSeeds: congruentialGenerator
 \end{verbatim}
 {\bf generateSeeds:} {\tt congruentialGenerator}
 \begin{verbatim}
@@ -28,8 +27,7 @@ Class methods
 \begin{verbatim}
     UniqueInstance isNil
         ifTrue: [ UniqueInstance := self default].
-    ^UniqueInstance
-
+    ^ UniqueInstance
 \end{verbatim}
 {\bf seed:} {\tt anInteger}
 \begin{verbatim}
@@ -37,10 +35,7 @@ Class methods
     congruentialGenerator := DhbCongruentialRandomNumberGenerator 
                                                       seed: anInteger.
     ^self generateSeeds: congruentialGenerator
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -54,7 +49,7 @@ Instance methods
     highIndex > randoms size ifTrue: [highIndex := 1].
     lowIndex := lowIndex + 1.
     lowIndex > randoms size ifTrue: [lowIndex := 1].
-    ^x
+    ^ x
 
 \end{verbatim}
 {\bf initialize:} {\tt anArray} {\bf lowIndex:} {\tt anInteger}
@@ -62,12 +57,10 @@ Instance methods
     randoms := anArray.
     lowIndex := anInteger.
     highIndex := randoms size.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf integerValue:} {\tt anInteger}
 \begin{verbatim}
-    ^( self floatValue * anInteger) truncated
-
+    ^ (self floatValue * anInteger) truncated
 \end{verbatim}
 

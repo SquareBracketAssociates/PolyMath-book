@@ -8,16 +8,12 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf new}
 \begin{verbatim}
-    ^self new: 4
-
+    ^ self new: 4
 \end{verbatim}
 {\bf new:} {\tt anInteger}
 \begin{verbatim}
-    ^super new initialize: anInteger + 1
-
+    ^ super new initialize: anInteger + 1
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -53,38 +49,32 @@ Instance methods
                     pascal at: l put: (pascal at: l - 1) + (pascal 
                                                                at: l).
                     term := (pascal at: l) * (oldSums at: l) + term.
-                    oldSums at: l put: (oldSums at: l) * correction].
+                    oldSums at: l put: (oldSums at: l) * correction ].
             pascal at: 2 put: (pascal at: 1) + (pascal at: 2).
-            moments at: k put: term * n1]
-
+            moments at: k put: term * n1 ]
 \end{verbatim}
 {\bf average}
 \begin{verbatim}
-    self count = 0 ifTrue: [^nil].
-    ^moments at: 2
-
+    self count = 0 ifTrue: [ ^nil ].
+    ^ moments at: 2
 \end{verbatim}
 {\bf centralMoment:} {\tt anInteger}
 \begin{verbatim}
-    ^moments at: anInteger + 1
-
+    ^ moments at: anInteger + 1
 \end{verbatim}
 {\bf count}
 \begin{verbatim}
-    ^moments at: 1
-
+    ^ moments at: 1
 \end{verbatim}
 {\bf errorOnAverage}
 \begin{verbatim}
-    ^( self variance / self count) sqrt
-
+    ^ (self variance / self count) sqrt
 \end{verbatim}
 {\bf initialize:} {\tt anInteger}
 \begin{verbatim}
     moments := Array new: anInteger.
     self reset.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf kurtosis}
 \begin{verbatim}
@@ -93,15 +83,13 @@ Instance methods
     n < 4 ifTrue: [^nil].
     n23 := (n - 2) * (n - 3).
     n1 := n - 1.
-    ^((moments at: 5) * n squared * (n + 1) / (self variance squared 
+    ^ ((moments at: 5) * n squared * (n + 1) / (self variance squared 
                                                                 * n1) 
         - (n1 squared * 3)) / n23
-
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
     moments atAllPut: 0
-
 \end{verbatim}
 {\bf skewness}
 \begin{verbatim}
@@ -109,18 +97,15 @@ Instance methods
     n := self count.
     n < 3 ifTrue: [^nil].
     v := self variance.
-    ^(moments at: 4) * n squared / ((n - 1) * (n - 2) * (v sqrt * v))
-
+    ^ (moments at: 4) * n squared / ((n - 1) * (n - 2) * (v sqrt * v))
 \end{verbatim}
 {\bf standardDeviation}
 \begin{verbatim}
-    ^self variance sqrt
-
+    ^ self variance sqrt
 \end{verbatim}
 {\bf unnormalizedVariance}
 \begin{verbatim}
-    ^( self centralMoment: 2) * self count
-
+    ^ (self centralMoment: 2) * self count
 \end{verbatim}
 {\bf variance}
 \begin{verbatim}
@@ -128,7 +113,5 @@ Instance methods
     n := self count.
     n < 2
         ifTrue: [ ^nil].
-    ^self unnormalizedVariance / ( n - 1)
-
+    ^ self unnormalizedVariance / ( n - 1)
 \end{verbatim}
-

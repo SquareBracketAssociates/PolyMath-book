@@ -7,24 +7,19 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf distributionName}
 \begin{verbatim}
-    ^'Unknown distribution'
-
+    ^ 'Unknown distribution'
 \end{verbatim}
 {\bf fromHistogram:} {\tt aHistogram}
 \begin{verbatim}
-    ^nil
-
+    ^ nil
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
 {\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
 \begin{verbatim}
-    ^( self distributionValue: aNumber2) - ( self distributionValue: 
+    ^ (self distributionValue: aNumber2) - (self distributionValue: 
                                                              aNumber1)
-
 \end{verbatim}
 {\bf approximatedValueAndGradient:} {\tt aNumber}
 \begin{verbatim}
@@ -47,40 +42,34 @@ Instance methods
         ].
     self changeParametersBy: delta.
     ^Array with: dp with: gradient
-
 \end{verbatim}
 {\bf average}
 \begin{verbatim}
     self subclassResponsibility.
-
 \end{verbatim}
 {\bf distributionFunction}
 \begin{verbatim}
-    ^DhbProbabilityDistributionFunction density: self
-
+    ^ DhbProbabilityDistributionFunction density: self
 \end{verbatim}
 {\bf distributionValue:} {\tt aNumber}
 \begin{verbatim}
-    ^self subclassResponsibility
+    ^ self subclassResponsibility
 
 \end{verbatim}
 {\bf inverseDistributionValue:} {\tt aNumber}
 \begin{verbatim}
-    ^( aNumber between: 0 and: 1)
+    ^ (aNumber between: 0 and: 1)
             ifTrue: [ self privateInverseDistributionValue: aNumber]
             ifFalse:[ self error: 'Illegal argument for inverse 
                                                   distribution value']
-
 \end{verbatim}
 {\bf kurtosis}
 \begin{verbatim}
-    ^nil
-
+    ^ nil
 \end{verbatim}
 {\bf parameters}
 \begin{verbatim}
-    ^self subclassResponsibility
-
+    ^ self subclassResponsibility
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -97,44 +86,36 @@ Instance methods
             ].
         aStream nextPut: $).
         ].
-
 \end{verbatim}
 {\bf privateInverseDistributionValue:} {\tt aNumber}
 \begin{verbatim}
-    ^( DhbNewtonZeroFinder function: [ :x | ( self distributionValue: 
+    ^(DhbNewtonZeroFinder function: [ :x | ( self distributionValue: 
                                        x) - aNumber] derivative: self)
         initialValue: self average / (1 - aNumber); evaluate
-
 \end{verbatim}
 {\bf random}
 \begin{verbatim}
-    ^self privateInverseDistributionValue: DhbMitchellMooreGenerator 
+    ^ self privateInverseDistributionValue: DhbMitchellMooreGenerator 
                                                         new floatValue
-
 \end{verbatim}
 {\bf skewness}
 \begin{verbatim}
-    ^nil
-
+    ^ nil
 \end{verbatim}
 {\bf standardDeviation}
 \begin{verbatim}
-    ^self variance sqrt
-
+    ^ self variance sqrt
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
     self subclassResponsibility.
-
 \end{verbatim}
 {\bf valueAndGradient:} {\tt aNumber}
 \begin{verbatim}
-    ^self approximatedValueAndGradient: aNumber
-
+    ^ self approximatedValueAndGradient: aNumber
 \end{verbatim}
 {\bf variance}
 \begin{verbatim}
-    ^self standardDeviation squared
-
+    ^ self standardDeviation squared
 \end{verbatim}
 
