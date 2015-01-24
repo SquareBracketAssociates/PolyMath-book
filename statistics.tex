@@ -8,8 +8,7 @@
 
 \chapter{Elements of statistics}
 \label{ch:statistics} \vspace{1 ex}
-\begin{flushright} {\sl La statistique est la premi\'ere des sciences inexactes.}
-\footnote{Statistics is the first of the inexact sciences.}\\
+\begin{flushright} {\sl La statistique est la premi\`ere des sciences inexactes.}\footnote{Statistics is the first of the inexact sciences.}\\
 Edmond et Jules de Goncourt
 \end{flushright}
 \vspace{1 ex} Statistical analysis comes into play when dealing
@@ -191,8 +190,8 @@ discussed in section \ref{sec:moments}.
 
  | accumulator valueStream average stdev skewness kurtosis |
  accumulator := DhbFastStatisticalMoments new.
- [ valueStream atEnd]
-        whileFalse:[ accumulator accumulate: valueStream next].
+ [ valueStream atEnd ]
+        whileFalse: [ accumulator accumulate: valueStream next ].
  average := accumulator average.
  stdev := accumulator standardDeviation.
  skewness := accumulator skewness.
@@ -220,58 +219,6 @@ skewness or kurtosis --- cannot be computed, the returned value is
 \input{Smalltalk/Statistics/DhbFastStatisticalMoments}
 \end{listing}
 
-\subsection{Statistical moments --- Java implementation}
-\label{sec:jmoments}Listing \ref{lj:moments} shows the complete
-implementation in Java.
-
-The following code shows how to use the class {\tt
-FastStatisticalMoments} to accumulate measurements of a random
-variable and to extract the various distribution parameters
-discussed in section \ref{sec:moments}.
-\begin{codeExample}
-\label{ex:jmoments}
-\begin{verbatim}
-
- double[] values;
-\end{verbatim}
-\hfil{\tt<\sl Collecting measurements into the array \tt
-values>}\hfil
-\begin{verbatim}
- FastStatisticalMoments accumulator = new FastStatisticalMoments();
- for ( int i = 0; i < values.length; i++)
-     accumulator.accumulate( values[i]);
- double average = accumulator.average();
- double stdev = accumulator.standardDeviation();
- double skewness = accumulator.skewness();
- double kurtosis = accumulator.kurtosis();
-\end{verbatim}
-\end{codeExample}
-This example assumes that the measurements of the random variable
-are collected into an array of double.
-
-After collecting the measurements, an instance of the class {\tt
-FastStatisticalMoments} is created with the default dimension.
-This default allocates enough storage to accumulate up to the
-moment of $4\th$ order. The next two lines are the loop
-accumulating the values into the moments. The last four lines
-extract the main parameters of the distribution.
-
-If any of the distribution's parameters --- average, variance,
-skewness or kurtosis --- cannot be computed, the returned value is
-{\tt NaN}.
-
-The computation of the standard deviation and of the error on the
-average are handled by the superclass (\cf listing
-\ref{lj:genmoments}).
-\begin{listing} Java implementation of statistical moments \label{lj:moments}
-\input{Java/DhbStatistics/FastStatisticalMoments.java}
-\end{listing}
-\begin{quote}
-{\bf Note:} The method {\tt unnormalizedVariance} computes the
-expression $\sum_{i=1}^n\left(x_i-\bar{x}\right)^2$ needed to
-compute the confidence level for the $t$-test (\cf section
-\ref{sec:Ftest}).
-\end{quote}
 
 \section{Robust implementation of statistical moments}
 \label{sec:robustmoment} The methods used to implement the
@@ -460,48 +407,6 @@ delegate the parametric creation to the method of the superclass.
 \input{Smalltalk/Statistics/DhbFixedStatisticalMoments}
 \end{listing}
 
-\subsection{Robust central moments --- Java
-implementation} \label{sec:jrobustmoment} Listing
-\ref{lj:genmoments} shows the implementation of the robust
-statistical moments. Listing \ref{lj:fixedmoments} shows a
-specialization to optimize the speed of accumulation for the most
-frequently used case (accumulation up to the $4\th$ order).
-
-Using the class is identical for all classes of the hierarchy.
-Thus, the code example presented in section \ref{sec:jmoments} is
-also valid for these two classes.
-
-The class constructor method of class {\tt StatisticalMoments}
-takes as argument the highest order of the accumulated moments and
-allocates the required storage. A class constructor method without
-argument creates an instance corresponding to the most frequent
-usage: the highest order is 4.
-
-The methods computing the distribution parameters --- average,
-variance, skewness and kurtosis --- return {\tt NaN} is the result
-is undefined for lack of measurements.
-
-\begin{listing} Java implementation of accurate statistical moments \label{lj:genmoments}
-\input{Java/DhbStatistics/StatisticalMoments.java}
-\end{listing}
-\begin{quote}
-{\bf Note:} The method {\tt tConfidenceLevel} implements the
-$t$-Test discussed in section \ref{sec:ttest}. The method {\tt
-fConfidenceLevel} implements the $F$-Test discussed in section
-\ref{sec:Ftest}.
-\end{quote}
-
-The class {\tt FixedStatisticalMoments} is a specialization of the
-class {\tt StatisticalMoments} for a fixed number of central
-moments going up to the $4\th$ order.
-
-There is only one class constructor method, namely the one
-corresponding to the default number of orders.
-
-\begin{listing} Java implementation of accurate statistical moments with fixed order\label{lj:fixedmoments}
-\input{Java/DhbStatistics/FixedStatisticalMoments.java}
-\end{listing}
-
 \section{Histograms}
 \label{sec:histogram} Whereas statistical moments provides a quick
 way of obtaining information about the distribution of a measured
@@ -616,8 +521,8 @@ measurements into a histogram.
 
  | histogram valueStream |
  histogram := DhbHistogram new.
- [ valueStream atEnd]
-        whileFalse:[ histogram accumulate: valueStream next].
+ [ valueStream atEnd ]
+        whileFalse: [ histogram accumulate: valueStream next ].
 \end{verbatim}
 \hfil {\tt<\sl printing or display of the histogram\tt >}\hfil
 \end{codeExample}
@@ -738,136 +643,6 @@ implementation of maximum likelihood fit is discussed in section
 \input{Smalltalk/Statistics/DhbHistogram}
 \end{listing}
 
-\subsection{Histograms --- Java implementation} Listing
-\ref{lj:histogram} shows the implementation of a histogram in
-Java. The following code shows how to use the class {\tt
-Histogram} to accumulate measurements of a random variable and to
-extract the various distribution parameters discussed in section
-\ref{sec:moments}.
-\begin{codeExample}
-\begin{verbatim}
-
- double[] values;
-\end{verbatim}
-\hfil{\tt<\sl Collecting measurements into the array \tt
-values>}\hfil
-\begin{verbatim}
- Histogram histogram = new Histogram();
- for ( int i = 0; i < values.length; i++)
-     histogram.accumulate( values[i]);
-\end{verbatim}
-\hfil {\tt<\sl printing or display of the histogram\tt >}\hfil
-\end{codeExample}
-This example assumes that the measurements of the random variable
-are collected into an array of double. As you can see, there is
-very little difference with the example of section
-\ref{sec:jmoments}. One can also extract the parameters of the
-distribution from the histogram in the exact same way as it was
-done for statistical moments.
-
-\noindent A histogram can also be declared with given limits and a
-desired number of bins. If the limits are $2.0$ and $7.0$ and the
-desired number of bins is 50, the histogram declaration of the
-previous example must be replaced by the line:
-\begin{quote}
-\begin{verbatim}
- Histogram histogram = new Histogram(2.0,7.0,50);
-\end{verbatim}
-\end{quote}
-
-\noindent The class {\tt Histogram} has the following instance
-variables:
-\begin{description}
-  \item[\tt minimum] the minimum of the accumulated values, that
-  is $x_{\min}$,
-  \item[\tt binWidth] the bin width, that is $w$,
-  \item[\tt contents] the contents of the histogram, that is an
-  array of integers,
-  \item[\tt growthAllowed] a Boolean flag denoting whether the limits
-  of the histogram can be adjusted to include all possible values,
-  \item[\tt integerBinWidth] a Boolean flag denoting whether the limits
-  of the histogram must be adjusted to integer scales only,
-  \item[\tt underflow] a counter to accumulate the underflow of the histogram,
-  \item[\tt overflow] a counter to accumulate the overflow of the histogram,
-  \item[\tt moments] an instance of the class {\tt
-  DhbFixedStatisticalMoments} to accumulate statistical moments up
-  to the $4\th$ order (\cf section \ref{sec:srobustmoment}).
-  \item[\tt cached] a Boolean flag denoting whether values are
-  currently accumulated in a cache for later determination of the limits,
-  \item[\tt cache] a cache to accumulate values.
-\end{description}
-
-There are six contructor methods for a histogram. We have used the
-fact that the type of the parameters uniquely defines the method.
-Thus, each contructor methods depends on a different combination
-of the parameters defining the limits:
-\begin{description}
-  \item[\tt Histogram(double,double,int)] defines a histogram by
-  specifying the parameters $x_{\min}$, $x_{\max}$ and $n$ in this
-  order,
-  \item[\tt Histogram(int,double,double)] defines a histogram by
-  specifying the parameters $n$, $x_{\min}$ and $w$ in this
-  order,
-  \item[\tt Histogram(double,double)] defines a histogram by
-  specifying the parameters $x_{\min}$ and $x_{\max}$ in this
-  order; the number of bin is set to 50,
-  \item[\tt Histogram(int,int)] defines a histogram with automatic
-  determination of the limits by specifying the size of the cache and
-  the number of bins $n$ in this order,
-  \item[\tt Histogram(int)] defines a histogram with automatic
-  determination of the limits by specifying the size of the cache;
-  the number of bin is set to 50,
-  \item[\tt Histogram()] defines a histogram with automatic
-  determination of the limits with a cache size of 100 and
-  a number of bin of 50,
-\end{description}
-
-The method {\tt setGrowthAllowed} sets the flag to allow the
-limits of the histogram to be adjusted to the accumulated values.
-A run time exception is thrown by this method if the histogram has
-already accumulated some counts in the underflow or the overflow.
-
-The method {\tt accumulate} is used to accumulate the values. If
-the histogram is still cached
---- that is when values are directly accumulated into the cache
-for later determination of the limits
---- the value is added to the cache. In this mode, the instance
-variable {\tt underflow} is used to index the cache position. When
-the cache is full, limits are computed and the cache is flushed.
-The corresponding instance variable is reset to {\tt null}. In
-direct accumulation mode, the value is compared to the histogram
-limits. If the value lies within the histogram limits, the value
-is accumulated. Otherwise it is treated like an overflow or an
-underflow. The methods {\tt expandDown} and {\tt expandUp} handle
-the case where the limits must be adjusted.
-
-The adjustment of the histogram limits to reasonable values is
-performed by the methods {\tt getBinParameters} and  {\tt
-defineParameters}. The former is used when the limits are
-determined automatically. The latter is used when the limits are
-specified using one of the initialization methods. The Java
-implementation gives the choice to force the limits to integer
-values. The scale values and final algorithm can be found in the
-class {\tt DhbMath} (\cf listing \ref{lj:floatmachine}).
-
-There are many methods used to retrieve information from a
-histogram. Enumerating them here would be too tedious. Method
-names are explicit enough to get a rough idea of what each method
-is doing; looking at the code should suffice for a detailed
-understanding. The reader should just note that all methods
-retrieving the parameters of the distribution, as discussed in
-section \ref{sec:jmoments}, are implemented by delegating the
-method to the instance variable {\tt moments}.
-
-\begin{listing} Java implementation of histograms \label{lj:histogram}
-\input{Java/DhbScientificCurves/Histogram.java}
-\end{listing}
-\begin{quote}
-{\bf Note:} The method {\tt tConfidenceLevel} implements the
-$t$-Test discussed in section \ref{sec:ttest}. The method {\tt
-fConfidenceLevel} implements the $F$-Test discussed in section
-\ref{sec:Ftest}.
-\end{quote}
 
 \section{Random number generator}
 \label{sec:random} When studying statistical processes on a
@@ -1212,44 +987,6 @@ excluded.
 \input{Smalltalk/Statistics/Number(DhbStatistics)}
 \end{listing}
 
-\subsection{Random number generator --- Java implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\bf
-MitchellMooreGenerator} grayed.} Java provides its own
-congruential random number generator, which is sufficient for most
-purposes. If one needs a better generator the Smalltalk code
-presented in listing \ref{ls:randomcong} can be directly
-transposed into Java. Listing \ref{lj:randomseq} shows the Java
-implementation of an additive sequence random generator.
-
-\noindent The class {\tt MitchellMooreGenerator} has three
-constructor methods.
-\begin{description}
-  \item[\tt MitchellMooreGenerator()] returns an instance of the
-  generator with standard parameters --- $k=55$ and $l=24$ ---
-  with the initial series filled using the random number generator
-  proposed by Java.
-  \item[\tt MitchellMooreGenerator(int, int)] returns an instance of the
-  generator with given parameters --- $k$ and $l$ respectively ---
-  with the initial series filled using the random number generator
-  proposed by Java.
-  \item[\tt MitchellMooreGenerator(double[], int)] returns an
-  instance of the generator by specifying the initial series given by the
-  first argument --- the size of the argument being the parameter $k$
-  --- and the parameter $l$ given by the second argument.
-\end{description}
-\noindent The class {\tt MitchellMooreGenerator} has two public
-methods. The method {\tt nextDouble} returns a random floating
-number between 0 and 1 excluded. The method {\tt nextInteger}
-returns a random integer between 0 and $n-1$ where $n$ is the
-specified argument. When calling any of these methods, the next
-random number of the series is obtained using equation
-\ref{eq:crg}.
-
-\begin{listing} Java implementation of an additive sequence random number generator
-\label{lj:randomseq}
-\input{Java/DhbStatistics/MitchellMooreGenerator.java}
-\end{listing}
-
 \section{Probability distributions}
 \label{sec:probdistr}A probability density function defines the
 probability of finding a continuous random variable within an
@@ -1512,96 +1249,6 @@ DhbProbabilityDensity} as argument.
 \input{Smalltalk/Statistics/DhbProbabilityDistributionFunction}
 \end{listing}
 
-\subsection{Probability distributions --- Java implementation}
-Listings \ref{ls:probdistr} and \ref{lj:probunkdistr} show the
-implementation of two abstract classes implementing the general
-behavior of a probability density distribution in Java. Concrete
-probability density distributions are implemented as subclass of
-one of them.
-
-The class {\tt ProbabilityDensityFunction} assumes that the
-distribution function can be computed by the subclass, either
-using an analytical expression (Weibull distribution in section
-\ref{sec:weibull} \eg) or using a numerical approximation (Normal
-distribution in section \ref{sec:normdist}  \eg). Therefore, the
-method {\tt distributionValue} with one argument, in charge of
-computing the distribution function, has been declared abstract.
-The interval acceptance function --- implemented by the method
-{\tt distributionValue} with two arguments --- is implemented
-using equation \ref{eq:defacceptdiff}.
-
-The inverse acceptance function is defined with two methods, one
-public and one private. The public method verifies the range of
-the argument, which must lie between 0 and 1. It throws the
-exception {\tt IllegalArgumentException} if this is not the case.
-The private method uses the class {\tt NewtonZeroFinder} discussed
-in section \ref{sec:snewton}. The derivative for the Newton zero
-finder is the instance itself since, by definition, the
-probability density distribution is the derivative of the
-acceptance function (\cf equation \ref{eq:defdistr}).
-
-Strangely enough, Java does not allow abstract constructor
-methods. For each subclass a constructor method using an histogram
-as argument must be provided to be consistent with the rest of the
-statistical analysis code. This method is the equivalent of the
-Smalltalk class creation method {\tt fromHistogram:}, creating a
-new instance of a probability distribution with parameters derived
-using a quick approximation from the data accumulated into the
-supplied histogram; the derivation assumes that the accumulated
-data are distributed according to the distribution. This
-constructor method is used to compute suitable starting values for
-least square or maximum likelihood fits (\cf chapter
-\ref{ch:estimation}).
-
-\begin{listing} Java implementation of a probability distribution \label{lj:probdistr}
-\input{Java/DhbStatistics/ProbabilityDensityFunction.java}
-\end{listing}
-\note{the interface {\tt ParametrizedOneVariableFunction}
-implemented by the probability density function is needed for
-non-linear least square fits and maximum likelihood fits. It is
-described in section \ref{sec:jlsfnonlin}.}
-
-The class {\tt ProbabilityDensityFunctionWithUnknownDistribution}
-is the superclass of probability distrinutions whose distribution
-function cannot be computed neither analytically nor numerically.
-The methods {\tt distributionValue} with one or two arguments are
-computing the integral of equation \ref{eq:defdistrmin} using the
-class {\tt RombergIntegrator} discussed in section
-\ref{sec:jromberg}. The lower limit of the integral for the
-distribution function --- $x_{\min}$ of equation
-\ref{eq:defdistrmin} --- is defined by the abtract method {\tt
-lowestValue}. This method must be implemented by the subclass.
-
-\begin{listing} Java implementation of a probability distribution with
-unknown distribution \label{lj:probunkdistr}
-\input{Java/DhbStatistics/ProbabilityDensityWithUnknownDistribution.java}
-\end{listing}
-
-Listing \ref{ls:probdistrfun} shows the implementation of the
-\patstyle{Adapter} for the distribution function. The class {\tt
-OffsetDistributionFunction} has the following instance variables:
-\begin{description}
-  \item[\tt probabilityDensity] an instance of class {\tt
-  ProbabilityDensityFunction},
-  \item[\tt offset] a value subtracted to the distribution
-  function.
-\end{description}
-The constructor method takes as arguments an instance of class
-{\tt ProbabilityDensityFunction} and a double. Instances of this
-class are used to compute the inverse value of the distribution
-function. It can also be used to implement the distribution
-function as described in section \ref{sec:jvFunction} using an
-offset of 0. If parameters cannot be estimated, the constructor
-method throws the exception {\tt IllegalArgumentException}. The
-estimation of the parameters is usually made using the statistical
-moments of the histogram and comparing them to the analytical
-expression of the distribution's parameter.
-
-\begin{listing} Java implementation of a probability distribution function
-\label{lj:probdistrfun}
-\input{Java/DhbStatistics/OffsetDistributionFunction.java}
-\end{listing}
-
 
 \section{Normal distribution}
 \label{sec:normdist} The normal distribution is the most important
@@ -1658,63 +1305,6 @@ DhbProbabilityDensity}.
 \end{listing}
 
 
-\subsection{Normal distribution --- Java implementation}
-\label{sec:normdistjava}\marginpar{Figure
-\ref{fig:statisticsclasses} with the box {\bf NormalDistribution}
-grayed.} Listing \ref{lj:normdist} shows the implementation of the
-normal distribution in Java.
-
-The distribution function of the normal distribution can be
-computed with the error function (\cf section
-\ref{sec:errorFunction}). Therefore the class {\tt
-NormalDistribution} is implemented as a subclass of {\tt
-ProbabilityDensityFunction}.
-\begin{listing} Java implementation of the normal distribution \label{lj:normdist}
-\input{Java/DhbStatistics/NormalDistribution.java}
-\end{listing}
-
-\section{Gamma distribution}
-\label{sec:gammadist} The gamma distribution is used to describe
-the time between some task, for example the time between repairs.
-
-The generalization of the gamma distribution to a range of the
-random variable of the type $\left[x_{\min},+\infty\right[$ is
-called a Pearson type III distribution. The average of a Pearson
-type III distribution is $x_{\min}+\alpha\beta$. The central
-moments are the same as those of the gamma distribution.
-
-Table \ref{tb:gammadist} shows the properties of the gamma
-distribution.
-\begin{table}[h]
-  \centering
-  \caption{Properties of the gamma distribution}\label{tb:gammadist}
-\vspace{1 ex}
-\begin{tabular}{|l|c|} \hline
-  \vbox to 3ex{}Range of random variable & $\left[0,+\infty\right[ $\\ *[1ex] \hline
-  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=
-  {x^{\alpha - 1}\over \beta^{\alpha}\Gamma\left(\alpha\right)}e^{-{x\over\beta}}$ \\*[2ex]  \hline
-  \vbox to 3ex{}Parameters & $0<\alpha<+\infty$ \\
-  & $0<\beta<+\infty$\\*[1ex]  \hline
-  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=\Gamma\left({x\over\beta},\alpha\right)$ \\
-  &(\cf section \ref{sec:incgamma}) \\*[1ex]  \hline
-  \vbox to 3ex{}Average & $\alpha\beta$ \\*[1ex] \hline
-  \vbox to 3ex{}Variance & $\alpha\beta^2$ \\*[1ex] \hline
-  \vbox to 4ex{}Skewness & $\displaystyle{2\over\sqrt{\alpha}}$ \\*[2ex] \hline
-  \vbox to 4ex{}Kurtosis & $\displaystyle{6\over\alpha}$ \\*[2ex] \hline
-\end{tabular}
-\end{table}
-Figure \ref{fig:gammaDistr} shows the shape of the gamma
-distribution for several values of the parameter $\alpha$ with
-$\beta = 1$. The shape of the distribution for values of the
-parameter $\beta$ can be obtained by modifying the scale of the
-$x$-axis since $\beta$ is just a scale factor of the random
-variable.
-\begin{figure}
-\center\psfig{figure=Figures/GammaDistribution.eps, width=12cm}
-\caption{Gamma distribution for various values of $\alpha$
-}\label{fig:gammaDistr}
-\end{figure}
-
 \subsection{Gamma distribution --- Smalltalk implementation}
 \label{sec:sgammadist}\marginpar{Figure
 \ref{fig:statisticsclasses} with the box {\bf GammaDistribution}
@@ -1730,19 +1320,6 @@ DhbProbabilityDensity}.
 \input{Smalltalk/Statistics/DhbGammaDistribution}
 \end{listing}
 
-\subsection{Gamma distribution --- Java implementation}
-\label{sec:jgammadist}\marginpar{Figure
-\ref{fig:statisticsclasses} with the box {\bf GammaDistribution}
-grayed.}  Listing \ref{lj:gammadist} shows the implementation of
-the gamma distribution in Java.
-
-The distribution function of the gamma distribution can be
-computed with the incomplete gamma function (\cf section
-\ref{sec:gammafunc}). Therefore the class {\tt GammaDistribution}
-is implemented as a subclass of {\tt ProbabilityDensityFunction}.
-\begin{listing} Java implementation of the gamma distribution \label{lj:gammadist}
-\input{Java/DhbStatistics/GammaDistribution.java}
-\end{listing}
 
 \section{Experimental distribution}
 A histogram described in section \ref{sec:histogram} can be used
@@ -1833,18 +1410,7 @@ returns an error.
 \input{Smalltalk/Statistics/DhbHistogrammedDistribution}
 \end{listing}
 
-\subsection{Experimental distribution --- Java  implementation}
-Listing \ref{lj:histprob} shows the implementation of an
-experimental distribution in Java.
 
-The class {\tt HistogrammedDistribution} is a subclass of the
-class {\tt ProbabilityDensityFunction}. The class constructor
-method takes as argument the histogram over which the instance is
-defined.
-
-\begin{listing} Java implementation of an experimental distribution \label{lj:histprob}
-\input{Java/DhbStatistics/HistogrammedDistribution.java}
-\end{listing}
 
 
 \ifx\wholebook\relax\else\end{document}\fi
