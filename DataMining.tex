@@ -115,10 +115,10 @@ implementation of the concrete class is shown in listing
 hierarchy of the class {\tt Stream}.
 
 \begin{listing} Smalltalk abstract data server \label{ls:abstractserver}
-\input{Smalltalk/Datamining/DhbAbstractDataServer}
+\input{Smalltalk/DataMining/DhbAbstractDataServer}
 \end{listing}
 \begin{listing} Smalltalk memory based data server \label{ls:memoryserver}
-\input{Smalltalk/Datamining/DhbMemoryBasedDataServer}
+\input{Smalltalk/DataMining/DhbMemoryBasedDataServer}
 \end{listing}
 
 \subsection{Data server --- Java implementation}
@@ -341,11 +341,11 @@ vector operations are used. The method {\tt accumulate} of class
 computes the lower half of the matrix.
 
 \begin{listing} Smalltalk implementation of vector average \label{ls:vectoraverage}
-\input{Smalltalk/Datamining/DhbVectorAccumulator}
+\input{Smalltalk/DataMining/DhbVectorAccumulator}
 \end{listing}
 
 \begin{listing} Smalltalk implementation of covariance matrix \label{ls:covmatrix}
-\input{Smalltalk/Datamining/DhbCovarianceAccumulator}
+\input{Smalltalk/DataMining/DhbCovarianceAccumulator}
 \end{listing}
 
 \subsection{Covariance matrix --- Java implementation}
@@ -670,7 +670,7 @@ implemented two methods {\tt accept} and {\tt reject} to process
 accepted and rejected data.
 
 \begin{listing} Smalltalk Mahalanobis center  \label{ls:mahalanobis}
-\input{Smalltalk/Datamining/DhbMahalanobisCenter}
+\input{Smalltalk/DataMining/DhbMahalanobisCenter}
 \end{listing}
 \subsection{Mahalanobis distance --- Java implementation}
 Listing \ref{ls:mahalanobis} shows the implementation of a
@@ -999,8 +999,8 @@ instance of {\tt DhbClusterFinder} is initialized; each cluster is
 created in an undefined state.
 
 \begin{listing} Smalltalk $K$-cluster algorithm \label{ls:clusterfinder}
-\input{Smalltalk/Datamining/DhbCluster}
-\input{Smalltalk/Datamining/DhbClusterFinder}
+\input{Smalltalk/DataMining/DhbCluster}
+\input{Smalltalk/DataMining/DhbClusterFinder}
 \end{listing}
 Listing \ref{ls:euclidcluster} shows the implementation of the
 concrete cluster class {\tt DhbEuclideanCluster}. The
@@ -1008,7 +1008,7 @@ corresponding accumulator is an instance of class {\tt
 DhbVectorAccumulator}. Data points are directly accumulated into
 the accumulaotr; individual data points are not kept.
 \begin{listing} Smalltalk implementation of an Euclidean cluster \label{ls:euclidcluster}
-\input{Smalltalk/Datamining/DhbEuclideanCluster}
+\input{Smalltalk/DataMining/DhbEuclideanCluster}
 \end{listing}
 
 \subsection{Cluster analysis --- Java implementation}
@@ -1097,7 +1097,7 @@ described in section \ref{sec:mahalanobis}. Listing
 Java implementation is shown in listing \ref{lj:mahacluster}.
 
 \begin{listing} Smalltalk covariance cluster \label{ls:mahacluster}
-\input{Smalltalk/Datamining/DhbCovarianceCluster}
+\input{Smalltalk/DataMining/DhbCovarianceCluster}
 \end{listing}
 
 \begin{listing} Java covariance cluster \label{lj:mahacluster}
