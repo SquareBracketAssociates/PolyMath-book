@@ -10,24 +10,20 @@ Instance methods
 \begin{verbatim}
     | errorVector term nextTerm |
     nextTerm := 1.
-    errorVector := ( coefficients collect: [ :each | term := 
+    errorVector := (coefficients collect: [ :each | term := 
             nextTerm. nextTerm := aNumber * nextTerm. term]) asVector.
-    ^( errorVector * errorMatrix * errorVector) sqrt
-
+    ^ (errorVector * errorMatrix * errorVector) sqrt
 \end{verbatim}
 {\bf errorMatrix}
 \begin{verbatim}
-    ^errorMatrix
-
+    ^ errorMatrix
 \end{verbatim}
 {\bf errorMatrix:} {\tt aMatrix}
 \begin{verbatim}
     errorMatrix := aMatrix.
-
 \end{verbatim}
 {\bf valueAndError:} {\tt aNumber}
 \begin{verbatim}
-    ^Array with: ( self value: aNumber) with: ( self error: aNumber)
-
+    ^ Array with: ( self value: aNumber) with: ( self error: aNumber)
 \end{verbatim}
 

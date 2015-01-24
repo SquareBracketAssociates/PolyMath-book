@@ -16,7 +16,6 @@ Class methods
 {\bf distributionName}
 \begin{verbatim}
     ^'Chi square distribution'
-
 \end{verbatim}
 {\bf fromHistogram:} {\tt aHistogram}
 \begin{verbatim}
@@ -26,13 +25,11 @@ Class methods
     dof := aHistogram average rounded.
     ^dof > 0 ifTrue: [ self degreeOfFreedom: aHistogram average 
                                                               rounded]
-             ifFalse:[ nil]
-
+             ifFalse:[ nil ]
 \end{verbatim}
 {\bf shape:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
 \begin{verbatim}
     ^self error: 'Illegal creation message for this class'
-
 \end{verbatim}
 
 
@@ -41,18 +38,14 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf changeParametersBy:} {\tt aVector}
 \begin{verbatim}
-    super changeParametersBy: (Array with: aVector first / 2 with: 
-                                                                   0).
-
+    super changeParametersBy: (Array with: aVector first / 2 with: 0).
 \end{verbatim}
 {\bf confidenceLevel:} {\tt aNumber}
 \begin{verbatim}
-    ^( 1 - ( self distributionValue: aNumber)) *100
-
+    ^ (1 - ( self distributionValue: aNumber)) *100
 \end{verbatim}
 {\bf parameters}
 \begin{verbatim}
-    ^Array with: alpha * 2
-
+    ^ Array with: alpha * 2
 \end{verbatim}
 

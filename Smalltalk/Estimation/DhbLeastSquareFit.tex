@@ -8,20 +8,16 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf histogram:} {\tt aHistogram} {\bf distributionClass:} {\tt aProbabilityDensityFunctionClass}
 \begin{verbatim}
-    ^self points: aHistogram
+    ^ self points: aHistogram
         function: (DhbScaledProbabilityDensityFunction histogram: 
                                                             aHistogram
                 distributionClass: aProbabilityDensityFunctionClass)
-
 \end{verbatim}
 {\bf points:} {\tt aDataHolder} {\bf function:} {\tt aParametricFunction}
 \begin{verbatim}
-    ^aParametricFunction ifNotNil: [ :dp | super new initialize: 
+    ^ aParametricFunction ifNotNil: [ :dp | super new initialize: 
                                                  aDataHolder data: dp]
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -31,32 +27,28 @@ Instance methods
     f := result valueAndGradient: aWeightedPoint xValue.
     g := f last.
     f := f first.
-    constants accumulate: g * ( ( aWeightedPoint yValue - f) * 
+    constants accumulate: g * ((aWeightedPoint yValue - f) * 
                                                aWeightedPoint weight).
     1 to: g size do:
         [ :k |
-          ( equations at: k) accumulate: g * ( ( g at: k) * 
+          (equations at: k) accumulate: g * ((g at: k) * 
                                                aWeightedPoint weight).
         ].
-
 \end{verbatim}
 {\bf accumulateEquationSystem}
 \begin{verbatim}
     dataHolder pointsAndErrorsDo: [ :each | self accumulate: each].
-
 \end{verbatim}
 {\bf chiSquare}
 \begin{verbatim}
     chiSquare isNil
         ifTrue: [ self computeChiSquare].
-    ^chiSquare
-
+    ^ chiSquare
 \end{verbatim}
 {\bf computeChanges}
 \begin{verbatim}
     errorMatrix := DhbLUPDecomposition direct: equations.
-    ^errorMatrix solve: constants
-
+    ^ errorMatrix solve: constants
 \end{verbatim}
 {\bf computeChiSquare}
 \begin{verbatim}
@@ -67,36 +59,31 @@ Instance methods
           chiSquare := ( each chi2Contribution: result) + chiSquare.
           degreeOfFreedom := degreeOfFreedom + 1.
         ].
-
 \end{verbatim}
 {\bf computeEquationSystem}
 \begin{verbatim}
     constants atAllPut: 0.
     equations do: [ :each | each atAllPut: 0].
     self accumulateEquationSystem.
-
 \end{verbatim}
 {\bf confidenceLevel}
 \begin{verbatim}
-    ^( DhbChiSquareDistribution degreeOfFreedom: self 
+    ^ (DhbChiSquareDistribution degreeOfFreedom: self 
                       degreeOfFreedom) confidenceLevel: self chiSquare
-
 \end{verbatim}
 {\bf degreeOfFreedom}
 \begin{verbatim}
     degreeOfFreedom isNil
         ifTrue: [ self computeChiSquare].
-    ^degreeOfFreedom
-
+    ^ degreeOfFreedom
 \end{verbatim}
 {\bf errorMatrix}
 \begin{verbatim}
-    ^DhbSymmetricMatrix rows: errorMatrix inverseMatrixComponents
-
+    ^ DhbSymmetricMatrix rows: errorMatrix inverseMatrixComponents
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
-    | changes maxChange|
+    | changes maxChange |
     self computeEquationSystem.
     changes := self computeChanges.
     result changeParametersBy: changes.
@@ -104,7 +91,6 @@ Instance methods
     result parameters with: changes do: 
         [ :r :d | maxChange := ( d / r) abs max: maxChange].
     ^maxChange
-
 \end{verbatim}
 {\bf finalizeIterations}
 \begin{verbatim}
@@ -112,19 +98,16 @@ Instance methods
     constants := nil.
     degreeOfFreedom := nil.
     chiSquare := nil
-
 \end{verbatim}
 {\bf fitType}
 \begin{verbatim}
     ^'Least square fit'
-
 \end{verbatim}
 {\bf initialize:} {\tt aDataHolder} {\bf data:} {\tt aParametricFunction}
 \begin{verbatim}
     dataHolder := aDataHolder.
     result := aParametricFunction.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf initializeIterations}
 \begin{verbatim}
@@ -138,22 +121,18 @@ Instance methods
                     (DhbVector new: n)
                         atAllPut: 0;
                         yourself]
-
 \end{verbatim}
 {\bf numberOfFreeParameters}
 \begin{verbatim}
-    ^self numberOfParameters
-
+    ^ self numberOfParameters
 \end{verbatim}
 {\bf numberOfParameters}
 \begin{verbatim}
-    ^result parameters size
-
+    ^ result parameters size
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
-    ^result value: aNumber
-
+    ^ result value: aNumber
 \end{verbatim}
 {\bf valueAndError:} {\tt aNumber}
 \begin{verbatim}
@@ -162,6 +141,5 @@ Instance methods
     ^Array with: valueGradient first
            with: ( valueGradient last * ( self errorMatrix * 
                                              valueGradient last)) sqrt
-
 \end{verbatim}
 

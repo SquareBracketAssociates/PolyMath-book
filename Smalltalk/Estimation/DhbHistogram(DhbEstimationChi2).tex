@@ -12,16 +12,15 @@ Instance methods
     chi2 := 0.
     self pointsAndErrorsDo:
         [ :each | chi2 := ( each chi2Contribution: 
-                                         aScaledDistribution) + chi2].
-    ^chi2
+                                         aScaledDistribution) + chi2 ].
+    ^ chi2
 
 \end{verbatim}
 {\bf chi2ConfidenceLevelAgainst:} {\tt aScaledDistribution}
 \begin{verbatim}
-    ^( DhbChiSquareDistribution degreeOfFreedom: ( contents size - 
+    ^ (DhbChiSquareDistribution degreeOfFreedom: ( contents size - 
                                  aScaledDistribution parameters size))
             confidenceLevel: ( self chi2Against: aScaledDistribution)
-
 \end{verbatim}
 {\bf pointsAndErrorsDo:} {\tt aBlock}
 \begin{verbatim}
@@ -32,6 +31,5 @@ Instance methods
           x := x + self binWidth.
           aBlock value: ( DhbWeightedPoint point: x count: each).
         ].
-
 \end{verbatim}
 

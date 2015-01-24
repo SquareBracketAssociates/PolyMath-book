@@ -8,20 +8,16 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf histogram:} {\tt aHistogram} {\bf against:} {\tt aProbabilityDensityFunction}
 \begin{verbatim}
-    ^self new 
+    ^ self new 
         initialize: aProbabilityDensityFunction
         binWidth: aHistogram binWidth
         count: aHistogram totalCount
-
 \end{verbatim}
 {\bf histogram:} {\tt aHistogram} {\bf distributionClass:} {\tt aProbabilityDensityFunctionClass}
 \begin{verbatim}
-    ^(aProbabilityDensityFunctionClass fromHistogram: aHistogram) 
+    ^ (aProbabilityDensityFunctionClass fromHistogram: aHistogram) 
         ifNotNil: [:dp | self histogram: aHistogram against: dp]
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -29,25 +25,21 @@ Instance methods
 \begin{verbatim}
     count := count + aVector last.
     probabilityDensityFunction changeParametersBy: aVector.
-
 \end{verbatim}
 {\bf distributionFunction}
 \begin{verbatim}
     ^probabilityDensityFunction distributionFunction
-
 \end{verbatim}
 {\bf initialize:} {\tt aProbabilityDensityFunction} {\bf binWidth:} {\tt aNumber} {\bf count:} {\tt anInteger}
 \begin{verbatim}
     probabilityDensityFunction := aProbabilityDensityFunction.
     binWidth := aNumber.
     count := anInteger.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf parameters}
 \begin{verbatim}
-    ^probabilityDensityFunction parameters copyWith: count
-
+    ^ probabilityDensityFunction parameters copyWith: count
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -56,26 +48,22 @@ Instance methods
             nextPutAll: probabilityDensityFunction class 
                                                      distributionName;
             nextPut: $].
-
 \end{verbatim}
 {\bf setCount:} {\tt aNumber}
 \begin{verbatim}
     count := aNumber.
-
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
-    ^(probabilityDensityFunction value: aNumber) * binWidth * count
-
+    ^ (probabilityDensityFunction value: aNumber) * binWidth * count
 \end{verbatim}
 {\bf valueAndGradient:} {\tt aNumber}
 \begin{verbatim}
     | g temp |
     g := probabilityDensityFunction valueAndGradient: aNumber.
     temp := binWidth * count.
-    ^Array with: g first * temp
+    ^ Array with: g first * temp
            with: ( (g last collect: [:each | each * temp]) copyWith: 
                                                    g first * binWidth)
-
 \end{verbatim}
 

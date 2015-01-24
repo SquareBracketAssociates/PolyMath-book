@@ -8,18 +8,14 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf new}
 \begin{verbatim}
-    ^( super new) reset; yourself
-
+    ^ super new reset; yourself
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
 {\bf add:} {\tt aPoint}
 \begin{verbatim}
     self add: aPoint weight: 1.
-
 \end{verbatim}
 {\bf add:} {\tt aPoint} {\bf weight:} {\tt aNumber}
 \begin{verbatim}
@@ -30,24 +26,20 @@ Instance methods
     sumYY := sumYY + (aPoint y squared * aNumber).
     sumXY := sumXY + (aPoint x * aPoint y * aNumber).
     self resetResults
-
 \end{verbatim}
 {\bf asEstimatedPolynomial}
 \begin{verbatim}
-    ^( DhbEstimatedPolynomial coefficients: self coefficients)
+    ^ (DhbEstimatedPolynomial coefficients: self coefficients)
             errorMatrix: self errorMatrix;
             yourself
-
 \end{verbatim}
 {\bf asPolynomial}
 \begin{verbatim}
-    ^DhbPolynomial coefficients: self coefficients
-
+    ^ DhbPolynomial coefficients: self coefficients
 \end{verbatim}
 {\bf coefficients}
 \begin{verbatim}
-    ^Array with: self intercept with: self slope
-
+    ^ Array with: self intercept with: self slope
 \end{verbatim}
 {\bf computeResults}
 \begin{verbatim}
@@ -58,14 +50,12 @@ Instance methods
     intercept := (sumXX * sumY - (sumXY * sumX)) / xNorm.
     correlationCoefficient := xyNorm 
                 / (xNorm * (sumYY * sum1 - (sumY * sumY))) sqrt
-
 \end{verbatim}
 {\bf correlationCoefficient}
 \begin{verbatim}
     correlationCoefficient isNil
         ifTrue: [ self computeResults].
-    ^correlationCoefficient
-
+    ^ correlationCoefficient
 \end{verbatim}
 {\bf errorMatrix}
 \begin{verbatim}
@@ -74,26 +64,22 @@ Instance methods
     cx := sumX negated * c1.
     cxx := sumXX * c1.
     c1 := sum1 * c1.
-    ^DhbSymmetricMatrix rows: (Array with: (Array with: cxx with: cx)
+    ^ DhbSymmetricMatrix rows: (Array with: (Array with: cxx with: cx)
                 with: (Array with: cx with: c1))
-
 \end{verbatim}
 {\bf errorOnIntercept}
 \begin{verbatim}
-    ^(sumXX / (sumXX * sum1 - sumX squared)) sqrt
-
+    ^ (sumXX / (sumXX * sum1 - sumX squared)) sqrt
 \end{verbatim}
 {\bf errorOnSlope}
 \begin{verbatim}
-    ^(sum1 / (sumXX * sum1 - sumX squared)) sqrt
-
+    ^ (sum1 / (sumXX * sum1 - sumX squared)) sqrt
 \end{verbatim}
 {\bf intercept}
 \begin{verbatim}
     intercept isNil
-        ifTrue: [ self computeResults].
-    ^intercept
-
+        ifTrue: [ self computeResults ].
+    ^ intercept
 \end{verbatim}
 {\bf remove:} {\tt aPoint}
 \begin{verbatim}
@@ -104,7 +90,6 @@ Instance methods
     sumYY := sumYY - aPoint y squared.
     sumXY := sumXY - (aPoint x * aPoint y).
     self resetResults
-
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
@@ -115,25 +100,21 @@ Instance methods
     sumYY := 0.
     sumXY := 0.
     self resetResults
-
 \end{verbatim}
 {\bf resetResults}
 \begin{verbatim}
     slope := nil.
     intercept := nil.
     correlationCoefficient := nil.
-
 \end{verbatim}
 {\bf slope}
 \begin{verbatim}
     slope isNil
         ifTrue: [ self computeResults].
-    ^slope
-
+    ^ slope
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
-    ^aNumber * self slope + self intercept
-
+    ^ aNumber * self slope + self intercept
 \end{verbatim}
 

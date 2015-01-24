@@ -8,13 +8,11 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf degreeOfFreedom:} {\tt anInteger1} {\bf degreeOfFreedom:} {\tt anInteger2}
 \begin{verbatim}
-    ^super new initialize: anInteger1 and: anInteger2
-
+    ^ super new initialize: anInteger1 and: anInteger2
 \end{verbatim}
 {\bf distributionName}
 \begin{verbatim}
-    ^'Fisher-Snedecor distribution'
-
+    ^ 'Fisher-Snedecor distribution'
 \end{verbatim}
 {\bf fromHistogram:} {\tt aHistogram}
 \begin{verbatim}
@@ -28,63 +26,53 @@ Class methods
     ^n1 > 0 
         ifTrue: [self degreeOfFreedom: n1 degreeOfFreedom: n2]
         ifFalse: [nil]
-
 \end{verbatim}
 {\bf new}
 \begin{verbatim}
-    ^self error: 'Illegal creation message for this class'
-
+    ^ self error: 'Illegal creation message for this class'
 \end{verbatim}
 {\bf test:} {\tt aStatisticalMoment1} {\bf with:} {\tt aStatisticalMoment2}
 \begin{verbatim}
-    ^(self class degreeOfFreedom: aStatisticalMoment1 count
+    ^ (self class degreeOfFreedom: aStatisticalMoment1 count
         degreeOfFreedom: aStatisticalMoment2 count) 
             distributionValue: aStatisticalMoment1 variance 
                     / aStatisticalMoment2 variance
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
 {\bf average}
 \begin{verbatim}
     ^dof2 > 2
-        ifTrue: [ dof2 / ( dof2 - 2)]
-        ifFalse:[ nil]
-
+        ifTrue: [ dof2 / ( dof2 - 2) ]
+        ifFalse:[ nil ]
 \end{verbatim}
 {\bf changeParametersBy:} {\tt aVector}
 \begin{verbatim}
-    dof1 := ( dof1 + ( aVector at: 1)) max: 1.
-    dof2 := ( dof2 + ( aVector at: 2)) max: 1.
+    dof1 := (dof1 + (aVector at: 1)) max: 1.
+    dof2 := (dof2 + (aVector at: 2)) max: 1.
     self computeNorm.
     chiSquareDistribution1 := nil.
     chiSquareDistribution2 := nil.
     incompleteBetaFunction := nil.
-
 \end{verbatim}
 {\bf computeNorm}
 \begin{verbatim}
-    norm := ( dof1 ln * ( dof1 / 2) ) + ( dof2 ln * ( dof2 / 2) )
-                        - ( ( dof1 / 2) logBeta: ( dof2 / 2) ).
-
+    norm := (dof1 ln * (dof1 / 2)) + (dof2 ln * (dof2 / 2))
+                        - ((dof1 / 2) logBeta: (dof2 / 2)).
 \end{verbatim}
 {\bf confidenceLevel:} {\tt aNumber}
 \begin{verbatim}
     aNumber < 0
         ifTrue: [ self error: 'Confidence level argument must be 
                                                            positive'].
-    ^( ( self distributionValue: aNumber) - ( self distributionValue: 
+    ^((self distributionValue: aNumber) - ( self distributionValue: 
                                            aNumber reciprocal) ) * 100
-
 \end{verbatim}
 {\bf distributionValue:} {\tt aNumber}
 \begin{verbatim}
-    ^1 - ( self incompleteBetaFunction value: ( dof2 / ( aNumber * 
+    ^ 1 - ( self incompleteBetaFunction value: ( dof2 / ( aNumber * 
                                                         dof1 + dof2)))
-
 \end{verbatim}
 {\bf incompleteBetaFunction}
 \begin{verbatim}
@@ -94,20 +82,17 @@ Instance methods
                                                        shape: dof2 / 2
                         shape: dof1 / 2].
     ^incompleteBetaFunction
-
 \end{verbatim}
 {\bf initialize:} {\tt anInteger1} {\bf and:} {\tt anInteger2}
 \begin{verbatim}
     dof1 := anInteger1.
     dof2 := anInteger2.
     self computeNorm.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf parameters}
 \begin{verbatim}
-    ^Array with: dof1 with: dof2
-
+    ^ Array with: dof1 with: dof2
 \end{verbatim}
 {\bf random}
 \begin{verbatim}
@@ -119,21 +104,18 @@ Instance methods
                 ].
     ^chiSquareDistribution1 random * dof2 / ( chiSquareDistribution2 
                                                         random * dof1)
-
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
     ^aNumber > 0
-        ifTrue: [ ( norm + ( aNumber ln * ( dof1 / 2 - 1) ) - ( 
-             (aNumber * dof1 + dof2) ln * ( ( dof1 + dof2) / 2))) exp]
-        ifFalse:[ 0]
-
+        ifTrue: [ (norm + ( aNumber ln * (dof1 / 2 - 1)) - ( 
+             (aNumber * dof1 + dof2) ln * (( dof1 + dof2) / 2))) exp]
+        ifFalse:[ 0 ]
 \end{verbatim}
 {\bf variance}
 \begin{verbatim}
-    ^dof2 > 4 ifTrue: [ dof2 squared * 2 * ( dof1 + dof2 - 2) / ( ( 
+    ^ dof2 > 4 ifTrue: [ dof2 squared * 2 * ( dof1 + dof2 - 2) / ( ( 
                               dof2 - 2) squared * dof1 * ( dof2 - 4))]
-                   ifFalse:[ nil]
-
+                   ifFalse:[ nil ]
 \end{verbatim}
 

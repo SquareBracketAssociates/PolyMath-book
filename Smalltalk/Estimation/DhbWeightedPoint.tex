@@ -8,25 +8,21 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf point:} {\tt aPoint}
 \begin{verbatim}
-    ^self new initialize: aPoint weight: 1
-
+    ^ self new initialize: aPoint weight: 1
 \end{verbatim}
 {\bf point:} {\tt aNumber} {\bf count:} {\tt anInteger}
 \begin{verbatim}
-    ^self point: aNumber @ anInteger
+    ^ self point: aNumber @ anInteger
         weight: ( anInteger > 0 ifTrue: [ 1 / anInteger]
-                                ifFalse:[ 1])
-
+                                ifFalse: [ 1 ])
 \end{verbatim}
 {\bf point:} {\tt aPoint} {\bf error:} {\tt aNumber}
 \begin{verbatim}
-    ^self new initialize: aPoint error: aNumber
-
+    ^ self new initialize: aPoint error: aNumber
 \end{verbatim}
 {\bf point:} {\tt aPoint} {\bf weight:} {\tt aNumber}
 \begin{verbatim}
-    ^self new initialize: aPoint weight: aNumber
-
+    ^ self new initialize: aPoint weight: aNumber
 \end{verbatim}
 
 
@@ -35,26 +31,23 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf chi2ComparisonContribution:} {\tt aWeightedPoint}
 \begin{verbatim}
-    ^(aWeightedPoint yValue - yValue) squared / ( 1 / aWeightedPoint 
+    ^ (aWeightedPoint yValue - yValue) squared / ( 1 / aWeightedPoint 
                                                weight + ( 1 / weight))
-
 \end{verbatim}
 {\bf chi2Contribution:} {\tt aFunction}
 \begin{verbatim}
-    ^(yValue - ( aFunction value: xValue)) squared * weight
-
+    ^ (yValue - ( aFunction value: xValue)) squared * weight
 \end{verbatim}
 {\bf error}
 \begin{verbatim}
     error isNil
         ifTrue: [ error := 1 / weight sqrt].
-    ^error
-
+    ^ error
 \end{verbatim}
 {\bf initialize:} {\tt aPoint} {\bf error:} {\tt aNumber}
 \begin{verbatim}
     error := aNumber.
-    ^self initialize: aPoint weight: 1 / aNumber squared
+    ^ self initialize: aPoint weight: 1 / aNumber squared
 
 \end{verbatim}
 {\bf initialize:} {\tt aPoint} {\bf weight:} {\tt aNumber}
@@ -62,27 +55,22 @@ Instance methods
     xValue := aPoint x.
     yValue := aPoint y.
     weight := aNumber.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf point}
 \begin{verbatim}
-    ^xValue @ yValue
-
+    ^ xValue @ yValue
 \end{verbatim}
 {\bf weight}
 \begin{verbatim}
-    ^weight
-
+    ^ weight
 \end{verbatim}
 {\bf xValue}
 \begin{verbatim}
-    ^xValue
-
+    ^ xValue
 \end{verbatim}
 {\bf yValue}
 \begin{verbatim}
-    ^yValue
-
+    ^ yValue
 \end{verbatim}
 
