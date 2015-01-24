@@ -180,37 +180,6 @@ this abstract class is shown in Listing 44.
 \input{Smalltalk/IterativeAlgorithms/DhbSeriesTermServer}
 \end{listing}
 
-\subsection{Infinite series --- Java  implementation}
-\marginpar{Figure \ref{fig:JvSeriesClass} with the box {\bf
-InfiniteSeries} grayed.} Listing \ref{lj:infseries} shows the
-implementation of an infinite series in Java. The class being
-abstract, we do not give examples here. Concrete examples are
-given in section \ref{sec:jincgamma}.
-
-The Java implementation uses an abstract class, {\tt
-DhbInfiniteSeries} --- a subclass of the class {\tt
-IterativeProcess} described in section \ref{sec:jiteration} --- to
-evaluate the series. Abstract methods define the common interface
-needed to retrieve the terms of the series. As a series is a
-function, it must implement the {\tt OneVariableFunction}
-interface. Specific series are implemented as a subclass of the
-class {\tt DhbInfiniteSeries}, each subclass implementing the
-methods needed to compute each term.
-
-The argument of the series and each last term are kept into
-protected instance variables for efficiency purposes. Thus,
-subclasses can have direct access to these variables without the
-need to call an accessor method.
-
-The method {\tt evaluateIteration} uses the method {\tt
-relativePrecision} to return a relative precision as discussed in
-section \ref{sec:jiterrel}.
-
-\begin{listing} Java implementation of an infinite series \label{lj:infseries}
-\input{Java/DhbIterations/InifiniteSeries.java}
-\end{listing}
-
-
 \section{Continued fractions}
 \label{sec:contfractions}
 A continued fraction is an infinite
@@ -295,24 +264,6 @@ The method {\tt limitedSmallValue:} implements the prescription of
 Thompson and Barnett.
 \begin{listing} Smalltalk implementation of a continued fraction \label{ls:contfractions}
 \input{Smalltalk/IterativeAlgorithms/DhbContinuedFraction}
-\end{listing}
-
-\subsection{Continued fractions --- Java  implementation}
-\label{sec:jcontfractions}\marginpar{Figure
-\ref{fig:JvSeriesClass} with the box {\bf ContinuedFraction}
-grayed.} Listing \ref{lj:contfractions} shows the implementation
-of a continued fraction in Java.
-
-As for infinite series, an abstract class is in charge of
-implementing the modified Lentz method. As the two classes have
-nothing in common, there is no reason for the class {\tt
-ContinuedFraction} to be a subclass of {\tt InfiniteSeries}. It is
-a subclass of the class {\tt IterativeProcess} instead.
-
-The method {\tt limitedSmallValue} implements the prescription of
-Thompson and Barnett.
-\begin{listing} Java implementation of an infinite series \label{lj:contfractions}
-\input{Java/DhbIterations/ContinuedFraction.java}
 \end{listing}
 
 \section{Incomplete Gamma function}
@@ -474,50 +425,6 @@ initialTerm}  (for $n=0$) and {\tt termsAt:} (for $n\ge 1$).
 An example of use of the incomplete gamma function can be found in
 section \ref{sec:sgammadist}.
 
-\subsection{Incomplete Gamma function --- Java  implementation}
-\label{sec:jincgamma}\marginpar{Figure \ref{fig:JvSeriesClass}
-with the boxes {\bf IncompleteGammaFunction}, {\bf
-IncompleteGammaFunctionSeries} and {\bf
-IncompleteGammaFunctionFraction} grayed.} In spite of the
-difference of architecture with Smalltalk, three classes are also
-needed in the Java implementation.
-
-Listing \ref{lj:incgamma} shows the implementation of the class
-{\tt IncompleteGammaFunction} implementing the incomplete gamma
-function proper. It is constructed as the corresponding Smalltalk
-class.
-\begin{listing} Java implementation of the incomplete gamma function \label{lj:incgamma}
-\input{Java/DhbIterations/IncompleteGammaFunction.java}
-\end{listing}
-Listing \ref{lj:incgammasterm} shows the implementation of the
-term server used by the infinite series defining the incomplete
-gamma function in Java. It is implemented as a subclass of the
-class {\tt InifiniteSeries} defined in section \ref{sec:sseries}.
-The class {\tt IncompleteGammaFunctionSeries} needs two instance
-variables: One to store the parameter $\alpha$; one to store the
-sum accumulated in the denominator of equation
-\ref{eq:incgammaserterm}. The two lines of equation
-\ref{eq:incgammaserterm} are implemented respectively by the
-methods {\tt initialValue}  (for $n=0$) and {\tt computeTermAt:}
-(for $n\ge 1$).
-\begin{listing} Java implementation of the infinite series term server for the incomplete gamma function \label{lj:incgammasterm}
-\input{Java/DhbIterations/IncompleteGammaFunctionSeries.java}
-\end{listing}
-Listing \ref{lj:incgammafract} shows the implementation of the
-term server used by the continued fraction defining the incomplete
-gamma function in Java. It is implemented as a subclass of the
-class {\tt ContinuedFraction} defined in section
-\ref{sec:jcontfractions}. The class {\tt
-IncompleteGammaFunctionFraction} needs one instance variable to
-store the parameter  . Equation \ref{eq:incgammafractterm} is
-implemented by the methods {\tt initialValue}  (for $n=0$) and
-{\tt computeFactorsAt:} (for $n\ge 1$).
-\begin{listing} Java implementation of the fraction term server for the incomplete gamma function
-\label{lj:incgammafract}
-\input{Java/DhbIterations/IncompleteGammaFunctionFraction.java}
-\end{listing}
-An example of use of the incomplete gamma function can be found in
-section \ref{sec:jgammadist}.
 
 \section{Incomplete Beta function}
 \label{sec:incbeta} The incomplete beta function is the integral
@@ -646,32 +553,5 @@ termsAt:} (for $n\ge 1$).
 An example of use of the incomplete beta function can be found in
 sections \ref{sec:Ftest} and \ref{sec:ttest}.
 
-\subsection{Incomplete Beta function --- Java  implementation}
-\marginpar{Figure \ref{fig:JvSeriesClass} with the boxes {\bf
-IncompleteBetaFunction} and {\bf IncompleteBetaFunctionFraction}
-grayed.}The Java implementation of the incomplete beta function
-needs two classes.
-
-Listing \ref{lj:incbeta} shows the implementation of the class
-{\tt IncompleteBetaFunction} implementing the incomplete beta
-function proper. It is constructed as the corresponding Smalltalk
-class.
-
-\begin{listing} Java implementation of the incomplete beta function \label{lj:incbeta}
-\input{Java/DhbIterations/IncompleteBetaFunction.java}
-\end{listing}
-
-Listing \ref{lj:incbetaterm} shows the implementation of the term
-server used by the continued fraction defining the incomplete beta
-function in Java. It needs two instance variables to store the
-parameters $\alpha_1$ and $\alpha_2$. Equation
-\ref{eq:incbetaterm} is implemented by the methods {\tt
-initialTerm} (for $n=0$) and {\tt computeFactorsAt:} (for $n\ge 1
-$).
-
-\begin{listing} Java implementation of the continued fraction for the incomplete beta function
-\label{lj:incbetaterm}
-\input{Java/DhbIterations/IncompleteBetaFunctionFraction.java}
-\end{listing}
 
 \ifx\wholebook\relax\else\end{document}\fi
