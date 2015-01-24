@@ -8,9 +8,8 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf new:} {\tt anInteger} {\bf server:} {\tt aClusterDataServer} {\bf type:} {\tt aClusterClass}
 \begin{verbatim}
-    ^super new initialize: anInteger server: aClusterDataServer type: 
+    ^ super new initialize: anInteger server: aClusterDataServer type: 
                                                          aClusterClass
-
 \end{verbatim}
 
 
@@ -21,12 +20,10 @@ Instance methods
 \begin{verbatim}
     ( result at: ( self indexOfNearestCluster: aVector)) accumulate: 
                                                               aVector.
-
 \end{verbatim}
 {\bf clusters:} {\tt aCollectionOfClusters}
 \begin{verbatim}
     result := aCollectionOfClusters.
-
 \end{verbatim}
 {\bf collectChangesAndResetClusters}
 \begin{verbatim}
@@ -34,7 +31,7 @@ Instance methods
     changes := 0.
     hasEmptyClusters := false.
     result do: 
-            [:each | 
+            [ :each | 
             changes := each changes + changes.
             ( each isInsignificantIn: self)
                 ifTrue: 
@@ -45,13 +42,11 @@ Instance methods
     hasEmptyClusters 
         ifTrue: [result := result reject: [:each | each 
                                                         isUndefined]].
-    ^changes / 2
-
+    ^ changes / 2
 \end{verbatim}
 {\bf dataServer:} {\tt aClusterDataServer}
 \begin{verbatim}
     dataServer := aClusterDataServer.
-
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
@@ -61,13 +56,11 @@ Instance methods
         whileFalse:[ self accumulate: dataServer next.
                      dataSetSize := dataSetSize + 1.
                     ].
-    ^self collectChangesAndResetClusters
-
+    ^ self collectChangesAndResetClusters
 \end{verbatim}
 {\bf finalizeIterations}
 \begin{verbatim}
     dataServer close
-
 \end{verbatim}
 {\bf indexOfNearestCluster:} {\tt aVector}
 \begin{verbatim}
@@ -82,8 +75,7 @@ Instance methods
                       index := n.
                     ].
         ].
-    ^index
-
+    ^ index
 \end{verbatim}
 {\bf initialize:} {\tt anInteger} {\bf server:} {\tt aClusterDataServer} {\bf type:} {\tt aClusterClass}
 \begin{verbatim}
@@ -91,8 +83,7 @@ Instance methods
     self clusters: ( (1 to: anInteger) collect: [ :n | aClusterClass 
                                                                 new]).
     minimumRelativeClusterSize := 0.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf initializeIterations}
 \begin{verbatim}
@@ -100,23 +91,18 @@ Instance methods
     result 
         do: [:each | each isUndefined ifTrue: [each centerOn: 
                                                      dataServer next]]
-
 \end{verbatim}
 {\bf minimumClusterSize}
 \begin{verbatim}
-    ^(minimumRelativeClusterSize * dataSetSize) rounded
-
+    ^ (minimumRelativeClusterSize * dataSetSize) rounded
 \end{verbatim}
 {\bf minimumRelativeClusterSize:} {\tt aNumber}
 \begin{verbatim}
     minimumRelativeClusterSize := aNumber max: 0.
-
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
     aStream nextPutAll: 'Iterations: '.
     iterations printOn: aStream.
-    result do: [ :each | aStream cr. each printOn: aStream].
-
+    result do: [ :each | aStream cr. each printOn: aStream ].
 \end{verbatim}
-

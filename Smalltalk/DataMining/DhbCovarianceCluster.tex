@@ -8,28 +8,22 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf centerOn:} {\tt aVector}
 \begin{verbatim}
-    accumulator := aVector ifNotNil: [ :v | DhbMahalanobisCenter 
-                                                         onVector: v].
-
+    accumulator := aVector ifNotNil: [ :v | DhbMahalanobisCenter onVector: v ].
 \end{verbatim}
 {\bf collectAccumulatorResults}
 \begin{verbatim}
     accumulator computeParameters.
-
 \end{verbatim}
 {\bf distanceTo:} {\tt aVector}
 \begin{verbatim}
-    ^accumulator distanceTo: aVector
-
+    ^ accumulator distanceTo: aVector
 \end{verbatim}
 {\bf isUndefined}
 \begin{verbatim}
-    ^accumulator isNil
-
+    ^ accumulator isNil
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
     accumulator printOn: aStream.
-
 \end{verbatim}
 

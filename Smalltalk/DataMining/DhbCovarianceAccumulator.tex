@@ -8,7 +8,7 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf accumulate:} {\tt anArray}
 \begin{verbatim}
-    | delta count1 r|
+    | delta count1 r |
     count1 := count.
     delta := super accumulate: anArray.
     r := count1 / count.
@@ -20,7 +20,6 @@ Instance methods
        at: n) * ( delta at: m) + ( r * ( ( covariance at: n) at: m))).
                   ].
             ].
-
 \end{verbatim}
 {\bf covarianceMatrix}
 \begin{verbatim}
@@ -29,20 +28,16 @@ Instance methods
     rows := covariance collect:
                 [ :row | n := n + 1. row, ( ( ( n + 1) to: covariance 
                   size) collect: [ :m | ( covariance at: m) at: n ])].
-    ^DhbSymmetricMatrix rows: rows
-
+    ^ DhbSymmetricMatrix rows: rows
 \end{verbatim}
 {\bf initialize:} {\tt anInteger}
 \begin{verbatim}
-    covariance := ( ( 1 to: anInteger) collect: [ :n | DhbVector new: 
-                                                         n]) asVector.
-    ^super initialize: anInteger
-
+    covariance := ( ( 1 to: anInteger) collect: [ :n | DhbVector new: n]) asVector.
+    ^ super initialize: anInteger
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
     super reset.
-    covariance do: [ :each | each atAllPut: 0].
-
+    covariance do: [ :each | each atAllPut: 0 ].
 \end{verbatim}
 

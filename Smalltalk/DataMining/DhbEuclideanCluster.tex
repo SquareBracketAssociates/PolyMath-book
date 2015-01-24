@@ -10,28 +10,23 @@ Instance methods
 \begin{verbatim}
     center := aVector.
     accumulator := DhbVectorAccumulator new: aVector size.
-
 \end{verbatim}
 {\bf collectAccumulatorResults}
 \begin{verbatim}
     center := accumulator average copy.
-
 \end{verbatim}
 {\bf distanceTo:} {\tt aVector}
 \begin{verbatim}
-    ^( aVector - center) norm
-
+    ^ (aVector - center) norm
 \end{verbatim}
 {\bf isUndefined}
 \begin{verbatim}
-    ^center isNil
-
+    ^ center isNil
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
     accumulator count printOn: aStream.
     aStream nextPutAll: ': '.
     center printOn: aStream.
-
 \end{verbatim}
 

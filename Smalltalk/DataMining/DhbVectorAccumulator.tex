@@ -8,11 +8,8 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf new:} {\tt anInteger}
 \begin{verbatim}
-    ^self new initialize: anInteger
-
+    ^ self new initialize: anInteger
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -22,25 +19,21 @@ Instance methods
     count := count + 1.
     delta := average - aVectorOrArray asVector scaleBy: 1 / count.
     average accumulateNegated: delta.
-    ^delta
-
+    ^ delta
 \end{verbatim}
 {\bf average}
 \begin{verbatim}
-    ^average
-
+    ^ average
 \end{verbatim}
 {\bf count}
 \begin{verbatim}
-    ^count
-
+    ^ count
 \end{verbatim}
 {\bf initialize:} {\tt anInteger}
 \begin{verbatim}
     average := DhbVector new: anInteger.
     self reset.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -49,12 +42,10 @@ Instance methods
     count printOn: aStream.
     aStream space.
     average printOn: aStream.   
-
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
     count := 0.
     average atAllPut: 0.
-
 \end{verbatim}
 

@@ -121,25 +121,6 @@ hierarchy of the class {\tt Stream}.
 \input{Smalltalk/DataMining/DhbMemoryBasedDataServer}
 \end{listing}
 
-\subsection{Data server --- Java implementation}
-\label{sec:jdataserver} Listing \ref{lj:abstractserver} shows the
-implementation of the abstract data server in Java. The
-implementation of the concrete class is shown in listing
-\ref{lj:memoryserver}.
-
-\noindent Our implementation follows the naming used in the {\tt
-java.io} package. There is no method checking for the availability
-of more data; instead, the exception {\tt EOFException} is thrown
-by the {\tt read} method when reading beyond the end of the stream
-occurs .
-
-\begin{listing} Java abstract data server \label{lj:abstractserver}
-\input{Java/DhbDataMining/AbstractDataServer.java}
-\end{listing}
-\begin{listing} Java memory based data server \label{lj:memoryserver}
-\input{Java/DhbDataMining/MemoryBasedDataServer.java}
-\end{listing}
-
 \section{Covariance and covariance matrix}
 \label{sec:covmatrix} When one deals with two or more random
 variables an important question to ask is whether or not the two
@@ -303,8 +284,8 @@ from a data stream.
  | accumulator valueStream average |
  accumulator := DhbVectorAccumulator new.
  valueStream open.
- [ valueStream atEnd]
-        whileFalse:[ accumulator accumulate: valueStream next].
+ [ valueStream atEnd ]
+        whileFalse: [ accumulator accumulate: valueStream next ].
  valueStream close.
  average := accumulator average.
 \end{verbatim}
@@ -324,8 +305,8 @@ example should be self explanatory to the reader.
  | accumulator valueStream average covarianceMatrix |
  accumulator := DhbCovarianceAccumulator new.
  valueStream open.
- [ valueStream atEnd]
-        whileFalse:[ accumulator accumulate: valueStream next].
+ [ valueStream atEnd ]
+        whileFalse:[ accumulator accumulate: valueStream next ].
  valueStream close.
  average := accumulator average.
  covarianceMatrix := accumulator covarianceMatrix.
@@ -348,60 +329,7 @@ computes the lower half of the matrix.
 \input{Smalltalk/DataMining/DhbCovarianceAccumulator}
 \end{listing}
 
-\subsection{Covariance matrix --- Java implementation}
-\label{sec:jcovmatrix} Listing \ref{ls:vectoraverage} shows the
-implementation of the accumulation of a vector in Smalltalk.
-Listing \ref{ls:covmatrix} shows the implementation of the
-accumulation of the covariance matrix. The following code example
-shows how to accumulate the average of a series of vectors read
-from a data stream.
-\begin{codeExample}
-\begin{verbatim}
 
-\end{verbatim}
-\noindent{\tt<\sl Creating an instance of a concrete subclass of
-\tt AbstractDataServer\sl into the variable \tt dataServer>}
-\begin{verbatim}
- VectorAccumulator accumulator = new VectorAccumulator(dimension);
- dataServer.open();
-  try {
-    while (true) accumulator.accumulate( server.read());
-    } catch ( java.io.EOFException e) {};
- DhbVector averages = accumulator.averageVector();
-\end{verbatim}
-\end{codeExample}
-This example is very similar to code example \ref{ex:jmoments}.
-Here the data to accumulate are prepared as an array of vectors.
-The next code example shows how to accumulate the both average and
-covariance matrix. The little differences with the preceding
-example should be self explanatory to the reader.
-\begin{codeExample}
-\begin{verbatim}
-
- VectorAccumulator accumulator = new VectorAccumulator(dimension);
- dataServer.open();
-  try {
-    while (true) accumulator.accumulate( server.read());
-    } catch ( java.io.EOFException e) {};
- DhbVector averages = accumulator.averageVector();
- SymmetricMatrix covariance = accumulator.covarianceMatrix();
-\end{verbatim}
-\end{codeExample}
-
-In our implementation the method {\tt accumulate} has been
-implemented without any exception. This departure from the
-recommended practice is justified by the fact that the handling of
-exception --- even when they do not occur --- increases the
-execution of a method. To optimize the loop, the computation of
-the average is duplicated in the method {\tt accumulate} of each
-class.
-\begin{listing} Java implementation of vector average \label{lj:vectoraverage}
-\input{Java/DhbDataMining/VectorAccumulator.java}
-\end{listing}
-
-\begin{listing} Java implementation of covariance matrix \label{lj:covmatrix}
-\input{Java/DhbDataMining/CovarianceAccumulator.java}
-\end{listing}
 
 \section{Multidimensional probability distribution}
 \label{sec:multiprob} To get a feeling of what the covariance
@@ -639,8 +567,8 @@ how to sort measurements using the Mahalanobis distance.
 to read measurements from the calibrating set>}
 \begin{verbatim}
  calibrationServer open.
- [ calibrationServer atEnd]
-      whileFalse: [ center accumulate: calibrationServer next].
+ [ calibrationServer atEnd ]
+      whileFalse: [ center accumulate: calibrationServer next ].
  calibrationServer close.
  center computeParameters.
 \end{verbatim}
@@ -649,11 +577,11 @@ the measurements to be sorted between accepted and rejected; the
 variable \tt threshold \sl must also be determined or given\tt >}
 \begin{verbatim}
  dataServer open.
- [ dataServer atEnd]
+ [ dataServer atEnd ]
       whileFalse: [ data := dataServer next.
                     ( center distanceTo: data) > threshold
-                        ifTrue: [ self reject: data]
-                        ifFalse:[ self accept: data].
+                        ifTrue: [ self reject: data ]
+                        ifFalse:[ self accept: data ].
                   ].
  dataServer close.
 \end{verbatim}
@@ -672,58 +600,7 @@ accepted and rejected data.
 \begin{listing} Smalltalk Mahalanobis center  \label{ls:mahalanobis}
 \input{Smalltalk/DataMining/DhbMahalanobisCenter}
 \end{listing}
-\subsection{Mahalanobis distance --- Java implementation}
-Listing \ref{ls:mahalanobis} shows the implementation of a
-Mahalanobis center in Smalltalk. The following code example shows
-how to sort measurements using the Mahalanobis distance.
-\begin{codeExample}
-\begin{verbatim}
 
- MahalanobisCenter center = new MahalanobisCenter( 5);
-\end{verbatim}
-\noindent{\tt<\sl The variable \tt calibrationServer \sl is setup
-to read measurements from the calibrating set>}
-\begin{verbatim}
- calibrationServer.open();
- try{ while( true)
-        { center.accumulate( calibrationServer.next());};}
-    catch( EOFException e){};
- calibrationServer.close();
- center.computeParameters();
-\end{verbatim}
-\noindent{\tt<\sl The variable \tt dataServer \sl is setup to read
-the measurements to be sorted between accepted and rejected; the
-{\tt double} variable \tt threshold \sl must also be determined or
-given\tt>}
-\begin{verbatim}
- dataServer.open();
- try {
-      while (true)
-        {
-            DhbVector data = dataServer.next();
-            if ( center.distanceTo( data) > threshold )
-                reject(data);
-            else
-                accept(data);
-        };}
-    catch( EOFException e){};
- dataServer.close();
-\end{verbatim}
-\end{codeExample}
-The first line creates a new instance of a Mahalanobis center for
-vectors of dimension 5. After setting up the server for the
-calibrating set data from the calibrating set are accumulated into
-the Mahalanobis center. At the end the parameters of the
-Mahalanobis center are computed. Then, the server for the other
-measurements is set up. The loop calculates the distance to the
-Mahalanobis center for each measurements. Our example supposes
-that the object executing this code has implemented two methods
-{\tt accept} and {\tt reject} to process accepted and rejected
-data.
-
-\begin{listing} Java Mahalanobis center \label{lj:mahalanobis}
-\input{Java/DhbDataMining/MahalanobisCenter.java}
-\end{listing}
 
 
 \section{Cluster analysis}
@@ -961,7 +838,7 @@ shows how to implement a search for clusters.
 \begin{codeExample}
 \begin{verbatim}
 
- | dataServer finder clusters|
+ | dataServer finder clusters |
 \end{verbatim}
 \noindent{\tt<\sl The variable \tt dataServer \sl is setup to read
 measurements from the calibrating set>}
@@ -1011,65 +888,6 @@ the accumulaotr; individual data points are not kept.
 \input{Smalltalk/DataMining/DhbEuclideanCluster}
 \end{listing}
 
-\subsection{Cluster analysis --- Java implementation}
-Listing \ref{lj:clusterfinder} shows the abstract implementation
-of the $K$-cluster algorithm in Java. Listing
-\ref{lj:euclidcluster} shows a concrete implementation using
-Euclidean distance. The following code example shows how to
-implement a search for Euclidean clusters.
-\begin{codeExample}
-\begin{verbatim}
-
-\end{verbatim}
-\noindent{\tt<\sl Creating an instance of a concrete subclass of
-\tt AbstractDataServer\sl into the variable \tt dataServer>}
-\begin{verbatim}
- EuclideanCluster[] clusters = new EuclideanCluster[6];
- for ( int i = 0; i < clusters.length; i++ )
-        clusters[i] = new EuclideanCluster();
- ClusterFinder finder =
-            new ClusterFinder( clusters, server);
- try { finder.setMinimumRelativeClusterSize( 0.09);}
-        catch( IllegalArgumentException e){};
- finder.evaluate();
- EuclideanCluster[] clusters = finder.getClusters();
-\end{verbatim}
-\end{codeExample}
-The first line after setting up the data server creates an array
-of 6 Euclidean clusters. The loop after this line populates this
-array with empty clusters. Next, an instance of a cluster finder
-is created with the array of clusters and the data server. The
-statement within the {\tt try$\ldots$catch} block defines the
-minimum relative size of significant clusters. The next statement
-performs the algorithm. The last statement retrieves the array of
-found clusters.
-
-The constructor for the class {\tt ClusterFinder} takes two
-arguments: an array of clusters and the data server. The array of
-clusters may contain undefined clusters. The undefined clusters
-are initialized in the method {\tt initializeIterations}. The data
-server must be an instance of a concrete data server class as
-described in section \ref{sec:jdataserver}.
-
-\begin{listing} Java $K$-cluster algorithm \label{lj:clusterfinder}
-\input{Java/DhbDataMining/Cluster.java}
-\input{Java/DhbDataMining/ClusterFinder.java}
-\end{listing}
-
-The concrete class {\tt EuclideanCluster} implements clusters
-using the Euclidean distance defined by equation
-\ref{eq:eucliddist}. It has the following instance variables
-\begin{description}
-  \item[\tt center] the center of the cluster --- that is, the
-  position from which distances to the cluster are calculated;
-  \item[\tt accumulator] an instance of the class {\tt
-  VectorAccumulator}described in section \ref{sec:jcovmatrix}.
-\end{description}
-The accumulation of the data points is delegated the accumulator.
-
-\begin{listing} Java implementation of an Euclidean cluster \label{lj:euclidcluster}
-\input{Java/DhbDataMining/EuclideanCluster.java}
-\end{listing}
 
 \section{Covariance clusters}
 \label{sec:mahalanobiscluster} As we have seen in section
@@ -1100,8 +918,5 @@ Java implementation is shown in listing \ref{lj:mahacluster}.
 \input{Smalltalk/DataMining/DhbCovarianceCluster}
 \end{listing}
 
-\begin{listing} Java covariance cluster \label{lj:mahacluster}
-\input{Java/DhbDataMining/CovarianceCluster.java}
-\end{listing}
 
 \ifx\wholebook\relax\else\end{document}\fi
