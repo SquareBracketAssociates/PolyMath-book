@@ -1,6 +1,6 @@
 \documentclass[twoside]{book}
 \usepackage[active]{srcltx}
-\usepackage[LY1]{fontenc}
+%\usepackage[LY1]{fontenc} "cela change le printing du code et si on l'utilise le code est affiche en times normal"
 %\usepackage{listing}
 \input{DhbDefinitions}
 \let\wholebook=\relax
@@ -10,7 +10,7 @@
 \begin{document}
 \title{Object-Oriented Implementation of \linebreak Numerical Methods\linebreak
  An Introduction with Smalltalk}
-\author{Didier H. Besset}
+\author{Didier H. Besset \\ Maintained by S. Ducasse and S. Stinckwich}
 \maketitle \pagenumbering{roman}
 \input{preface} %no Java
 {\parskip 0pt \tableofcontents \listoffigures \listoftables
@@ -22,8 +22,8 @@
 \input{iteration} % no java :)
 \input{zeroes} % no java
 \input{integration} % no java 
-\input{series}
-\input{linearalgebra}
+\input{series}% no java
+\input{linearalgebra} %no java
 \input{statistics}
 \input{estimation}
 \input{minimization}
@@ -31,7 +31,6 @@
 \appendix
 \input{floatingpointsimulation}
 \input{smalltalkprimer}
-% \input{javaprimer}
 \input{distributions}
 \input{centralmoments}
 \input{cdrom}
