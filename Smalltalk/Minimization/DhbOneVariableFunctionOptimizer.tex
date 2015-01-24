@@ -8,14 +8,12 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf defaultPrecision}
 \begin{verbatim}
-    ^DhbFloatingPointMachine new defaultNumericalPrecision * 10
-
+    ^ DhbFloatingPointMachine new defaultNumericalPrecision * 10
 \end{verbatim}
 {\bf goldenSection}
 \begin{verbatim}
     GoldenSection isNil ifTrue: [GoldenSection := (3 - 5 sqrt) / 2].
-    ^GoldenSection
-
+    ^ GoldenSection
 \end{verbatim}
 
 
@@ -24,37 +22,32 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf computeInitialValues}
 \begin{verbatim}
-    [ bestPoints size  > 3] whileTrue: [ bestPoints removeLast].
+    [ bestPoints size  > 3 ] whileTrue: [ bestPoints removeLast ].
     bestPoints size = 3
         ifTrue: [ self hasBracketingPoints
-                    ifFalse:[ bestPoints removeLast].
+                    ifFalse: [ bestPoints removeLast ].
                 ].
     bestPoints size < 3
-        ifTrue: [ ( DhbOptimizingBracketFinder forOptimizer: self) 
-                                                            evaluate].
-
+        ifTrue: [ (DhbOptimizingBracketFinder forOptimizer: self) evaluate ].
 \end{verbatim}
 {\bf computePrecision}
 \begin{verbatim}
-    ^self precisionOf: ( ( bestPoints at: 2) position - ( bestPoints 
+    ^ self precisionOf: ((bestPoints at: 2) position - (bestPoints 
                                                   at: 3) position) abs
-           relativeTo: ( bestPoints at: 1) position abs
-
+           relativeTo: (bestPoints at: 1) position abs
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
     self addPointAt: self nextXValue.
     bestPoints removeAtIndex: self indexOfOuterPoint.
-    ^self computePrecision
-
+    ^ self computePrecision
 \end{verbatim}
 {\bf hasBracketingPoints}
 \begin{verbatim}
     | x1 |
-    x1 := ( bestPoints at: 1) position.
-    ^( ( bestPoints at: 2) position - x1) * (( bestPoints at: 3) 
+    x1 := (bestPoints at: 1) position.
+    ^ ((bestPoints at: 2) position - x1) * ((bestPoints at: 3) 
                                                     position - x1) < 0
-
 \end{verbatim}
 {\bf indexOfOuterPoint}
 \begin{verbatim}
@@ -64,31 +57,28 @@ Instance methods
     x := bestPoints first position.
     2 to: 4 do:
         [ :n |
-          ( bestPoints at: n) position < x
+          (bestPoints at: n) position < x
                 ifTrue: [ inferior
-                            ifTrue: [ ^n].
+                            ifTrue: [ ^ n ].
                           inferior := true.
                         ]
                 ifFalse:[ superior
-                            ifTrue: [ ^n].
+                            ifTrue: [ ^ n ].
                           superior := true.
                         ].
         ].
-
 \end{verbatim}
 {\bf nextXValue}
 \begin{verbatim}
     | d3 d2 x1 |
-    x1 := ( bestPoints at: 1) position.
-    d2 := ( bestPoints at: 2) position - x1.
-    d3 := ( bestPoints at: 3) position - x1.
-    ^( d3 abs > d2 abs ifTrue: [ d3]
-                       ifFalse:[ d2]) * self class goldenSection + x1
-
+    x1 := (bestPoints at: 1) position.
+    d2 := (bestPoints at: 2) position - x1.
+    d3 := (bestPoints at: 3) position - x1.
+    ^ (d3 abs > d2 abs ifTrue: [ d3 ]
+                       ifFalse:[ d2 ]) * self class goldenSection + x1
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
-    [ bestPoints isEmpty] whileFalse: [ bestPoints removeLast].
-
+    [ bestPoints isEmpty ] whileFalse: [ bestPoints removeLast ].
 \end{verbatim}
 

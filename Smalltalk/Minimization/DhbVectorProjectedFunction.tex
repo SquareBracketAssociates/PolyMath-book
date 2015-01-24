@@ -7,28 +7,23 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf argumentWith:} {\tt aNumber}
 \begin{verbatim}
-    ^aNumber * self direction + self origin
-
+    ^ aNumber * self direction + self origin
 \end{verbatim}
 {\bf direction}
 \begin{verbatim}
-    ^index
-
+    ^ index
 \end{verbatim}
 {\bf direction:} {\tt aVector}
 \begin{verbatim}
     index := aVector.
-
 \end{verbatim}
 {\bf origin}
 \begin{verbatim}
-    ^argument
-
+    ^ argument
 \end{verbatim}
 {\bf origin:} {\tt aVector}
 \begin{verbatim}
     argument := aVector.
-
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -36,6 +31,5 @@ Instance methods
     aStream nextPutAll: ' ('.
     self direction printOn: aStream.
     aStream nextPut: $).
-
 \end{verbatim}
 

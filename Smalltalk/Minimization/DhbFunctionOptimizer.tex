@@ -8,23 +8,19 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf defaultPrecision}
 \begin{verbatim}
-    ^super defaultPrecision * 100
-
+    ^ super defaultPrecision * 100
 \end{verbatim}
 {\bf forOptimizer:} {\tt aFunctionOptimizer}
 \begin{verbatim}
-    ^self new initializeForOptimizer: aFunctionOptimizer
-
+    ^ self new initializeForOptimizer: aFunctionOptimizer
 \end{verbatim}
 {\bf maximizingFunction:} {\tt aFunction}
 \begin{verbatim}
-    ^super new initializeAsMaximizer; setFunction: aFunction
-
+    ^ super new initializeAsMaximizer; setFunction: aFunction
 \end{verbatim}
 {\bf minimizingFunction:} {\tt aFunction}
 \begin{verbatim}
-    ^super new initializeAsMinimizer; setFunction: aFunction
-
+    ^ super new initializeAsMinimizer; setFunction: aFunction
 \end{verbatim}
 
 
@@ -35,62 +31,51 @@ Instance methods
 \begin{verbatim}
     bestPoints add: (optimizingPointClass vector: aNumber
                                         function: functionBlock)
-
 \end{verbatim}
 {\bf bestPoints}
 \begin{verbatim}
-    ^bestPoints
-
+    ^ bestPoints
 \end{verbatim}
 {\bf finalizeIterations}
 \begin{verbatim}
     result := bestPoints first position.
-
 \end{verbatim}
 {\bf functionBlock}
 \begin{verbatim}
-    ^functionBlock
-
+    ^ functionBlock
 \end{verbatim}
 {\bf initialize}
 \begin{verbatim}
     bestPoints := SortedCollection sortBlock:
-                                         [ :a :b | a betterThan: b].
-    ^super initialize
-
+                                         [ :a :b | a betterThan: b ].
+    ^ super initialize
 \end{verbatim}
 {\bf initializeAsMaximizer}
 \begin{verbatim}
     optimizingPointClass := DhbMaximizingPoint.
-    ^self initialize
-
+    ^ self initialize
 \end{verbatim}
 {\bf initializeAsMinimizer}
 \begin{verbatim}
     optimizingPointClass := DhbMinimizingPoint.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf initializeForOptimizer:} {\tt aFunctionOptimizer}
 \begin{verbatim}
     optimizingPointClass := aFunctionOptimizer pointClass.
     functionBlock := aFunctionOptimizer functionBlock.
-    ^self initialize
-
+    ^ self initialize
 \end{verbatim}
 {\bf initialValue:} {\tt aVector}
 \begin{verbatim}
     result := aVector copy.
-
 \end{verbatim}
 {\bf pointClass}
 \begin{verbatim}
-    ^optimizingPointClass
-
+    ^ optimizingPointClass
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
     super printOn: aStream.
-    bestPoints do: [ :each | aStream cr. each printOn: aStream].
-
+    bestPoints do: [ :each | aStream cr. each printOn: aStream ].
 \end{verbatim}

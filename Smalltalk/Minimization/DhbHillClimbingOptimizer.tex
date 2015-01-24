@@ -11,10 +11,10 @@ Instance methods
     unidimensionalFinder := DhbOneVariableFunctionOptimizer
                                                    forOptimizer: self.
     unidimensionalFinder desiredPrecision: desiredPrecision.
-    bestPoints := ( 1 to: result size)
+    bestPoints := (1 to: result size)
                  collect: [ :n | ( DhbVectorProjectedFunction
                                       function: functionBlock)
-                                     direction: ( ( DhbVector
+                                     direction: ((DhbVector
                                                      new: result size)
                                                          atAllPut: 0;
                                                          at: n put: 1;
@@ -40,31 +40,24 @@ Instance methods
           precision := ( self precisionOf: (x0 - x1) abs relativeTo:
                                                x0 abs) max: precision.
         ].
-    ^precision
-
-\end{verbatim}
-{\bf finalizeIterations}
-\begin{verbatim}
-
+    ^ precision
 \end{verbatim}
 {\bf minimizeDirection:} {\tt aVectorFunction}
 \begin{verbatim}
-    ^unidimensionalFinder
+    ^ unidimensionalFinder
         reset;
         setFunction: aVectorFunction;
         addPointAt: 0;
         addPointAt: precision;
         addPointAt: precision negated;
         evaluate
-
 \end{verbatim}
 {\bf minimizeDirection:} {\tt aVectorFunction} {\bf from:} {\tt aVector}
 \begin{verbatim}
 Function from: aVector
     ^aVectorFunction
         origin: aVector;
-        argumentWith: ( self minimizeDirection: aVectorFunction)
-
+        argumentWith: (self minimizeDirection: aVectorFunction)
 \end{verbatim}
 {\bf shiftDirections}
 \begin{verbatim}
@@ -84,5 +77,4 @@ Function from: aVector
         ifTrue: [ bestPoints last direction: (position scaleBy: (1 /
                                                               delta))]
         ifFalse:[ bestPoints last direction: firstDirection].
-
 \end{verbatim}

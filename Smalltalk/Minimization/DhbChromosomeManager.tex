@@ -8,44 +8,35 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf new:} {\tt anInteger} {\bf mutation:} {\tt aNumber1} {\bf crossover:} {\tt aNumber2}
 \begin{verbatim}
-    ^self new populationSize: anInteger; rateOfMutation: aNumber1; 
+    ^ self new populationSize: anInteger; rateOfMutation: aNumber1; 
                                    rateOfCrossover: aNumber2; yourself
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
 {\bf clone:} {\tt aChromosome}
 \begin{verbatim}
-    ^aChromosome copy
-
+    ^ aChromosome copy
 \end{verbatim}
 {\bf crossover:} {\tt aChromosome1} {\bf and:} {\tt aChromosome2}
 \begin{verbatim}
-    ^self subclassResponsibility
-
+    ^ self subclassResponsibility
 \end{verbatim}
 {\bf isFullyPopulated}
 \begin{verbatim}
-    ^population size >= populationSize 
-
+    ^ population size >= populationSize 
 \end{verbatim}
 {\bf mutate:} {\tt aChromosome}
 \begin{verbatim}
-    ^self subclassResponsibility
-
+    ^ self subclassResponsibility
 \end{verbatim}
 {\bf population}
 \begin{verbatim}
-    ^population
-
+    ^ population
 \end{verbatim}
 {\bf populationSize:} {\tt anInteger}
 \begin{verbatim}
     populationSize := anInteger.
-
 \end{verbatim}
 {\bf process:} {\tt aChromosome1} {\bf and:} {\tt aChromosome2}
 \begin{verbatim}
@@ -64,32 +55,27 @@ Instance methods
                     [population
                         add: (self clone: aChromosome1);
                         add: (self clone: aChromosome2)]]
-
 \end{verbatim}
 {\bf randomnizePopulation}
 \begin{verbatim}
     self reset.
     [ self isFullyPopulated] whileFalse: [ population add: self 
                                                     randomChromosome].
-
 \end{verbatim}
 {\bf rateOfCrossover:} {\tt aNumber}
 \begin{verbatim}
     (aNumber between: 0 and: 1) 
         ifFalse: [self error: 'Illegal rate of cross-over'].
     rateOfCrossover := aNumber
-
 \end{verbatim}
 {\bf rateOfMutation:} {\tt aNumber}
 \begin{verbatim}
     (aNumber between: 0 and: 1) 
         ifFalse: [self error: 'Illegal rate of mutation'].
     rateOfMutation := aNumber
-
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
     population := OrderedCollection new: populationSize.
-
 \end{verbatim}
 

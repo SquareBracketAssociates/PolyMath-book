@@ -10,7 +10,6 @@ Instance methods
     self range notNil
         ifTrue: [ self performGeneticOptimization].
     self performSimplexOptimization.
-
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
@@ -19,18 +18,15 @@ Instance methods
     optimizer desiredPrecision: desiredPrecision;
               maximumIterations: maximumIterations.
     result := optimizer evaluate.
-    ^optimizer precision
-
+    ^ optimizer precision
 \end{verbatim}
 {\bf origin}
 \begin{verbatim}
-    ^result
-
+    ^ result
 \end{verbatim}
 {\bf origin:} {\tt anArrayOrVector}
 \begin{verbatim}
     result := anArrayOrVector.
-
 \end{verbatim}
 {\bf performGeneticOptimization}
 \begin{verbatim}
@@ -41,7 +37,6 @@ Instance methods
     manager origin: self origin asVector; range: self range asVector.
     optimizer chromosomeManager: manager.
     result := optimizer evaluate.
-
 \end{verbatim}
 {\bf performSimplexOptimization}
 \begin{verbatim}
@@ -51,16 +46,13 @@ Instance methods
               maximumIterations: maximumIterations;
               initialValue: result asVector.
     result := optimizer evaluate.
-
 \end{verbatim}
 {\bf range}
 \begin{verbatim}
-    ^self bestPoints
-
+    ^ self bestPoints
 \end{verbatim}
 {\bf range:} {\tt anArrayOrVector}
 \begin{verbatim}
     bestPoints := anArrayOrVector.
-
 \end{verbatim}
 

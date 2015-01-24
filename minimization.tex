@@ -9,7 +9,7 @@
 \chapter{Optimization}
 \label{ch:minimization} \vspace{1 ex}
 \begin{flushright}
-{\sl Cours vite au but, mais gare \'a la chute.}\footnote{Run fast
+{\sl Cours vite au but, mais gare \`a la chute.}\footnote{Run fast
 to the goal, but beware of the fall.}\\ Alexandre Soljenitsyne
 \end{flushright}
 \vspace{1 ex} An optimization problem is a numerical problem where
@@ -380,157 +380,6 @@ $g\left(\lambda\right)$ for the supplied argument $\lambda$.
 \input{Smalltalk/Minimization/DhbVectorProjectedFunction}
 \end{listing}
 
-\subsection{Common optimizing classes --- Java implementation}
-\label{sec:jgeneralOpt} \marginpar{Figure
-\ref{fig:joptimizingclasses} with the boxes {\bf OptimizingPoint},
-{\bf MinimizingPoint}, {\bf MaximizingPoint}, {\bf
-ManyVariableFunction}, {\bf OptimizingVector}, {\bf
-MinimizingVector}, {\bf MaximizingVector}, {\bf
-OptimizingFactory}, {\bf MinimizingFactory}, {\bf
-MaximizingFactory} and {\bf MultiVariableOptimizer} grayed.} In
-Java we have two distinct hierarchies of optimizing points (\cf
-figure \ref{fig:joptimizingclasses}). The abstract class {\tt
-OptimizingPoint} has two subclasses {\tt MinimizingPoint} and {\tt
-MaximizingPoint}. These classes are shown in listing
-\ref{lj:optimizerCommonPoint}. The abstract class {\tt
-OptimizingPoint} has two instance variables:
-\begin{description}
-  \item[\tt position] a {\tt double} containing the position at which the function
-  is evaluated;
-  \item[\tt value] a {\tt double} containing the value of the function evaluated at the point's position;
-\end{description}
-Both instance variables have a corresponding getter accessor
-method, but no setter method. Otherwise, the functional relation
-between {\tt position} and {\tt value} could not be ensured. As we
-noted in section \ref{sec:goptonedim}, the only method redefined
-by the subclass {\tt MaximizingPoint} is the method {\tt
-betterThan} used to decide whether a point is better than another.
-Instances of optimizing points are created with a single
-constructor method taking as arguments the position at which the
-function must be evaluated and the function itself. The supplied
-function must implement the {\tt OneVariableFunction} interface
-described in section \ref{sec:jvFunction}.
-
-\begin{listing} Java optimizing point classes \label{lj:optimizerCommonPoint}
-\input{Java/DhbOptimizing/OptimizingPoint.java}
-\input{Java/DhbOptimizing/MinimizingPoint.java}
-\input{Java/DhbOptimizing/MaximizingPoint.java}
-\end{listing}
-
-The abstract class {\tt OptimizingVector} has two subclasses {\tt
-MinimizingVector} and {\tt Maximizingvector}. The only differences
-with the corresponding optimizing point classes are that the
-instance variable {\tt position} is an array of {\tt double} and
-that the function supplied as the second argument of the
-constructor method must implement the {\tt ManyVariableFunction}
-interface. These classes and the interface {\tt
-ManyVariableFunction} are showns in listing
-\ref{lj:optimizerCommonVector}. The need for the additional
-hierarchy comes primarily from the fact that we cannot handle {\tt
-double} and array of double as a common object since these
-entities are primitive types and not objects.
-
-\begin{listing} Java optimizing vector classes \label{lj:optimizerCommonVector}
-\input{Java/DhbInterfaces/ManyVariableFunction.java}
-\input{Java/DhbOptimizing/OptimizingVector.java}
-\input{Java/DhbOptimizing/MinimizingVector.java}
-\input{Java/DhbOptimizing/MaximizingVector.java}
-\end{listing}
-
-The abstract class {\tt OptimizingPointFactory} and its two
-concrete subclasses, {\tt MinimizingPointFactory} and {\tt
-MaximizingPointFactory}, are in charge of creating the optimizing
-points. These factory classes\footnote{For people reading code in
-both languages: Smalltalk does not need any factory: objects of
-type {\tt Class} are instance factories built into the language.
-Reflection in Java could have been used here to build an
-architecture similar to that of Smalltalk. The use of reflection,
-however, implies the use of casting, which, in my humble opinion,
-spoils the purpose of strong typing.} play the role of the
-optimizing \patstyle{Strategy} described in section
-\ref{sec:goptonedim}. The concrete classes implement the two
-methods {\tt createPoint} and {\tt createVector}. The method {\tt
-createPoint} creates an optimizing point of the desired type for a
-supplied position (a {\tt double}) and function (a {\tt
-OneVariableFunction}). The method {\tt createVector} creates an
-optimizing vector of the desired type for a supplied position (an
-array of {\tt double}) and function (a {\tt
-ManyVariableFunction}). A convenience method with the same name
-takes as first argument a {\tt DhbVector} (\cf section
-\ref{sec:jlinearalgebra}). Since the factory is able to create
-either points or vectors it can be reused between optimizer
-working with one or many variable functions.
-
-\begin{listing} Java optimizing point factory classes \label{lj:optimizerCommon}
-\input{Java/DhbOptimizing/OptimizingPointFactory.java}
-\input{Java/DhbOptimizing/MinimizingPointFactory.java}
-\input{Java/DhbOptimizing/MaximizingPointFactory.java}
-\end{listing}
-
-In the Smalltalk implementation we have been able to bring all
-optimizing classes under a single abstract class. The Java
-architecture is similar. In the case of Java, however, the
-abstract class only handles optimization in $n$-dimensional space.
-
-Listing \ref{lj:optimizerAbtractCommon} shows the code of class
-{\tt MultiVariableOptimizer}. This class has the following
-instance variables:
-\begin{description}
-  \item[\tt f] the goal function; this object must implement the
-  {\tt ManyVariableFunction} interface shown in listing
-  \ref{lj:optimizerCommonVector}.
-  \item[\tt pointFactory] the factory used to create optimizing
-  points; this must be one concrete instance of the classes shown
-  in listing \ref{lj:optimizerCommon}.
-  \item[\tt result] an array of double containing the initial value
-  where to start the algorithm; at the end of the
-  algorithm, this variable contains the position of the optimum if
-  convergence was attained;
-\end{description}
-The default constructor method provided by the abstract class take
-three arguments: the goal function, the optimizing point factory
-and the initial value. These three arguments correspond to the
-three instance variables of the class.
-
-The method {\tt setInitialValue} allows to change the initial
-value in case another search is made with the same instance. The
-accessor method {\tt getResult} allows one to retrieve the result.
-
-The method {\tt sortPoints} sorts a supplied array of optimizing
-points according to their \patstyle{Strategy}. Since sorting is
-made {\it in situ}, a bubble sort algorithm is used.
-
-\begin{listing} Java abstract class for all optimizing classes \label{lj:optimizerAbtractCommon}
-\input{Java/DhbOptimizing/MultiVariableOptimizer.java}
-\end{listing}
-
-In order to find an optimum along a given direction, one needs to
-construct an object able to transform a vector function into a one
-variable function. The class {\tt VectorProjectedFunction}
-providing this functionality has the following instance variables:
-\begin{description}
-  \item[\tt f] the goal function $f\left({\bf x}\right)$;
-  \item[\tt origin] the vector argument of the goal function,
-  that is the vector ${\bf x}_0$;
-  \item[\tt direction] the direction along which the function
-  is projected,
-  that is the vector ${\bf v}$.
-\end{description}
-The constructor method takes three argument corresponding to the
-three instance variables. In addition, the instance variables {\tt
-argument} and {\tt direction} can be read and modified using
-direct accessor methods. For convenience the set methods exist in
-two versions of the argument: an array of {\tt double} or a {\tt
-DhbVector}. This is also true for the constructor method.
-
-The method {\tt argumentAt:} returns the argument vector for the
-goal function, that is the vector ${\bf x}$. The method {\tt
-value:} returns the value of the function $g\left(\lambda\right)$
-for the supplied argument $\lambda$.
-\begin{listing} Java projected function class \label{lj:projectedfunctions}
-\input{Java/DhbOptimizing/VectorProjectedFunction.java}
-\end{listing}
-
 \section{Optimizing in one dimension}
 \label{sec:optonedim} To find the optimum of a one-variable
 function, $g\left(\lambda\right)$, whose derivative is unknown,
@@ -638,73 +487,6 @@ section optimum finder.
 \input{Smalltalk/Minimization/DhbOneVariableFunctionOptimizer}
 \end{listing}
 
-\subsection{Optimizing in one dimension --- Java implementation}
-\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
-OneVariableFunctionOptimizer} grayed.} Listing
-\ref{lj:optimizerOneDim} shows the class {\tt
-OneVariableFunctionOptimizer} implementing the search for an
-optimum of a one-variable function using the golden section search
-in Java. The following code example shows how to use this class to
-find the maximum of the gamma distribution discussed in section
-\ref{sec:gammadist}.
-\begin{codeExample}
-\begin{verbatim}
-
-    CauchyDistribution distr = new CauchyDistribution( 10, 5);
-    MaximizingPointFactory strategy = new MaximizingPointFactory();
-    OneVariableFunctionOptimizer finder =
-                new OneVariableFunctionOptimizer( distr, strategy);
-    finder.setDesiredPrecision( 1.0e-5);
-    finder.evaluate();
-    double result = finder.getResult();
-\end{verbatim}
-\end{codeExample}
-The first line creates an instance of a gamma distribution with
-parameters $\alpha = 2$ and $\beta = 5$. The next line creates an
-instance of a maximizing point factory. This factory is used as
-the strategy for the optimum finder created on the next line, the
-first argument of the constructor method being the function to
-maximize. A medium precision is given explicitly since the default
-provided by the class {\tt IterativeProcess} is likely to be
-meaningless (\cf \cite{Press}). Since no initial value is
-supplied, the search begins at a random point. After a call to the
-method {\tt evaluate} --- common to all iterative processes
---- the result is retrieved on the last line.
-
-\noindent The class {\tt OneVariableFunctionOptimizer} is a
-subclass of the class {\tt FunctionalIterator} described in
-section \ref{sec:jiterrel}. It has the following instance
-variables
-\begin{description}
-  \item[\tt bestPoints] an array of 3 optimizing points corresponding
-  to the values $\lambda_0$, $\lambda_1$ and $\lambda_2$ in this order;
-  thus, the best is always the middle one;
-  \item[\tt pointFactory] the factory used to create optimizing
-  points (\cf section \ref{sec:jgeneralOpt}).
-\end{description}
-The private static variable {\tt goldenSection} holds the value of
-the golden section.
-
-The method {\tt evaluateIteration} determines which side of the
-braketing interval the bisecting step will be performed. The
-bisection step of the algorithm is performed within the method
-{\tt reducePoints}. The arguments of the method is either 0 or 2
-depending on the selected side. The precision returned by the
-method {\tt evaluateIteration} is of course calculated using
-relative precision.
-
-The method {\tt initializeIterations} uses the optimum bracket
-finder described in section \ref{sec:jbracket} to obtain the first
-bracketing interval. The search for the interval is conducted from
-the supplied initial value. The instance of the bracket finder is
-created by supplying the same goal function and same strategy as
-the initial golden section finder.
-
-\begin{listing} Java implementation of the golden section optimum search
-\label{lj:optimizerOneDim}
-\input{Java/DhbOptimizing/OneVariableFunctionOptimizer.java}
-\end{listing}
-
 \section{Bracketing the optimum in one dimension}
 \label{sec:bracket} As we have seen in section \ref{sec:optonedim}
 the golden section algorithm requires the knowledge of a
@@ -771,49 +553,6 @@ chapter \ref{ch:iteration} to stop.
 \input{Smalltalk/Minimization/DhbOptimizingBracketFinder}
 \end{listing}
 
-\subsection{Bracketing the optimum --- Java implementation}
-\label{sec:jbracket} \marginpar{Figure
-\ref{fig:joptimizingclasses} with the box {\bf
-OptimizingBracketFinder} grayed.} Listing
-\ref{lj:optimizerbracket} shows the Smalltalk code of the class
-implementing the search algorithm for an optimizing bracket. The
-class {\tt OptimizingBracketFinder} is a subclass of the class
-{\tt FunctionalIterator} defined in section \ref{sec:jiterrel}. It
-has the same instance variables as the class {\tt
-OneVariableFunctionOptimizer}.
-
-The method {\tt initializeIterations} gets an initial value using
-a random generator if no initial value has been supplied. The
-other points of the initial interval are obtained from a random
-generator. At the end of the method, the array of best points
-contains 3 optimizing points sorted in ascending order of their
-position.
-
-The method {\tt evaluateIteration} first tests whether the optimum
-seems to be located toward negative or positive values. After the
-test the interval is expanded toward to corresponding direction by
-one of the methods {\tt moveTowardNegative} or  {\tt
-moveTowardPositive}.
-
-The method {\tt evaluateIteration} calcuate a pseudo precision: it
-is a large number, which becomes negative as soon as the condition
-to terminate the algorithm is met. Having a negative precision
-causes an iterative process as defined in chapter
-\ref{ch:iteration} to stop.
-
-The object using the bracket finder can retrieve the array of best
-points using the method {\tt getBestPoints}. This method
-constitutes a breach to the rule of hiding the implementation. In
-this case, however, this is an acceptable breach: the class {\tt
-OneVariableFunctionOptimizer} can retrieve the initial bracketing
-interval and use it immediately without having to evaluate again
-the function at these positions. After all, the bracketing
-interval {\sl is} the result of the optimizing bracket search.
-
-\begin{listing} Java optimum bracket finder
-\label{lj:optimizerbracket}
-\input{Java/DhbOptimizing/OptimizingBracketFinder.java}
-\end{listing}
 
 \section{Powell's algorithm}
 \label{sec:powell}Powell's algorithm is one of many hill climbing
@@ -940,48 +679,11 @@ minimizeDirection:} implements step 3 of the algorithm.
 \input{Smalltalk/Minimization/DhbHillClimbingOptimizer}
 \end{listing}
 
-\subsection{Powell's algorithm --- Java implementation}
-\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
-HillClimbingOptimizer} grayed.} Listing \ref{lj:optimizerpowell}
-shows the implementation of Powell's algorithm in Java. The
-following code example shows how to use this class to find the
-maximum of a vector function.
-\begin{codeExample}
-\label{ex:jpowell}
-\begin{verbatim}
-\end{verbatim}
-{\tt ManyVariableFunction func = <\sl the goal function\tt
->}\hfil\break
- {\tt double[] educatedGuess =<\sl an array of double not too far from the optimum\tt >}
-\begin{verbatim}
-    MaximizingPointFactory strategy = new MaximizingPointFactory();
-    HillClimbingOptimizer hillClimber =
-                new HillClimbingOptimizer( func, strategy);
-    hillClimber.setInitialValue( educatedGuess);
-    hillClimber.evaluate();
-    double[] result = hillClimber.getResult();
-\end{verbatim}
-\end{codeExample}
-
-The class {\tt HillClimbingOptimizer} is a subclass of class {\tt
-MultiVariableOptimizer}. It has the following instance variables
-\begin{description}
-  \item[\tt unidimensionalFinder] an instance of the class {\tt
-  OneVariableFunctionOptimizer}; this instance is used to find the
-  optimum of the function in steps 3 and 7 of the algorithm;
-  \item[\tt projections] an array of projected functions.
-\end{description}
-
-\begin{listing} Java implementation of Powell's algorithm
-\label{lj:optimizerpowell}
-\input{Java/DhbOptimizing/HillClimbingOptimizer.java}
-\end{listing}
-
 \section{Simplex algorithm}
 \label{sec:simplex} The simplex algorithm, invented by Nelder and
 Mead, provides an efficient way to find a good approximation of
 the optimum of a function starting from any place \cite{Press}.
-The only trap into which the simplex algortihm can run into is a
+The only trap into which the simplex algorithm can run into is a
 local optimum. On the other hand, this algorithm does not converge
 very well in the vicinity of the optimum. Thus, it must not be
 used with the desired precision set to a very low value. Once the
@@ -994,7 +696,7 @@ Powell algorithms.
 
 A simplex in a $n$-dimensional space is a figure formed with $n+1$
 summits. For example, a simplex in a 2-dimensional space is a
-triangle; a simplex in a 3- dimensional space is a tetrahedron.
+triangle; a simplex in a 3-dimensional space is a tetrahedron.
 Let us now discuss the algorithm for finding the optimum of a
 function with a simplex.
 \begin{enumerate}
@@ -1113,47 +815,6 @@ to it, there is no explicit sorting step.
 \begin{listing} Smalltalk implementation of simplex algorithm
 \label{ls:optimizersimplex}
 \input{Smalltalk/Minimization/DhbSimplexOptimizer}
-\end{listing}
-\subsection{Simplex algorithm --- Java implementation}
-\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
-SimplexOptimizer} grayed.} Listing \ref{ls:optimizersimplex} shows
-the Java implementation of the simplex algorithm. The following
-code example shows how to invoke the class to find the minimum of
-a vector function.
-\begin{codeExample}
-\begin{verbatim}
-\end{verbatim}
-{\tt ManyVariableFunction func = <\sl the goal function\tt
->}\hfil\break
- {\tt double[] educatedGuess =<\sl an array of double representing one point in the search space\tt >}
-\begin{verbatim}
-    MinimizingPointFactory strategy = new MinimizingPointFactory();
-    SimplexOptimizer simplex = new SimplexOptimizer( func, strategy);
-    simplex.setInitialValue( educatedGuess);
-    simplex.evaluate();
-    double[] result = simplex.getResult();
-\end{verbatim}
-\end{codeExample}
-Except for the lines creating the strategy and the optimizer, this
-code example is identical to that of the Powell's algorithm (code
-example \ref{ex:jpowell}).
-
-The class {\tt SimplexOptimizer} is a subclass of class {\tt
-MultiVariableOptimizer}. The additional instance variable {\tt
-simplex} contains an array of optimizing vectors whose positions
-are the summit of the simplex.
-
-At the end of the contraction operation, the best points must be
-sorted --- using the method {\tt sortPoints} of the superclass ---
-because this transformation can alter the order of the points
-considerably. In all other case, one has found the best point so
-far; the method {\tt addBestPoint} is then used to discard to
-worst point, shift the remaining points and add the best point in
-the first position of the array {\tt simplex}.
-
-\begin{listing} Java implementation of simplex algorithm
-\label{lj:optimizersimplex}
-\input{Java/DhbOptimizing/SimplexOptimizer.java}
 \end{listing}
 
 \section{Genetic algorithm}
@@ -1457,125 +1118,6 @@ element of  {\tt bestPoints}.
 \input{Smalltalk/Minimization/DhbGeneticOptimizer}
 \end{listing}
 
-\subsection{Genetic algorithm --- Java abstract implementation}
-\marginpar{Figure \ref{fig:joptimizingclasses} with the boxes {\bf
-ChromosomeManager} and  {\bf GeneticOptimizer} grayed.} The Java
-implementation of the genetic algorithm is done in two parts
-because the type of the population is not known until one uses a
-concrete chromosome manager. One could use casting in order to
-preserve anonymity of the chromosome type at the level of the
-genetic algorithm. I tend to avoid cast operator like the plague
-and use them only when all other alternatives have failed. In this
-case, casting is avoided by maintaining a concrete implementation
-of the chromosome manager in pair with a class implementing the
-genetic algorithm. This section describes the features of the
-abstract classes. The code for these classes is shown in listings
-\ref{lj:chromosome} and \ref{lj:optimizerabsgen}. The next section
-describes a concrete implementation for vector functions.
-
-The class {\tt ChromosomeManager} has an additional instance
-variable --- called {\tt generator} --- used to keep an instance
-of a random generator. Our implementation uses the default random
-generator provided by Java. The method {\tt reset} allows the
-creation of an empty next generation. The current size of the next
-generation is obtained by calling method {\tt getPopulationSize}.
-Other methods are provided to provide interaction with the genetic
-algorithm class. The methods {\tt individualAt} returns the $k\th$
-individual of the next generation, where $k$ is the supplied
-integer argument. The methods {\tt addCloneOf}, {\tt
-addMutationOf} add a new individual to the next generation by
-applying respectively reproduction or mutation. The method {\tt
-addCrossoversOf} add the two crossover offsprings of two
-individuals. Here, the reader will see that casting becomes
-unavoidable by the subclasses. However, since the objects taken as
-arguments by the methods {\tt addCloneOf}, {\tt addMutationOf} and
-{\tt addCrossoversOf} are coming from the method {\tt
-individualAt} and only that method, the risk of error is minimal.
-
-\begin{listing} Java abstract implementation of a chromosome
-\label{lj:chromosome}
-\input{Java/DhbOptimizing/ChromosomeManager.java}
-\end{listing}
-
-The class {\tt GeneticOptimizer} is an abstract class. The methods
-providing the functionality to fill up the new population from the
-next generation established by the chromosome manager are all
-abstract methods. The method {\tt collectPoint} transfers a single
-individual from the next generation to the population of mature
-individuals.
-
-A method {\tt initializeIterations} with one integer argument is
-needed to allow the concrete class to initialize its memory for
-the desired population size. This allows the instance variable
-{\tt populationSize} to remain private.
-
-\begin{listing} Java implementation of genetic algorithm
-\label{lj:optimizerabsgen}
-\input{Java/DhbOptimizing/GeneticOptimizer.java}
-\end{listing}
-
-\subsection{Genetic algorithm --- Java implementation with vectors}
-\marginpar{Figure \ref{fig:joptimizingclasses} with the boxes {\bf
-VectorChromosomeManager} and  {\bf VectorGeneticOptimizer}
-grayed.} Listings \ref{lj:vectorchromosome} and
-\ref{lj:optimizervector} show the concrete Java classes for the
-chromosome manager and the genetic optimizer respectively. They
-provide a concrete implementation of a genetic algorithm for
-finding the optimum of a vector function. The following code
-example shows how to find the maximum of a vector function using
-these classes.
-\begin{codeExample}
-\begin{verbatim}
-\end{verbatim}
-{\tt ManyVariableFunction func = <\sl the goal function\tt
->}\hfil\break
- {\tt DhbVector origin =<\sl a vector containing the minimum expected value of the component\tt >}\hfil\break
- {\tt DhbVector range =<\sl a vector containing the expected range of the component\tt >}\hfil\break
-\begin{verbatim}
-    MaximizingPointFactory strategy = new MaximizingPointFactory();
-    VectorChromosomeManager manager =
-                            new VectorChromosomeManager( 100, 0.1, 0.1);
-    manager.setOrigin( origin);
-    manager.setRange( range);
-    VectorGeneticOptimizer finder =
-                    new VectorGeneticOptimizer( func, strategy, manager);
-    finder.evaluate();
-    double[] result = finder.getResult();
-\end{verbatim}
-\end{codeExample}
-The line after the definition of the goal function and the
-hypercube defining the search space creates an instance of a
-maximizing vector. This will be the \patstyle{Strategy} of the
-genetic optimizer. The next statement creates an instance of a
-vector chromosome manager. Right after, two statements define the
-search space. Then, the instance of the genetic optimizer is
-created. The next statement performs the genetic algorithm and the
-last statement retrieves the result.
-
-The class {\tt VectorChromosomeManager} is a concrete subclass of
-the class {\tt ChromosomeManager}. It maintains the next
-generation in the instance variable {\tt population}. The instance
-variable {\tt fillIndex} is used as an index when filling up the
-next generation.
-
-\begin{listing} Java implementation of a vector chromosome
-\label{lj:vectorchromosome}
-\input{Java/DhbOptimizing/VectorChromosomeManager.java}
-\end{listing}
-The class {\tt VectorGeneticOptimizer} is a concrete subclass of
-the class {\tt GeneticOptimizer}. Our implementation chooses to
-sort the points when they are collected. This is not really needed
-as the algorithm for selecting the individual does not assumes
-that the individuals are sorted by fitness. This is quite
-practical, however, when following the behavior of the algorithm
-with the debugger. For heavy duty usage the sorting ought to be
-removed. If that is the case, the method {\tt getResult} must be
-rewritten to fetch the fittest individual of the mature
-population.
-\begin{listing} Java implementation of genetic algorithm for vectors
-\label{lj:optimizervector}
-\input{Java/DhbOptimizing/VectorGeneticOptimizer.java}
-\end{listing}
 
 \section{Multiple strategy approach}
 \label{sec:multistrategy} As we have seen most of the optimizing
@@ -1654,10 +1196,4 @@ implementation of a general optimizer \label{ls:optimizergeneral}
 \input{Smalltalk/Minimization/DhbMultiVariableGeneralOptimizer}
 \end{listing}
 
-\marginpar{Figure \ref{fig:joptimizingclasses} with the box {\bf
-MultiVariableGeneralOptimizer} grayed.}
-\begin{listing} Java
-implementation of a general optimizer \label{lj:optimizergeneral}
-\input{Java/DhbOptimizing/MultiVariableGeneralOptimizer.java}
-\end{listing}
 \ifx\wholebook\relax\else\end{document}\fi
