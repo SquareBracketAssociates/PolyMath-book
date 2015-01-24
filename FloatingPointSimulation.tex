@@ -1,3 +1,13 @@
+\ifx\wholebook\relax\else
+\documentclass[twoside]{book}
+\usepackage[active]{srcltx}
+\usepackage[LY1]{fontenc}
+\input{DhbDefinitions}
+\begin{document}
+\fi
+
+
+
 \chapter{Decimal floating-point simulation}
 \label{ch-fpSimul} The class {\tt DhbDecimalFloatingNumber} is
 intended to demonstrate rounding problems with floating-point
@@ -21,8 +31,10 @@ supplying any number as argument. For example, $${\tt
 DhbDecimalFloatingNumber new: 3.141592653589793238462643}$$
 Arithmetic operations are performed as usual. For example, the
 first expression of section \ref{sec-rounding} can be coded as:
+
 \begin{codeExample}
 \begin{verbatim}
+
 | a b |
 a := DhbDecimalFloatingNumber new: (2 raisedToInteger: 64).
 b := DhbDecimalFloatingNumber new: 300.
@@ -63,3 +75,6 @@ returned. Rounding errors will occur during this step.
 simulating decimal floating number arithmetic \label{ls:testst}
 \input{Smalltalk/NumericalPrecision/DhbDecimalFloatingNumber}
 \end{listing}
+
+
+\ifx\wholebook\relax\else\end{document}\fi
