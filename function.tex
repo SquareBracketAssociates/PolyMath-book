@@ -118,85 +118,6 @@ value: is an Array or a vector (\cf section
 functions can follow the same polymorphism as for one-variable
 functions.
 
-\subsection{Function --- Java implementation}
-\label{sec:jvFunction} \marginpar{Figure \ref{fig:functionj} with
-the box {\bf OneVariableFunction} grayed.}The situation in Java is
-a little more complex. Unlike Smalltalk, Java does not have a
-concept of block closure. Therefore, code cannot be manipulated as
-an object. In addition, strong typing brings us to make different
-declarations for one-variable and multi-variable functions.
-
-One way to keep the same generality as in Smalltalk would be to
-use a general object declaration and use casting. However, this
-approach departs from the philosophy of a strongly typed language,
-which is central to the design of Java. It was therefore not
-considered.
-
-Java, however, has introduced a very convenient concept, the
-interface. In this case we need two of them: an interface to
-declare one variable functions and one to declare multi variable
-functions. Thus, a class interacting with a function can declare
-the function - as an instance variable or a method argument - with
-the required interface.
-
-Listing \ref{lj:function} shows the implementation of the Java
-interface {\tt OneVariableFunction}.
-
-\begin{listing}
-Java implementation of the interface {\tt OneVariableFunction}
-\label{lj:function}
-\input{Java/DhbInterfaces/OneVariableFunction.java}
-\end{listing}
-
-If the function is simple enough, it can be implemented as an
-inner class\footnote{Inner classes are a feature of Java 1.1 and
-higher versions.}. For example, the definition of the inverse
-function as an inner class is:
-\begin{codeExample}
-\begin{verbatim}
-
-new OneVariableFunction() {
-   public double value( double x)
-   {return 1/x;}}
-\end{verbatim}
-\end{codeExample}
-A more complex function must be implemented as a full-fledged
-class. A function class can be the subclass of any class as long
-as it implements the interface. There will be numerous examples of
-such function classes in the rest of this book.
-
-A further example of the use of the {\tt OneVariableFunction}
-interface is shown in Listing \ref{lj:derivative} showing the
-implementation of the Java class {\tt FunctionDerivative} using
-the interface {\tt OneVariableFunction}. This class allows the
-computation of the derivative of any function of one variable. The
-evaluation of the derivative uses the following mathematical
-approximation:
-
-\begin{mainEquation}
-\label{eq:derivative} {df\left(x\right)\over dx}=\lim_{\epsilon\to
-0}{f\left(x+\epsilon\right)-f\left(x-\epsilon\right)\over
-2\epsilon}.
-\end{mainEquation}
-This symmetrical definition of the derivative guaranties a higher
-accuracy than the usual one-sided definition. Of course,
-evaluating the derivative with this class is slower than coding
-the derivative explicitly as it requires two computations of the
-original function for every evaluation. But it is better than
-nothing, if the function whose derivative is needed to too
-complicated to be expressed analytically. Last, but not least,
-this class can be used to check whether the supplied derivatives
-are indeed correct.
-
-Example of use of the class FunctionDerivative is shown in section
-\ref{sec:jnewton}.
-\begin{listing}
-Java implementation of a generic derivative evaluation
-\label{lj:derivative}
-\input{Java/DhbFunctionEvaluation/FunctionDerivative.java}
-\end{listing}
-
-
 \section{Polynomials}
 \label{sec:polynomial}
  Polynomials are quite important in
@@ -389,7 +310,7 @@ form.
 \begin{codeExample}
 \begin{verbatim}
 
- | pol1 pol2 polynomial polD polI|
+ | pol1 pol2 polynomial polD polI |
  pol1:= DhbPolynomial coefficients: #(2 -3 1).
  pol2:= DhbPolynomial coefficients: #(-3 7 2 1).
  polynomial = pol1 * pol2.
@@ -496,64 +417,6 @@ Method of class {\tt Number} related to polynomials
 \label{ls:polynomialNumber}
 \input{Smalltalk/FunctionEvaluation/Number(DhbFunctionEvaluation)}
 \end{listing}
-
-\subsection{Polynomial --- Java implementation}
-\marginpar{Figure \ref{fig:functionj} with the box {\bf
-Polynomial} grayed.} Listing \ref{lj:polynomial} shows the Java
-implementation of the class {\tt PolynomialFunction}. Here is a
-code example on how to use the class {\tt PolynomialFunction}.
-\begin{codeExample}
-\begin{verbatim}
-
- double[] coefficients = {2, -3, 1};
- PolynomialFunction poly = new PolynomialFunction( coefficients);
- double p1 = polynomial.value( 1).
-\end{verbatim}
-\end{codeExample}
-First the coefficients of the polynomial $x^2-3x+2$ are defined in
-a variable. The next line creates a new instance of the class {\tt
-PolynomialFunction} with these coefficients. The final line of the
-code calculates the value of the polynomial at $x=1$.
-
-For the same reason explained in the Smalltalk section, the class
-{\tt PolynomialFunction} is a subclass of Object. It implements
-the interface {\tt OneVariableFunction} (\cf section
-\ref{sec:jvFunction}) indicating that this class must implement
-the method value. Thus, a polynomial can be used by several other
-classes defined hereafter in this book.
-
-The Java implementation uses indices since array elements are
-referred to by indices starting at 0. This makes a direct
-comparison with the mathematical expression easier than in
-Smalltalk. Nevertheless, the method {\tt coefficient} was created
-to access coefficients for any non-negative index. If the index is
-larger than the polynomial's degree this routine returns 0. Using
-this method makes the code for adding and multiplying polynomials
-much simpler. The method {\tt coefficient} corresponds to the
-method {\tt at:} in the Smalltalk implementation.
-
-Polynomial arithmetic is implemented with special methods since
-Java does not allow overloading the arithmetic operators. As Java
-methods and their arguments are typed, a unique method must be
-written for each argument type. Therefore there is no need for
-double dispatching\footnote{On the other hand the readability of
-code using polynomial arithmetic is much better in Smalltalk than
-in Java.}.
-
-Finally the method {\tt toString()} is implemented for the same
-reasons than a method {\tt printOn:} was implemented in Smalltalk.
-
-\begin{listing}
-Java implementation of the polynomial class
-\label{lj:polynomial}
-\input{Java/DhbFunctionEvaluation/PolynomialFunction.java}
-\end{listing}
-\begin{quote}
-{\bf Note:} The three methods {\tt deflate} and {\tt roots} ({\tt
-roots} having two variants) are discussed in section
-\ref{sec:polrootsjava}.
-\end{quote}
-
 
 \section{Error function}
 \label{sec:errorFunction}
@@ -698,7 +561,7 @@ object as follows:
 \begin{verbatim}
 
 | errorFunction |
-errorFunction := [ :x | x errorFunction].
+errorFunction := [ :x | x errorFunction ].
 \end{verbatim}
 \end{codeExample}
 Listing \ref{ls:errorFunction} shows the Smalltalk implementation
@@ -733,50 +596,6 @@ Smalltalk implementation of the Error function
 \input{Smalltalk/FunctionEvaluation/DhbErfApproximation}
 \end{listing}
 
-\subsection{Error function --- Java implementation}
-\marginpar{Figure \ref{fig:functionj} with the box {\bf
-NormalDistribution} grayed.} Unfortunately Java does not allow for
-extension of existing classes. Thus, a new class must be created.
-All methods are implemented as static methods since there is no
-instance dependency. Static methods in Java have little in common
-with Smalltalk class methods. In particular there is no
-inheritance of static methods. Static methods indicate that the
-code is not instance dependent and are use to generate compiler
-and run time optimization. Thus, a singleton class is not needed
-in this case.
-
-Since the error function is almost always used in conjunction with
-statistical analysis, we have implemented the method as a static
-method of the class NormalDistribution discussed in section
-\ref{sec:normdistjava}. Thus, computing the error function of 2
-must be coded as:
-\begin{codeExample}
-\begin{verbatim}
-
- double x = NormalDistribution.errorFunction(2)
-\end{verbatim}
-\end{codeExample}
-If you want to compute the probability for a measurement to lay
-within 3 standard deviations from its mean, you need to evaluate
-the following expression:
-\begin{codeExample}
-\begin{verbatim}
-
- double y = 2 * NormalDistribution.errorFunction(3)- 1
-\end{verbatim}
-\end{codeExample}
-Listing \ref{lj:errorFunction} shows the Java implementation of
-the error function.
-
-The class {\tt NormalDistribution} is tagged as {\tt final}
-because it does not make sense that this class has any subclass.
-
-\begin{listing}
-Java implementation of the Error function (partial
-listing)
-\label{lj:errorFunction}
-\input{Java/DhbFunctionEvaluation/ErrorFunction.java}
-\end{listing}
 
 \section{Gamma function}
 The gamma function is used in many mathematical functions. In this
@@ -935,60 +754,6 @@ Smalltalk implementation of the gamma function
 \input{Smalltalk/FunctionEvaluation/DhbLanczosFormula.tex}
 \end{listing}
 
-\subsection{Gamma function --- Java implementation}
-\marginpar{Figure \ref{fig:functionj} with the box {\bf
-GammaFunction} grayed.} Like the error function, the gamma
-function is implemented as a static method in a special class.
-Thus, computing the gamma function of 2.5 is simply coded as:
-\begin{codeExample}
-\begin{verbatim}
-
- double g = GammaFunction.gamma( 2.5)
-\end{verbatim}
-\end{codeExample}
-To obtain the logarithm of the gamma function, you need to
-evaluate the following expression:
-\begin{codeExample}
-\begin{verbatim}
-
- double lg = GammaFunction.logGamma( 2.5)
-\end{verbatim}
-\end{codeExample}
-Listing \ref{lj:gammafunc} shows the Java implementation of the
-Gamma function.
-
-For the Java implementation a specific class containing only
-static methods was created. This class also implements the beta
-function discussed in section \ref{sec:betafunc}.
-
-To prevent the unnecessary computation of a logarithm, the code
-for the gamma function and the logarithm of the gamma function
-have duplicated code.
-
-Instead of raising an exception when the argument is a
-non-positive integer, the function simply returns the system
-defined value {\tt Double.NaN}, a unique feature of Java to
-represent a number impossible to compute. This feature is quite
-handy because {\tt Double.NaN} propagates itself in any subsequent
-expression without raising an exception. The object recuperating
-the end result can check for such value without the need to catch
-an exception.
-
-Strangely enough, Java does not implement an Integer.NaN. Thus,
-the method factorial has no other choice than raising an exception
-when it is called with a negative integer argument.
-
-\begin{listing}
-Java implementation of the gamma function
-\label{lj:gammafunc}
-\input{Java/DhbFunctionEvaluation/GammaFunction.java}
-\end{listing}
-\begin{quote}
-Note: Listing \ref{lj:gammafunc} also contains the method beta
-needed to compute the beta function discussed in section
-\ref{sec:betafunc}.
-\end{quote}
-
 \section{Beta function}
 \label{sec:betafunc} The beta function is directly related to the
 gamma function. In this book, the beta function is needed to
@@ -1040,12 +805,6 @@ Smalltalk implementation of the beta function
 \input{Smalltalk/FunctionEvaluation/Number(DhbBetaFunction).tex}
 \end{listing}
 
-\subsection{Beta function --- Java implementation}
-\label{secj:betafunc}\marginpar{Figure \ref{fig:functionj} with
-the box {\bf GammaFunction} grayed.} The Java implementation of
-the beta function consists of the two methods beta and {\tt
-logBeta} in the class {\tt GammaFunction} shown in Listing
-\ref{lj:gammafunc}.
 
 
 
