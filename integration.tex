@@ -255,8 +255,8 @@ logarithm is as follows:
 \begin{verbatim}
 
 \end{verbatim}
-{\tt | integrator ln2 ln3|}\\ {\tt integrator :=
-DhbTrapezeIntegrator function: [ :x | 1.0 / x] from: 1 to: 2.}\\
+{\tt | integrator ln2 ln3 |}\\ {\tt integrator :=
+DhbTrapezeIntegrator function: [ :x | 1.0 / x ] from: 1 to: 2.}\\
 {\tt ln2 := integrator evaluate.}\\ {\tt integrator from: 1 to:
 3.}\\ {\tt ln3 := integrator evaluate.}\\
 \end{codeExample}
@@ -288,45 +288,6 @@ equation \ref{eq:trapeze}.
 \input{Smalltalk/IterativeAlgorithms/DhbTrapezeIntegrator}
 \end{listing}
 
-\subsection{Trapeze integration --- Java implementation}
-\label{sec:jtrapeze}Listing \ref{lj:trapeze} shows the Java
-implementation of the trapeze integration method. In Java the code
-for the computation of the integral defining the natural logarithm
-is as follows:
-\begin{codeExample}
-\begin{verbatim}
- TrapezeIntegrator integrator = new TrapezeIntegrator( new
-        OneVariableFunction() { public double value( double x)
-        { return 1/x;}}, 1, 2);
- integrator evaluate();
- double ln2 = integrator.getResult();
- integrator.setInterval( 2, 3);
- double ln3 = integrator.getResult();
-\end{verbatim}
-\end{codeExample}
-The first line creates a new instance of the class {\tt
-TrapezeIntegrator} for the inverse function defined as an inner
-class. The limits of the integration interval are set from 1 to 2.
-The second line retrieves the value of the integral. The third
-line changes the integration interval and the last line retrieves
-the value of the integral over the new integration interval.
-Required checks for convergence are not included in this example.
-
-The class {\tt TrapezeIntegrator} is a subclass of the class {\tt
-FunctionalIterator} defined in section \ref{sec:jiterrel}. A
-single constructor method creates a new instance with a function
-and the integration interval. The method {\tt setInterval} allows
-changing the integration interval for a new computation with the
-same function.
-
-Note that the initialization of the iterations (method {\tt
-initializeIterations}, \cf section \ref{sec:jiteration}) also
-corresponds to the first iteration of the algorithm. The method
-{\tt highOrderSum} computes the sum of the right-hand side of
-equation \ref{eq:trapeze}.
-\begin{listing} Java implementation of trapeze integration \label{lj:trapeze}
-\input{Java/DhbIterations/TrapezeIntegrator.java}
-\end{listing}
 
 \section{Simpson integration algorithm}
 \marginpar{Figure \ref{fig:integclass} with the box {\bf
@@ -414,18 +375,6 @@ The class {\tt DhbSimpsonIntegrator} is a subclass of the class
 \input{Smalltalk/IterativeAlgorithms/DhbSimpsonIntegrator}
 \end{listing}
 
-
-\subsection{Simpson integration --- Java implementation}
-\label{sec:jSimpson} Listing \ref{lj:simpson} shows the complete
-implementation in Java.
-
-Except for the need of an explicit constructor method, the Java
-implementation is exactly similar to that in Smalltalk.
-
-\begin{listing} Java implementation of the Simpson integration algorithm
- \label{lj:simpson}
-\input{Java/DhbIterations/SimpsonIntegrator.java}
-\end{listing}
 
 \section{Romberg integration algorithm}
 \label{sec:romberg}\marginpar{Figure \ref{fig:integclass} with the
@@ -541,27 +490,6 @@ performing the interpolation and it stores the first point in the
 collection of sample points.
 \begin{listing} Smalltalk implementation of Romberg integration \label{ls:romberg}
 \input{Smalltalk/IterativeAlgorithms/DhbRombergIntegrator}
-\end{listing}
-
-\subsection{Romberg integration --- Java implementation}
-\label{sec:jromberg} Listing \ref{lj:romberg} shows the Java
-implementation of Romberg's algorithm. The class {\tt
-DhbRombergIntegrator} is a subclass of the class {\tt
-TrapezeIntegrator} defined in section \ref{sec:jtrapeze}.
-
-The default order is assigned in the instance variable so that
-each newly created instance is created with the default
-interpolation order (5). The method {\tt setOrder} allows changing
-the default order when needed.
-
-The sample points defining the interpolation are stored in a
-structure implementing the {\tt PointSeries} interface as
-discussed in section \ref{sec:jlagrange}. The method {\tt
-initializeIterations} creates this structure. It also creates the
-interpolatorobject in charge of performing the interpolation and
-it stores the first point in the collection of sample points.
-\begin{listing} Java implementation of Romberg integration \label{lj:romberg}
-\input{Java/DhbIterations/RombergIntegrator.java}
 \end{listing}
 
 \section{Evaluation of open integrals}
@@ -691,20 +619,5 @@ discussed in section \ref{sec:stFunction}.
 \begin{listing} Smalltalk comparison script for integration algorithms \label{ls:intcompare}
 \input{StIntegrationScript}
 \end{listing}
-
-
-\subsection{Java comparison}
-\label{sec:jintcompar}
-
-The method shown in Listing \ref{lj:intcompare} can be compiled as
-a static method in any class. To execute the comparison test this
-method should be called from a main method with the desired
-precision. The function to integrate is implemented as an inner
-class as discussed in section \ref{sec:jvFunction}.
-
-\begin{listing} Java comparison method for integration algorithms \label{lj:intcompare}
-\input{JvIntegrationScript}
-\end{listing}
-
 
 \ifx\wholebook\relax\else\end{document}\fi
