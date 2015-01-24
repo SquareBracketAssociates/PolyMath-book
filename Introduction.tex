@@ -628,47 +628,6 @@ values of the parameters onto the Transcript window.
   \input{Smalltalk/NumericalPrecision/DhbFloatingPointMachine}
 \end{listing}
 
-\subsection{Computer numerical precision --- Java implementation}
-Listing \ref{lj:floatmachine} shows the Java implementation, which
-uses static variables and static methods. These methods and
-variables have been implemented in the class {\tt DhbMath}. This
-class is responsible of computing the parameters of the
-floating-point representation, but is also used to implements
-other mathematical utilities which are too simple to require the
-creation of a new class. The parameters of the floating-point
-representation need to be computed once only. Therefore, no code
-optimization was made; priority is given to readability.
-
-Each parameter is retrieved with a method whose name is
-constructed with the standard prefix get followed with the name of
-the parameter. Methods in charge of computing the parameters are
-all prefixed with the word compute. The Java virtual machine does
-not raise an exception when floating underflow occurs. Thus, when
-computing the smallest number underflow is simply detected by
-testing that the result is equal to 0. When computing the largest
-number, the Java virtual machine traps overflows to change the
-result into infinity. Thus, the overflow is detected when the
-result becomes infinite.
-
-The method {\tt printParameters} can be used to print the values
-of the parameters to any output stream. For example, the following
-code prints the parameters onto the standard output of the
-console.
-
-$$\hbox{\tt DhbFloatingPointMachine.printParameters(
-System.out)}$$
-
-\begin{listing}
-Java code to find the machine precision
-\label{lj:floatmachine}
-\input{Java/DhbFunctionEvaluation/DhbMath.java}
-\end{listing}
-
-\begin{quote}
-{\bf Note:} The two methods {\tt equal} --- one with 2 arguments,
-one with 3
---- are discussed in section \ref{sec:eqfltjava}.
-\end{quote}
 
 \section{Comparing floating point numbers}
 It is very surprising to see how frequently questions about the
@@ -724,7 +683,7 @@ Comparison of floating point numbers in Smalltalk
 class {\tt DhbMath}. The code of that class is shown in listing
 \ref{lj:floatmachine}.
 
-\section{Speed consideration}
+\section{Speed consideration (to be revisited)}
 \label{sec:speed} Some people may think that implementing
 numerical methods for object-oriented languages such as Smalltalk
 or Java is just a waste of time. Those languages are notoriously
@@ -874,7 +833,7 @@ A vertical line with a triangle indicates class inheritance. If
 there are several subclasses the line branches at the triangle, as
 this is the case in figure \ref{fig:classDiagram}. A horizontal
 line beginning with a diamond (UML aggregation symbol) indicates
-the class of an instance variable. For example, figure
+the class of an instance variable. For example, Figure
 \ref{fig:classDiagram} indicates that the instance variable {\tt
 instanceVariable1} of the class {\tt MyAbstractClass} must be an
 instance of the class {\tt RelatedClass}. The diamond is black is
@@ -936,36 +895,7 @@ instance initialized with some default contents, well specified.
 Whether or not the instance is a singleton is not the problem of
 the client application.
 
-\subsection{Java code}
-Java forces code to be maintained as files. A file may contain
-several classes but a class cannot be defined across several
-files. In this book classes are always presented in a single
-listing. A note placed at the end of each listing mentioned
-eventual methods discussed in a subsequent sections.
 
-Java supports name space for class names. The unit of name space
-is called a package. The names of the packages containing the
-classes described in this book are all prefixed with the author's
-initials as recommended by the Java designers . The class names
-are not prefixed.
-
-The designers of the Java language have chosen to conform to the C
-syntax as much as possible. In particular, pre- and post-increment
-operators are available. In the code presented in this book the
-use of these operators are restricted to indices. If a variable is
-used for counting, the assignment with coupled operation is used
-instead of self incrementation. For example, incrementing a
-counter is written as:
-\begin{equation}
-\hbox{\tt counter += 1;}
-\end{equation}
-whereas incrementing an index is written as
-\begin{equation}
-\hbox{\tt index++;}
-\end{equation}
-This adheres to the intention revealing patterns of Kent Beck
-\cite{Beck}. As the two statements are strictly equivalent, the
-compiler is expected to generate the most efficient byte code.
 
 \section{Road map}
 This last section of the introduction describes the road map of
