@@ -375,7 +375,7 @@ need to add several vectors. Indeed the following code
 \begin{codeExample}
 \begin{verbatim}
 
-|a b c d e|
+| a b c d e |
 a := #(1 2 3 4 5) asVector.
 b := #(2 3 4 5 6) asVector.
 c := #(3 4 5 6 7) asVector.
@@ -389,7 +389,7 @@ memory allocation:
 \begin{codeExample}
 \begin{verbatim}
 
-|a b c d e|
+| a b c d e |
 a := #(1 2 3 4 5) asVector.
 b := #(2 3 4 5 6) asVector.
 c := #(3 4 5 6 7) asVector.
@@ -479,188 +479,8 @@ Product requires quadruple dispatching.
 \input{Smalltalk/LinearAlgebra/DhbSymmetricMatrix}
 \end{listing}
 
-\subsection{Vector and matrix --- Java  implementation}
-\label{sec:jlinearalgebra}  \marginpar{Figure
-\ref{fig:linearalgebraclasses} with the boxes {\bf Vector} and
-{\bf Matrix} grayed.} Listings \ref{lj:vector} and \ref{lj:matrix}
-show respectively the implementation of vectors and matrices as
-Smalltalk classes.
 
-The public interface is designed as to map itself as close as
-possible to the mathematical definitions. In Java, however, one
-cannot overload primitive operators such as {\tt +} or {\tt *}.
-Thus, named methods are used instead. The resulting code is
-admittedly less readable than its Smalltalk equivalent.
 
-Some operations --- a scalar product between two vectors of
-different dimension \eg --- are not possible. In our
-implementation, we have introduced a few specific exceptions ---
-{\tt DhbIllegalDimension}, {\tt DhbNonSymmetricComponents}
---- which must be trapped on each operation.
-
-\noindent Here is an example of code using operations between
-vectors and matrices:
-\begin{codeExample}
-\begin{verbatim}
-
- double[] comp_u = {1, 2, 3};
- double[] comp_v = {3, 4, 5};
- double[][] comp_a = {{1,0,1}, {-1, -2, 3}};
- double[][] comp_b = {{1,2,3}, {-2, -1, 7},{5,6,7}}};
- try{
-     DhbVector u = new DhbVector(components);
-     DhbVector v = new DhbVector(components);
-     Matrix a = new Matrix(comp_a);
-     Matrix b = new Matrix(comp_b);
-     DhbVector w = u.product(4).add(v.product(3));
-     Matrix c = a.product(b);
-     v = a.product(u));
-     w = c.transpose().product(v);
-     w = v.product(c);
-    } catch ( DhbIllegalDimension e){};
-\end{verbatim}
-\end{codeExample}
-The first four lines define the component arrays used to define
-the vectors and matrices. Within the {\tt try$\ldots$catch}, the
-vectors ${\bf u}$ and ${\bf v}$ are created from their component
-arrays. They are 3-dimensional vectors. The matrices ${\bf a}$ and
-${\bf b}$ are also created from their component arrays. The matrix
-${\bf a}$ is a 2 by 3 matrix, whereas the matrix ${\bf b}$ is a
-square matrix of dimension 3. In all cases the variable {\tt w} is
-assigned to a vector and the variable {\tt c} is assigned to a
-matrix. First, the vector ${\bf w}$ is assigned to a linear
-combination of the vectors ${\bf u}$ and ${\bf v}$.
-
-Next the matrix ${\bf c}$ is defined as the product of the
-matrices ${\bf a}$ and ${\bf b}$ in this order.
-
-The next assignment redefines the vector ${\bf v}$ as the product
-of the matrix ${\bf A}$ with the vector ${\bf u}$. It is now a
-2-dimensional vector.
-
-The last two lines compute the vector ${\bf w}$ as the transpose
-product with the matrix ${\bf a}$. The result of both line is the
-same\footnote{\cf footnote \ref{ft:covariant} on page
-\pageref{ft:covariant}}. The first line builds the transpose of
-the matrix ${\bf a}$ explicitly, whereas the second line used the
-definition of the transpose product. The second line is faster
-than the previous one since no memory assignment is required for
-the temporary storage of the transpose matrix.
-
-The use of named methods --- as opposed to using primitive
-operators --- obscures somewhat the readability of the code. For
-an objective comparison, Java programmers are advised to take a
-look at the code example in Smalltalk at the beginning of section
-\ref{sec:slinearalgebra}.
-
-The use of other methods corresponding to the operations defined
-in equations \ref{eq:vectorsum} to \ref{eq:matrixproduct} are left
-as an exercise to the reader.
-
-Since a Java array is not an object, a vector is created as a
-subclass of object. The name {\tt Vector} could not be used since
-it is already part of the base classes of Java. An instance of the
-Java class {\tt Vector}, however, has little to do with a
-mathematical vector. The Java class {\tt Vector} has been totally
-misnamed. In fact it corresponds to the Smalltalk class {\tt
-OrderedCollection}. An instance of the Java class {\tt Vector} has
-a variable size whereas the dimension of a mathematical vector is
-fixed. In the rest of this book, whenever the word vector is used,
-it means a mathematical vector and not an instance of the Java
-class {\tt Vector}.
-
-Operations such as addition and products cannot be implemented
-with primitive operators ($+$, $-$ \eg) since Java does not allow
-the definition of primitive operators on objects. Thus, we are
-forced to use method names such as {\tt add} or {\tt product}.
-
-In Java a method is not only defined by its name, but also by the
-type of its arguments. Thus, the same method name can be used to
-define implementations of an operator acting on different objects
-without the need to test the arguments. The Java compiler does
-that for us; double or triple dispatching is not needed.
-
-Listing \ref{lj:vector} defines the method {\tt tensorProduct}
-using the class {\tt SymmetricMatrix} that will be defined in
-section \ref{sec:matrixinversion} (\cf listing
-\ref{lj:inversion}), as most of the code for symmetric matrices is
-devoted to matrix inversion.
-
-An exception specific for this package has been created: {\tt
-DhbIllegalDimension}. This exception is thrown when an operation
-is attempted between vectors or matrices with incompatible
-dimensions. The code for this exception is elementary and is not
-shown here. It is left as an exercise for the reader.
-
-Vector components are kept in a protected instance variable.
-Protected means that it is available only to classes of the same
-package. This allows the optimization of many methods from other
-classes of the same package needing direct access to the
-components ({\tt Matrix} \eg). Other users of the class have no
-access to the vector's components. This choice is deliberate: it
-provides a strict hiding of the implementation. A vector as
-mathematical object should be manipulated without any access to
-its components.
-
-The method {\tt toString} is provided to allow printing of the
-components. The method {\tt toComponents} provides a way to access
-the coordinates if needed. Note that this method is making a copy
-of the components, thus preserving the object from any indirect
-change.
-
-\begin{listing} Mathematical vector class in Java \label{lj:vector}
-\input{Java/DhbMatrixAlgebra/DhbVector.java}
-\end{listing}
-
-Listing \ref{lj:matrix} shows the implementation of matrices as
-Java classes.
-
-Most of the remarks made for vectors are also valid for matrices.
-In particular, the components of the matrix are strictly
-encapsulated within the package using the protected declaration
-keyword.
-
-The CRL inversion algorithm discussed in section
-\ref{sec:matrixinversion}, uses multiplication with a transpose
-matrix. Thus, a special method has been introduced to optimize
-this operation. This avoids allocating a memory block needed to
-hold the transposed matrix. Since a matrix can be very large,
-allocating a block of memory can seriously slow down execution,
-especially when it causes paging.
-
-This implementation of the class {\tt DhbMatrix} uses the fact
-that a class {\tt SymmetricMatrix} will be introduced to implement
-the inversion algorithm discussed in section
-\ref{sec:matrixinversion}. Thus, the computation of addition,
-subtraction and product is made in two steps. First the components
-are created, then the resulting matrix is created with the
-appropriate class. In the class {\tt SymmetricMatrix} only the
-creation of the resulting matrix needs to be implemented.
-
-For further optimization, each matrix operation comes in two
-flavors: secure and normal. The secure version assumes that the
-dimensions of the supplied parameters are already checked. These
-methods are declared as protected since they are reserved for use
-by other classes of the same package. The normal operations
-available to any classes first check the arguments for the proper
-dimensions before carrying the operation using the secure version
-of the same method.
-
-Unlike the vector implementation, however, strict encapsulation of
-matrix components is not guaranteed since creation of a matrix
-from a 2-dimensional array does not copy the components into a new
-array. This was done to reduce memory usage. Memory consumption
-does more to slow down program execution than anything else with
-modern day operating systems. The size of a matrix can become
-quite significant when working with large dimensions. Thus, a
-small breach to encapsulation was made in the constructor method.
-A fully encapsulated version would copy the components as it is
-done for the constructor method of vectors. The user of the
-package must be aware of this potential problem.
-
-\begin{listing} Matrix class in Java \label{lj:matrix}
-\input{Java/DhbMatrixAlgebra/Matrix.java}
-\end{listing}
 
 \section{Linear equations}
 \label{sec:lineqs} A linear equation is an equation in which the
@@ -918,7 +738,7 @@ requires a little more code, but not much:
 \begin{codeExample}
 \begin{verbatim}
 
- | s sol1 sol2|
+ | s sol1 sol2 |
  s := DhbLinearEquationSystem equations: #( (3 2 4) (2 -5 -1) (1 -2 2))
                         constants: #( (16 6 10)
                                       (7 10 9)).
@@ -964,101 +784,6 @@ attempting Gaussian elimination a second time. Then, the value
 \input{Smalltalk/LinearAlgebra/DhbLinearEquationSystem}
 \end{listing}
 
-\subsection{Linear equations --- Java implementation}
-Listing \ref{lj:lineqs} shows the class {\tt LinearEquations}
-implementing Gaussian elimination in Java.
-
-To solve the system of equations \ref{eq:lineqex}, one needs to
-write to evaluate the following expression:
-\begin{codeExample}
-\begin{verbatim}
-
- double[][] s = {{3,2,4}, {2, -5, -1},{1,-2,2}}};
- double[] c = { 16,6,10};
- try{
-     LinearEquations system = new LinearEquations( s, c);
-     double[] solution = system.solution();
-\end{verbatim}
-\hfil{\tt<\sl Processing of the solution\tt>}\hfil
-\begin{verbatim}
-     } catch(DhbIllegalDimension e){}
-\end{verbatim}
-\end{codeExample}
-The first two lines define the components of the components of the
-system's matrix (${\bf A}$) and the components of the constant
-vector (${\bf y}$). The {\tt try$\ldots$catch} block delineates
-the solution of the system proper. The first line of the block
-creates an instance of the class {\tt LinearEquations} by feeding
-the coefficients of the equations, rows by rows, and the constant
-vector. The second line is a call to the method {\tt solution}
-retrieving the solution of the system.
-
-Solving the same system with an additional constant vector
-requires an additional line of code:
-\begin{codeExample}
-\begin{verbatim}
-
- double[][] s = {{3,2,4}, {2, -5, -1},{1,-2,2}}};
- double[][] c = {{16,6,10}, {7,10,9}};
- try{
-     LinearEquations system = new LinearEquations( s, c);
-     DhbVector solution1 = system.solution(1);
-     DhbVector solution2 = system.solution(2);
-\end{verbatim}
-\hfil{\tt<\sl Processing of the solutions\tt>}\hfil
-\begin{verbatim}
-     } catch(DhbIllegalDimension e){}
-\end{verbatim}
-\end{codeExample}
-In this case, the creation method differs in that the two constant
-vectors are supplied in an array columns by columns. Similarly,
-the two solutions must be fetched one after the other.
-
-The class {\tt LinearEquationSystem} has the following instance
-variables:
-\begin{description}
-  \item[\tt components] an array whose elements contain the rows of the
-  matrix ${\bf S}$.
-  \item[\tt solutions] a vector (an instance of the class {\tt DhbVector})
-  whose elements contain the solutions of the
-  system corresponding to each constant vector.
-\end{description}
-
-The class {\tt LinearEquations} has 3 constructor methods. One
-uses the components of the matrix and the components of single
-constant vectors. However, the reader should be reminded that LUP
-decomposition is more effective in this case. The next uses an
-arbitrary number of constant vectors. Finally a constructor with
-matrix and vector is supplied since the system's matrix and
-constant vector are often obtained after matrix and vector
-computations.
-
-The solution to the system is always returned as a mathematical
-vector, that is, an object of class {\tt DhbVector}. If the
-solutions were kept as array, an additional instance variable
-would be required to flag whether a solution was computed.
-Individual components, if needed, can be extracted from the vector
-using the method {\tt toComponents}.
-
-There are two methods named {\tt solution}. The one with an
-integer argument returns the solution for a given constant vector.
-The index specified as argument to that method corresponds to that
-of the desired constant vector. The one without argument is a
-convenience method to retrieve the solution of a system with a
-single constant vector.
-
-The method {\tt pivotingStep} first swaps rows to bring a pivot
-having the largest absolute value in place and then invokes the
-method {\tt pivot} to perform the actual pivoting.
-
-If the system does not have a solution --- that is, if the
-system's matrix is singular ---  an {\tt ArithmeticException} is
-thrown. This exception must be caught by the calling object.
-
-
-\begin{listing} Java implementation of a system of linear equations \label{lj:lineqs}
-\input{Java/DhbMatrixAlgebra/LinearEquations.java}
-\end{listing}
 
 \section{LUP decomposition}
 \label{sec:lup} LUP decomposition is another technique to solve a
@@ -1279,7 +1004,7 @@ storing the LUP decomposition in a variable:
 \begin{codeExample}
 \begin{verbatim}
 
- | s sol1 sol2|
+ | s sol1 sol2 |
  s := DhbLUPDecomposition equations: #( (3 2 4) (2 -5 -1) (1 -2 2)).
  sol1 := s solve: #(16 6 10).
  sol2 := s solve: #(7 10 9).
@@ -1322,81 +1047,6 @@ the method {\tt solve:} returns {\tt nil}.
 \input{Smalltalk/LinearAlgebra/DhbLUPDecomposition}
 \end{listing}
 
-\subsection{LUP decomposition --- Java implementation}
-Listing \ref{lj:lup} shows the methods of the class {\tt
-LUPDecomposition} implementing LUP decomposition in Java.
-
-To solve the system of equations \ref{eq:lineqex}, one needs to
-write to evaluate the following expression:
-\begin{codeExample}
-\begin{verbatim}
-
- double[][] s = {{3,2,4}, {2, -5, -1},{1,-2,2}}};
- double[] c = { 16,6,10};
- try{
-     LUPDecomposition system = new LUPDecomposition( s);
-     double[] solution = system.solve(c);
-\end{verbatim}
-\hfil{\tt<\sl Processing of the solution\tt>}\hfil
-\begin{verbatim}
-     } catch(DhbIllegalDimension e){}
-\end{verbatim}
-\end{codeExample}
-The first two lines define the components of the components of the
-system's matrix (${\bf A}$) and the components of the constant
-vector (${\bf y}$). The {\tt try$\ldots$catch} block delineates
-the solution of the system proper. The first line of the block
-creates an instance of the class {\tt LUPDecomposition} using the
-constructor method taking a double dimensional array as argument.
-The second line is a call to the method {\tt solve} retrieving the
-solution of the system for the supplied constant vector.
-
-Solving the same system with an additional constant vector
-requires a couple additional lines of code:
-\begin{codeExample}
-\begin{verbatim}
-
- double[][] s = {{3,2,4}, {2, -5, -1},{1,-2,2}}};
- double[] c1 = {16,6,10};
- double[] c2 = {7,10,9};
- try{
-     LUPDecomposition system = new LUPDecomposition( s, c);
-     double[] solution1 = system.solve(c1);
-     double[] solution2 = system.solve(c2);
-\end{verbatim}
-\hfil{\tt<\sl Processing of the solutions\tt>}\hfil
-\begin{verbatim}
-     } catch(DhbIllegalDimension e){}
-\end{verbatim}
-\end{codeExample}
-In this case, the second solution is fetched with a second call to
-the method {\tt solve}. Of course, LUP decomposition is only
-performed once, namely when the first solution is fetched. When
-the second solution is retrieved, only forward and backward
-substitution are performed.
-
-The class has three constructor methods. The first constructor
-takes a two dimensional array of doubles as argument. The second
-constructor takes a matrix as argument. The third constructor
-takes a symmetric matrix as argument. When a matrix is supplied,
-the components of the matrix are copied into the instance variable
-{\tt rows}. Copying the matrix is necessary since the storage is
-reused during the decomposition steps. The first two constructor
-methods throw the exception {\tt DhbIllegalDimension} since LUP
-decomposition is only defined for square matrix. A symmetric
-matrix being always square, the exception is not needed for the
-third constructor method.
-
-In case of a singular matrix the method {\tt pivot} throws an {\tt
-ArithmeticException}. When this happens, the instance variable
-{\tt permutation} is set to an array of zero length to flag the
-singular case. This is to prevent the failing decomposition from
-being attempted more than one time. Then, any subsequent calls to
-the method {\tt solve} throws an {\tt ArithmeticException}.
-
-\begin{listing} Java implementation of the LUP decomposition \label{lj:lup}
-\input{Java/DhbMatrixAlgebra/LUPDecomposition.java}
-\end{listing}
 
 \section{Computing the determinant of a matrix}
 \label{sec:determinant} The determinant of a matrix is defined
@@ -1656,49 +1306,6 @@ calling method.
 \input{Smalltalk/LinearAlgebra/DhbMatrix(DhbMatrixInversion)}
 \end{listing}
 
-\subsection{Matrix inversion --- Java implementation}
-Listing \ref{lj:inversion} shows the implementation of the class
-{\tt SymmetricMatrix} in Java.
-
-Addition and product of two symmetric matrices yield a symmetric
-matrix. Thus, the corresponding methods have been redefined for
-that class.
-
-Because the method to create a symmetric matrix from components is
-used frequently in the rest of the package, no check is made for
-the validity of the components. Of course, this method is declared
-as protected to prevent classes from outside the package from
-using it. Such classes must use the static method {\tt
-fromComponents} to create a symmetric matrix with supplied
-components, which throws the exception {\tt
-DhbNonSymmetricComponents} if the supplied components are not
-those of a symmetric matrix. The code for this exception is
-elementary and is not shown here. It is left as an exercise for
-the reader.
-
-
-The method {\tt inverse} for symmetric matrices first tests
-whether the dimension of the matrix is below a given threshold ---
-defined by the static variable {\tt lupCRLCriticalDimension} ---
-or whether the LUP decomposition of the matrix was already
-performed. In that case, the inverse is computed from the LUP
-decomposition using the method described at the beginning of
-section \ref{sec:matrixinversion}. Otherwise the CRL algorithm is
-used. The implementation of the CRL algorithm is a direct
-transcription of equations \ref{eq:crlsplit} to \ref{eq:crlshur}
-using the methods defined in section \ref{sec:jlinearalgebra}.
-
-\begin{listing} Java implementation of the class {\tt SymmetricMatrix}
-\label{lj:inversion}
-\input{Java/DhbMatrixAlgebra/SymmetricMatrix.java}
-\end{listing}
-
-For non-symmetric matrices the method {\tt inverse} (\cf listing
-\ref{lj:matrix}) attempts to compute the inverse using LUP
-decomposition within a {\tt try$\ldots$catch} block trapping the
-exception {\tt DhbIllegalDimension}. This kind of exception will
-occur for any non-square matrix. If the exception occurs, the
-pseudo inverse is computed using equation \ref{eq:pseudoinverse}.
 
 \subsection{Matrix inversion --- Rounding problems}
 \label{sec:matrixrounding} Operations with large matrices are well
@@ -1926,44 +1533,6 @@ retrieved from this new instance exactly as before.
 \input{Smalltalk/LinearAlgebra/DhbLargestEigenValueFinder}
 \end{listing}
 
-\subsection{Finding the largest eigenvalue --- Java
-implementation}\label{sec:jeigenlarge} Listing \ref{ls:eigenlarge}
-shows the Java implementation of the class {\tt
-LargestEigenValueFinder}, subclass of class {\tt
-IterativeProcess}.
-
-The following code example shows how to use the class to find the
-first two largest eigenvalues of a matrix.
-\begin{codeExample}
-\begin{verbatim}
-
- double[][] c = {{84,-79,58,55},{-79,84,-55,-58},
-                 {58,-55,84,79},{55,-58,79,84}};
- Matrix m = new Matrix(c);
- LargestEigenValueFinder finder = new LargestEigenValueFinder( m);
- finder evaluate().
- double eigenvalue = finder.eigenvalue();
- DhbVector eigenvector = finder.eigenvector();
- LargestEigenValueFinder nextFinder = finder.nextLargestEigenValueFinder();
- nextFinder.evaluate();
- double nextEigenvalue = nextFinder.eigenvalue();
- nextEigenvector = nextFinder.eigenvector();
-\end{verbatim}
-\end{codeExample}
-First the matrix {\tt m} is defined from its components. Then, an
-instance of the class {\tt LargestEigenValueFinder} is created for
-this matrix. The iterative process is started as described in
-section \ref{sec:jiteration}. The eigenvalue and the corresponding
-eigenvector are retrieved using accessor methods. Then, a new
-instance of {\tt LargestEigenValueFinder} is obtained from the
-first one. The new iterative process is started. The next largest
-eigenvalue and its eigenvector are retrieved from this new
-instance exactly as before.
-
-\begin{listing} Java implementation of the search for the largest eigenvalue
-\label{lj:eigenlarge}
-\input{Java/DhbMatrixAlgebra/LargestEigenvalueFinder.java}
-\end{listing}
 
 \section{Matrix eigenvalues and eigenvectors of a symmetric matrix}
 \label{sec:eigensym}
@@ -2273,54 +1842,6 @@ from the matrix.
 
 \begin{listing} Smalltalk implementation of Jacobi's algorithm \label{ls:jacobi}
 \input{Smalltalk/LinearAlgebra/DhbJacobiTransformation}
-\end{listing}
-
-
-\subsection{Jacobi's algorithm --- Java implementation}
-Listing \ref{lj:jacobi} shows the Java implementation of Jacobi's
-algorithm.
-
-The following code example shows how to use the class to find the
-eigenvalues and eigenvectors of a symmetric matrix.
-\begin{codeExample}
-\begin{verbatim}
-
- double[][] c = {{84,-79,58,55},{-79,84,-55,-58},
-                 {58,-55,84,79},{55,-58,79,84}};
- SymmetricMatrix m;
- try { m = SymmetricMatrix.fromComponents(c);
-    } catch( DhbNonSymmetricComponents e) { return;}
-      catch( DhbIllegalDimension e) { return;};
- JacobiTransformation jacobi = new JacobiTransformation( m);
- jacobi.evaluate().
- double[] eigenvalues = jacobi.eigenvalues();
- DhbVector[] eigenvectors = jacobi.eigenvectors();
-\end{verbatim}
-\end{codeExample}
-First the matrix {\tt m} is defined from its components. Then, an
-instance of the class {\tt JacobiTransformation} is created for
-this matrix. The iterative process is started as described in
-section \ref{sec:jiteration}. The eigenvalues and the
-corresponding eigenvectors are retrieved using accessor methods.
-
-The class {\tt JacobiTransformation} has four instance variables
-\begin{description}
-  \item[\tt rows] an double dimensional array containing the
-  components of the matrix,
-  \item[\tt transform] the components of the matrix ${\bf O}$,
-  \item[\tt p] the row index of the largest off-diagonal element and.
-  \item[\tt q] the column index of the largest off-diagonal element.
-\end{description}
-Unlike Smalltalk, Java does not permit to have double dimensional
-arrays whose components are different sizes. Thus, one is forced
-to keep the components of the entire matrix.
-
-The method {\tt eigenvalues} returns an array containing the
-sorted eigenvalues and the method {\tt eigenvectors} returns an
-array of vectors containing the corresponding eigenvectors.
-
-\begin{listing} Java implementation of Jacobi's algorithm \label{lj:jacobi}
-\input{Java/DhbMatrixAlgebra/JacobiTransformation.java}
 \end{listing}
 
 \ifx\wholebook\relax\else\end{document}\fi
