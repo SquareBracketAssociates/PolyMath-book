@@ -9,7 +9,6 @@ Class methods
 {\bf defaultOrder}
 \begin{verbatim}
     ^5
-
 \end{verbatim}
 
 
@@ -22,7 +21,6 @@ Instance methods
     points := OrderedCollection new: order.
     interpolator := DhbNevilleInterpolator points: points.
     points add: 1 @ sum.
-
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
@@ -34,13 +32,11 @@ Instance methods
     points removeFirst.
     result := interpolation at: 1.
     ^self relativePrecision: ( interpolation at: 2) abs
-
 \end{verbatim}
 {\bf initialize}
 \begin{verbatim}
     order := self class defaultOrder.
-    ^super initialize
-
+    ^ super initialize
 \end{verbatim}
 {\bf order:} {\tt anInteger}
 \begin{verbatim}
@@ -48,6 +44,5 @@ Instance methods
         ifTrue: [ self error: 'Order for Romberg integration must be 
                                                       larger than 1'].
     order := anInteger.
-
 \end{verbatim}
 

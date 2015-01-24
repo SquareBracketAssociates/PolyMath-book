@@ -10,19 +10,16 @@ Instance methods
 \begin{verbatim}
     lastTerm := 1 / alpha.
     sum := alpha.
-    ^lastTerm
-
+    ^ lastTerm
 \end{verbatim}
 {\bf setParameter:} {\tt aNumber}
 \begin{verbatim}
     alpha := aNumber asFloat
-
 \end{verbatim}
 {\bf termAt:} {\tt anInteger}
 \begin{verbatim}
     sum := sum + 1.
     lastTerm := lastTerm * x / sum.
-    ^lastTerm
-
+    ^ lastTerm
 \end{verbatim}
 

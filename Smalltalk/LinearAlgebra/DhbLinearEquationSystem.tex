@@ -12,16 +12,12 @@ Class methods
 OfArrays constant: anArray 
     ^self new initialize: anArrayOfArrays constants: (Array with: 
                                                               anArray)
-
 \end{verbatim}
 {\bf equations:} {\tt anArrayOfArrays} {\bf constants:} {\tt anArrayOfConstantArrays}
 \begin{verbatim}
     ^self new initialize: anArrayOfArrays constants: 
                                                anArrayOfConstantArrays
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -36,10 +32,8 @@ Instance methods
           ( n + 1) to: size
             do: [ :m | accumulator := accumulator - ( ( answer at: m) 
                                            * ( ( rows at: n) at: m))].
-          answer at: n put: ( accumulator / ( ( rows at: n) at: n)).
-        ].
+          answer at: n put: ( accumulator / ( ( rows at: n) at: n)) ].
     solutions at: anInteger put: answer.
-
 \end{verbatim}
 {\bf initialize:} {\tt anArrayOfArrays} {\bf constants:} {\tt anArrayOfConstantArrays}
 \begin{verbatim}
@@ -47,8 +41,7 @@ Instance methods
     n := 0.
     rows := anArrayOfArrays collect: [ :each | n := n + 1. each, ( 
                    anArrayOfConstantArrays collect: [ :c | c at: n])].
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf largestPivotFrom:} {\tt anInteger}
 \begin{verbatim}
@@ -60,11 +53,9 @@ Instance methods
           ( ( rows at: n) at: anInteger) > valueOfMaximum
                 ifTrue: [ valueOfMaximum := ( rows at: n) at: 
                                                             anInteger.
-                             indexOfMaximum := n.
-                           ].
+                             indexOfMaximum := n ].
         ].
     ^indexOfMaximum 
-
 \end{verbatim}
 {\bf pivotAt:} {\tt anInteger}
 \begin{verbatim}
@@ -78,17 +69,14 @@ Instance methods
           anInteger to: row size do:
             [ :m |
               row at: m put: ( ( row at: m) - (( pivotRow at: m) * 
-                                                      rowPivotValue)).
-            ].
+                                                      rowPivotValue)) ].
         ].
-
 \end{verbatim}
 {\bf pivotStepAt:} {\tt anInteger}
 \begin{verbatim}
     self swapRow: anInteger withRow: ( self largestPivotFrom: 
                                                            anInteger);
            pivotAt: anInteger.
-
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -97,8 +85,8 @@ Instance methods
     first := true.
     rows do:
         [ :row |
-          first ifTrue: [ first := false]
-                 ifFalse:[ aStream cr].
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
           delimitingString := '('.
           k := 0.
           row do:
@@ -111,12 +99,10 @@ Instance methods
             ].
           aStream nextPut: $).
         ].
-
 \end{verbatim}
 {\bf solution}
 \begin{verbatim}
     ^self solutionAt: 1
-
 \end{verbatim}
 {\bf solutionAt:} {\tt anInteger}
 \begin{verbatim}
@@ -127,24 +113,20 @@ Instance methods
         ifTrue: [ ^nil].
     ( solutions at: anInteger) isNil
         ifTrue: [ self backSubstitutionAt: anInteger].
-    ^solutions at: anInteger
-
+    ^ solutions at: anInteger
 \end{verbatim}
 {\bf solve}
 \begin{verbatim}
     1 to: rows size do: [ :n | self pivotStepAt: n].
     solutions := Array new: ( (rows at: 1) size - rows size).
-
 \end{verbatim}
 {\bf swapRow:} {\tt anInteger1} {\bf withRow:} {\tt anInteger2}
 \begin{verbatim}
     | swappedRow |
     anInteger1 = anInteger2
-        ifFalse:[ swappedRow := rows at: anInteger1.
+        ifFalse: [ swappedRow := rows at: anInteger1.
                       rows at: anInteger1 put: ( rows at: 
                                                           anInteger2).
-                      rows at: anInteger2 put: swappedRow.
-                    ].
-
+                      rows at: anInteger2 put: swappedRow ].
 \end{verbatim}
 

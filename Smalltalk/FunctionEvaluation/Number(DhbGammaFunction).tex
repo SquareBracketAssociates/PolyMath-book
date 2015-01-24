@@ -10,23 +10,18 @@ Instance methods
     ^self > 1
         ifTrue: [ ^DhbLanczosFormula new gamma: self]
         ifFalse:[ self < 0
-                        ifTrue: [ Float pi / ( ( Float pi * self) sin 
-                                                 * ( 1 - self) gamma)]
-                        ifFalse:[ ( DhbLanczosFormula new gamma: ( 
-                                                    self + 1)) / self]
+                     ifTrue: [ Float pi / ( ( Float pi * self) sin * ( 1 - self) gamma)]
+                     ifFalse:[ ( DhbLanczosFormula new gamma: (self + 1)) / self]
                     ]
-
 \end{verbatim}
 {\bf logGamma}
 \begin{verbatim}
     ^self > 1
         ifTrue: [ DhbLanczosFormula new logGamma: self]
-        ifFalse:[ self > 0
-                        ifTrue: [ ( DhbLanczosFormula new logGamma: ( 
-                                               self + 1) ) - self ln ]
-                        ifFalse: [ ^self error: 'Argument for the log 
-                                     gamma function must be positive']
+        ifFalse: [ self > 0
+                      ifTrue: [ ( DhbLanczosFormula new logGamma: (self + 1)) - self ln ]
+                      ifFalse: [ ^self error: 'Argument for the log gamma function
+                         must be positive']
                     ]
-
 \end{verbatim}
 

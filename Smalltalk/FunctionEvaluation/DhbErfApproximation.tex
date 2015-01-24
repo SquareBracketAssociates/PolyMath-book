@@ -10,11 +10,8 @@ Class methods
 {\bf new}
 \begin{verbatim}
     UniqueInstance isNil
-        ifTrue: [ UniqueInstance := super new.
-                     UniqueInstance initialize.
-                    ].
+        ifTrue: [ UniqueInstance := super new initialize ].
     ^UniqueInstance
-
 \end{verbatim}
 
 
@@ -27,13 +24,11 @@ Instance methods
     norm := 1 / ( Float pi * 2) sqrt.
     series := DhbPolynomial coefficients: #( 0.31938153 -0.356563782 
                                1.781477937 -1.821255978 1.330274429). 
-
 \end{verbatim}
 {\bf normal:} {\tt aNumber}
 \begin{verbatim}
     ^[ ( aNumber squared * -0.5) exp * norm]
             when: ExAll do: [ :signal | signal exitWith: 0]
-
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
@@ -46,6 +41,5 @@ Instance methods
         ifTrue: [ ^0].
     t := 1 / (1 - (constant * aNumber)).
     ^( series value: t) * t * (self normal: aNumber)
-
 \end{verbatim}
 

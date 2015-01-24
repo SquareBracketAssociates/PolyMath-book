@@ -11,13 +11,11 @@ Class methods
 \begin{verbatim}
     UniqueInstance = nil
         ifTrue: [ UniqueInstance := super new].
-    ^UniqueInstance
-
+    ^ UniqueInstance
 \end{verbatim}
 {\bf reset}
 \begin{verbatim}
     UniqueInstance := nil.
-
 \end{verbatim}
 
 
@@ -30,14 +28,12 @@ Instance methods
     zero := 0 asFloat.
     one := 1 asFloat.
     floatingRadix := self radix asFloat.
-    fullMantissaNumber := one - ( floatingRadix * self 
-                                            negativeMachinePrecision).
+    fullMantissaNumber := one - ( floatingRadix * self negativeMachinePrecision).
     largestNumber := fullMantissaNumber.
     [ [ fullMantissaNumber := fullMantissaNumber * floatingRadix.
         largestNumber := fullMantissaNumber.
         true] whileTrue: [ ].
         ] when: ExAll do: [ :signal | signal exitWith: nil].
-
 \end{verbatim}
 {\bf computeMachinePrecision}
 \begin{verbatim}
@@ -48,9 +44,7 @@ Instance methods
     machinePrecision := one.
     [ tmp := one + machinePrecision.
       tmp - one = zero]
-        whileFalse:[  machinePrecision := machinePrecision * 
-                                                        inverseRadix].
-
+        whileFalse:[  machinePrecision := machinePrecision * inverseRadix].
 \end{verbatim}
 {\bf computeNegativeMachinePrecision}
 \begin{verbatim}
@@ -62,26 +56,24 @@ Instance methods
     negativeMachinePrecision := one.
     [ tmp := one - negativeMachinePrecision.
       tmp - one = zero]
-        whileFalse:[ negativeMachinePrecision := 
+        whileFalse: [ negativeMachinePrecision := 
                              negativeMachinePrecision * inverseRadix].
-
 \end{verbatim}
 {\bf computeRadix}
 \begin{verbatim}
-    | one zero a b tmp1 tmp2|
+    | one zero a b tmp1 tmp2 |
     one := 1 asFloat.
     zero := 0 asFloat.
     a := one.
     [ a := a + a.
       tmp1 := a + one.
       tmp2 := tmp1 - a.
-      tmp2 - one = zero] whileTrue:[].
+      tmp2 - one = zero] whileTrue: [].
     b := one.
     [ b := b + b.
       tmp1 := a + b.
       radix := ( tmp1 - a) truncated.
       radix = 0 ] whileTrue: [].
-
 \end{verbatim}
 {\bf computeSmallestNumber}
 \begin{verbatim}
@@ -90,57 +82,48 @@ Instance methods
     one := 1 asFloat.
     floatingRadix := self radix asFloat.
     inverseRadix := one / floatingRadix.
-    fullMantissaNumber := one - ( floatingRadix * self 
-                                            negativeMachinePrecision).
+    fullMantissaNumber := one - ( floatingRadix * self negativeMachinePrecision).
     smallestNumber := fullMantissaNumber.
     [ [ fullMantissaNumber := fullMantissaNumber * inverseRadix.
         smallestNumber := fullMantissaNumber.
         true] whileTrue: [ ].
-        ] when: ExAll do: [ :signal | signal exitWith: nil].
-
+        ] when: ExAll do: [ :signal | signal exitWith: nil ].
 \end{verbatim}
 {\bf defaultNumericalPrecision}
 \begin{verbatim}
     defaultNumericalPrecision isNil
-        ifTrue: [ defaultNumericalPrecision := self machinePrecision 
-                                                                sqrt].
+        ifTrue: [ defaultNumericalPrecision := self machinePrecision sqrt ].
     ^defaultNumericalPrecision
-
 \end{verbatim}
 {\bf largestExponentArgument}
 \begin{verbatim}
     largestExponentArgument isNil
         ifTrue: [ largestExponentArgument := self largestNumber ln].
     ^largestExponentArgument
-
 \end{verbatim}
 {\bf largestNumber}
 \begin{verbatim}
     largestNumber isNil
-        ifTrue: [ self computeLargestNumber].
+        ifTrue: [ self computeLargestNumber ].
     ^largestNumber
-
 \end{verbatim}
 {\bf machinePrecision}
 \begin{verbatim}
     machinePrecision isNil
-        ifTrue: [ self computeMachinePrecision].
+        ifTrue: [ self computeMachinePrecision ].
     ^machinePrecision
-
 \end{verbatim}
 {\bf negativeMachinePrecision}
 \begin{verbatim}
     negativeMachinePrecision isNil
-        ifTrue: [ self computeNegativeMachinePrecision].
+        ifTrue: [ self computeNegativeMachinePrecision ].
     ^negativeMachinePrecision
-
 \end{verbatim}
 {\bf radix}
 \begin{verbatim}
     radix isNil
-        ifTrue: [ self computeRadix].
+        ifTrue: [ self computeRadix ].
     ^radix
-
 \end{verbatim}
 {\bf showParameters}
 \begin{verbatim}
@@ -157,20 +140,17 @@ Instance methods
     self smallestNumber printOn: Transcript.
     Transcript cr; nextPutAll: 'Largest number: '.
     self largestNumber printOn: Transcript.         
-
 \end{verbatim}
 {\bf smallestNumber}
 \begin{verbatim}
     smallestNumber isNil
-        ifTrue: [ self computeSmallestNumber].
+        ifTrue: [ self computeSmallestNumber ].
     ^smallestNumber
-
 \end{verbatim}
 {\bf smallNumber}
 \begin{verbatim}
     smallNumber isNil
-        ifTrue: [ smallNumber := self smallestNumber sqrt].
+        ifTrue: [ smallNumber := self smallestNumber sqrt ].
     ^smallNumber
-
 \end{verbatim}
 

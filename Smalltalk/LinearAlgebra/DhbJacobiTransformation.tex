@@ -8,16 +8,12 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf matrix:} {\tt aSymmetricMatrix}
 \begin{verbatim}
-    ^super new initialize: aSymmetricMatrix
-
+    ^ super new initialize: aSymmetricMatrix
 \end{verbatim}
 {\bf new}
 \begin{verbatim}
-    ^self error: 'Illegal creation message for this class'
-
+    ^ self error: 'Illegal creation message for this class'
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -25,8 +21,8 @@ Instance methods
 \begin{verbatim}
     | indices |
     indices := self largestOffDiagonalIndices.
-    self transformAt: ( indices at: 1) and: ( indices at: 2).
-    ^precision
+    self transformAt: (indices at: 1) and: (indices at: 2).
+    ^ precision
 
 \end{verbatim}
 {\bf exchangeAt:} {\tt anInteger}
@@ -40,20 +36,17 @@ Instance methods
         [ :each |
           temp := each at: n.
           each at: n put: ( each at: anInteger).
-          each at: anInteger put: temp.
-        ].
-
+          each at: anInteger put: temp ].
 \end{verbatim}
 {\bf finalizeIterations}
 \begin{verbatim}
     | n |
     n := 0.
     result := lowerRows collect: 
-                    [:each | 
+                    [ :each | 
                     n := n + 1.
-                    each at: n].
+                    each at: n ].
     self sortEigenValues
-
 \end{verbatim}
 {\bf initialize:} {\tt aSymmetricMatrix}
 \begin{verbatim}
@@ -66,10 +59,8 @@ Instance methods
           lowerRows at: k put: ( ( aSymmetricMatrix rowAt: k) 
                                                    copyFrom: 1 to: k).
           transform at: k put: ( ( Array new: n) atAllPut: 0; at: k 
-                                                    put: 1; yourself).
-        ].
-    ^self
-
+                                                    put: 1; yourself) ].
+    ^ self
 \end{verbatim}
 {\bf largestOffDiagonalIndices}
 \begin{verbatim}
@@ -85,12 +76,8 @@ Instance methods
               abs > precision
                 ifTrue: [ n := i.
                           m := j.
-                          precision := abs.
-                        ]. 
-            ].
-        ].
-    ^Array with: m with: n
-
+                          precision := abs ] ] ].
+    ^ Array with: m with: n
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -98,11 +85,9 @@ Instance methods
     first := true.
     lowerRows do: 
         [ :each |
-          first ifTrue: [ first := false]
-                 ifFalse:[ aStream cr].
-          each printOn: aStream.
-        ].
-
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
+          each printOn: aStream ].
 \end{verbatim}
 {\bf sortEigenValues}
 \begin{verbatim}
@@ -113,77 +98,71 @@ Instance methods
         whileFalse: [ m := 0.
                       1 to: bound - 1 do:
                         [ :j |
-                          ( result at: j) abs > ( result at: j + 1) 
-                                                                   abs
-                            ifFalse:[ self exchangeAt: j.
-                                      m := j.
-                                    ].
-                        ].
-                      bound := m.
-                    ].
-
+                          (result at: j) abs > (result at: j + 1) abs
+                            ifFalse: [ self exchangeAt: j.
+                                      m := j ] ].
+                        bound := m ].
 \end{verbatim}
 {\bf transform}
 \begin{verbatim}
-    ^DhbMatrix rows: transform
-
+    ^ DhbMatrix rows: transform
 \end{verbatim}
 {\bf transformAt:} {\tt anInteger1} {\bf and:} {\tt anInteger2}
 \begin{verbatim}
     | d t s c tau apq app aqq arp arq |
     apq := ( lowerRows at: anInteger2) at: anInteger1.
     apq = 0
-        ifTrue: [ ^nil].
-    app := ( lowerRows at: anInteger1) at: anInteger1.
-    aqq := ( lowerRows at: anInteger2) at: anInteger2.
+        ifTrue: [ ^ nil ].
+    app := (lowerRows at: anInteger1) at: anInteger1.
+    aqq := (lowerRows at: anInteger2) at: anInteger2.
     d := aqq - app.
     arp := d * 0.5 / apq.
-    t := arp > 0 ifTrue: [ 1 / ( ( arp squared + 1) sqrt + arp)]
-                 ifFalse:[ 1 / ( arp - ( arp squared + 1) sqrt)].
+    t := arp > 0 
+        ifTrue: [ 1 / ( ( arp squared + 1) sqrt + arp)]
+        ifFalse:[ 1 / ( arp - ( arp squared + 1) sqrt)].
     c := 1 / ( t squared + 1) sqrt.
     s := t * c.
     tau := s / ( 1 + c).
-    1 to: ( anInteger1 - 1)
+    1 to: (anInteger1 - 1)
         do: [ :r |
-              arp := ( lowerRows at: anInteger1) at: r.
-              arq := ( lowerRows at: anInteger2) at: r.
-              ( lowerRows at: anInteger1) at: r put: ( arp - ( s * 
+              arp := (lowerRows at: anInteger1) at: r.
+              arq := (lowerRows at: anInteger2) at: r.
+              (lowerRows at: anInteger1) at: r put: ( arp - ( s * 
                                                   (tau * arp + arq))).
-              ( lowerRows at: anInteger2) at: r put: ( arq + ( s * 
+              (lowerRows at: anInteger2) at: r put: ( arq + ( s * 
                                                 (arp - (tau * arq)))).
             ].
     ( anInteger1 + 1) to: ( anInteger2 - 1)
         do: [ :r |
-              arp := ( lowerRows at: r) at: anInteger1.
-              arq := ( lowerRows at: anInteger2) at: r.
-              ( lowerRows at: r) at: anInteger1 put: ( arp - ( s * 
+              arp := (lowerRows at: r) at: anInteger1.
+              arq := (lowerRows at: anInteger2) at: r.
+              (lowerRows at: r) at: anInteger1 put: ( arp - ( s * 
                                                   (tau * arp + arq))).
-              ( lowerRows at: anInteger2) at: r put: ( arq + ( s * 
+              (lowerRows at: anInteger2) at: r put: ( arq + ( s * 
                                                 (arp - (tau * arq)))).
             ].
     ( anInteger2 + 1) to: lowerRows size
         do: [ :r |
               arp := ( lowerRows at: r) at: anInteger1.
               arq := ( lowerRows at: r) at: anInteger2.
-              ( lowerRows at: r) at: anInteger1 put: ( arp - ( s * 
+              (lowerRows at: r) at: anInteger1 put: ( arp - ( s * 
                                                   (tau * arp + arq))).
-              ( lowerRows at: r) at: anInteger2 put: ( arq + ( s * 
+              (lowerRows at: r) at: anInteger2 put: ( arq + ( s * 
                                                 (arp - (tau * arq)))).
             ].
     1 to: lowerRows size
         do: [ :r |
               arp := ( transform at: r) at: anInteger1.
               arq := ( transform at: r) at: anInteger2.
-              ( transform at: r) at: anInteger1 put: ( arp - ( s * 
+              (transform at: r) at: anInteger1 put: ( arp - ( s * 
                                                   (tau * arp + arq))).
-              ( transform at: r) at: anInteger2 put: ( arq + ( s * 
+              (transform at: r) at: anInteger2 put: ( arq + ( s * 
                                                 (arp - (tau * arq)))).
             ].
-    ( lowerRows at: anInteger1) at: anInteger1 put: ( app - (t * 
+    (lowerRows at: anInteger1) at: anInteger1 put: ( app - (t * 
                                                                 apq)).
-    ( lowerRows at: anInteger2) at: anInteger2 put: ( aqq + (t * 
+    (lowerRows at: anInteger2) at: anInteger2 put: ( aqq + (t * 
                                                                 apq)).
-    ( lowerRows at: anInteger2) at: anInteger1 put: 0.
-
+    (lowerRows at: anInteger2) at: anInteger1 put: 0.
 \end{verbatim}
 

@@ -8,14 +8,12 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf direct:} {\tt anArrayOfArrays}
 \begin{verbatim}
-    ^self new initialize: anArrayOfArrays.
-
+    ^ self new initialize: anArrayOfArrays.
 \end{verbatim}
 {\bf equations:} {\tt anArrayOfArrays}
 \begin{verbatim}
         ^self new initialize: ( anArrayOfArrays collect: [ :each | 
                                                       each deepCopy]).
-
 \end{verbatim}
 
 
@@ -32,10 +30,8 @@ Instance methods
           sum := anArray at: i.
           ( i + 1) to: n do: [ :j | sum := sum - ( ( ( rows at: i) 
                                            at: j) * ( answer at: j))].
-          answer at: i put: sum / ( ( rows at: i) at: i).
-        ].
-    ^answer
-
+          answer at: i put: sum / ( ( rows at: i) at: i) ].
+    ^ answer
 \end{verbatim}
 {\bf decompose}
 \begin{verbatim}
@@ -45,13 +41,11 @@ Instance methods
     1 to: ( n - 1) do:
         [ :k |
           self swapRow: k withRow: ( self largestPivotFrom: k);
-               pivotAt: k.
-        ].
-
+               pivotAt: k ].
 \end{verbatim}
 {\bf forwardSubstitution:} {\tt anArray}
 \begin{verbatim}
-    | n sum answer|
+    | n sum answer |
     answer := permutation collect: [ :each | anArray at: each].
     n := rows size.
     2 to: n do:
@@ -59,17 +53,14 @@ Instance methods
           sum := answer at: i.
           1 to: ( i - 1) do: [ :j | sum := sum - ( ( ( rows at: i) 
                                            at: j) * ( answer at: j))].
-          answer at: i put: sum.
-        ].
-    ^answer
-
+          answer at: i put: sum ].
+    ^ answer
 \end{verbatim}
 {\bf initialize:} {\tt anArrayOfArrays}
 \begin{verbatim}
     rows := anArrayOfArrays.
     parity := 1.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf largestPivotFrom:} {\tt anInteger}
 \begin{verbatim}
@@ -81,16 +72,13 @@ Instance methods
           value := ( ( rows at: n) at: anInteger) abs.
           value > valueOfMaximum
                 ifTrue: [ valueOfMaximum := value.
-                          indexOfMaximum := n.
-                        ].
-        ].
-    ^indexOfMaximum 
-
+                          indexOfMaximum := n ] ].
+    ^ indexOfMaximum 
 \end{verbatim}
 {\bf pivotAt:} {\tt anInteger}
 \begin{verbatim}
     | inversePivot size k |
-    inversePivot := 1 / ( ( rows at: anInteger) at: anInteger).
+    inversePivot := 1 / ((rows at: anInteger) at: anInteger).
     size := rows size.
     k := anInteger + 1.
     k to: size
@@ -100,10 +88,8 @@ Instance methods
               k to: size
                 do: [ :j |
                       ( rows at: i) at: j put: ( ( rows at: i) at: j) 
-   - ( (( rows at: i) at: anInteger) * (( rows at: anInteger) at: j)).
-                    ]
+   - ( (( rows at: i) at: anInteger) * (( rows at: anInteger) at: j)) ]
             ].
-
 \end{verbatim}
 {\bf printOn:} {\tt aStream}
 \begin{verbatim}
@@ -112,39 +98,34 @@ Instance methods
     first := true.
     rows do:
         [ :row |
-          first ifTrue: [ first := false]
-                 ifFalse:[ aStream cr].
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
           delimitingString := '('.
           row do:
             [ :each |
                 aStream nextPutAll: delimitingString.
                 each printOn: aStream.
-                delimitingString := ' '.
-            ].
-          aStream nextPut: $).
-        ].
-
+                delimitingString := ' ' ].
+          aStream nextPut: $) ].
 \end{verbatim}
 {\bf protectedDecomposition}
 \begin{verbatim}
     [ self decompose] when: ExAll do: [ :signal | permutation := 0. 
-                                                signal exitWith: nil].
-
+                                                signal exitWith: nil ].
 \end{verbatim}
 {\bf solve:} {\tt anArrayOrVector}
 \begin{verbatim}
     permutation isNil
-        ifTrue: [ self protectedDecomposition].
+        ifTrue: [ self protectedDecomposition ].
     ^permutation = 0
-        ifTrue: [ nil]
+        ifTrue: [ nil ]
         ifFalse:[ self backwardSubstitution: ( self 
-                                forwardSubstitution: anArrayOrVector)]
-
+                                forwardSubstitution: anArrayOrVector)] 
 \end{verbatim}
 {\bf swapRow:} {\tt anInteger1} {\bf withRow:} {\tt anInteger2}
 \begin{verbatim}
     anInteger1 = anInteger2
-        ifFalse:[ | swappedRow |
+        ifFalse: [ | swappedRow |
                   swappedRow := rows at: anInteger1.
                   rows at: anInteger1 put: ( rows at: anInteger2).
                   rows at: anInteger2 put: swappedRow.
@@ -154,6 +135,5 @@ Instance methods
                   permutation at: anInteger2 put: swappedRow.
                   parity := parity negated.
                 ].
-
 \end{verbatim}
 

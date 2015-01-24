@@ -9,17 +9,14 @@ Class methods
 {\bf defaultMaximumIterations}
 \begin{verbatim}
     ^13
-
 \end{verbatim}
 {\bf new}
 \begin{verbatim}
     ^self error: 'Method new:from:to: must be used'
-
 \end{verbatim}
 {\bf new:} {\tt aBlock} {\bf from:} {\tt aNumber1} {\bf to:} {\tt aNumber2}
 \begin{verbatim}
     ^super new initialize: aBlock from: aNumber1 to: aNumber2
-
 \end{verbatim}
 
 
@@ -29,24 +26,20 @@ Instance methods
 {\bf computeInitialValues}
 \begin{verbatim}
     step := to - from.
-    sum := ( ( functionBlock value: from) + ( functionBlock value: 
-                                                       to)) * step /2.
+    sum := ((functionBlock value: from) + (functionBlock value: to)) * step /2.
     result := sum.
-
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
     | oldResult |
     oldResult := result.
     result := self higherOrderSum.
-    ^self relativePrecision: ( result - oldResult) abs
-
+    ^ self relativePrecision: ( result - oldResult) abs
 \end{verbatim}
 {\bf from:} {\tt aNumber1} {\bf to:} {\tt aNumber2}
 \begin{verbatim}
     from := aNumber1.
     to := aNumber2.
-
 \end{verbatim}
 {\bf higherOrderSum}
 \begin{verbatim}
@@ -59,14 +52,12 @@ Instance methods
                    ].
     sum := ( step * newSum + sum) / 2.
     step := step / 2.
-    ^sum
-
+    ^ sum
 \end{verbatim}
 {\bf initialize:} {\tt aBlock} {\bf from:} {\tt aNumber1} {\bf to:} {\tt aNumber2}
 \begin{verbatim}
     functionBlock := aBlock.
     self from: aNumber1 to: aNumber2.
-    ^self   
-
+    ^ self   
 \end{verbatim}
 

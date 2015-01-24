@@ -8,14 +8,12 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf initialTerm}
 \begin{verbatim}
-    ^1
-
+    ^ 1
 \end{verbatim}
 {\bf setParameter:} {\tt aNumber1} {\bf second:} {\tt aNumber2}
 \begin{verbatim}
     alpha1 := aNumber1.
     alpha2 := aNumber2
-
 \end{verbatim}
 {\bf termsAt:} {\tt anInteger}
 \begin{verbatim}
@@ -23,12 +21,9 @@ Instance methods
     n := anInteger // 2.
     n2 := 2 * n.
     ^Array with: ( n2 < anInteger 
-        ifTrue: 
-            [x negated * (alpha1 + n) * (alpha1 + alpha2 + n) 
-                / ((alpha1 + n2) * (alpha1 + 1 + n2))]
-        ifFalse: [x * n * (alpha2 - n) / ((alpha1 + n2) * (alpha1 - 1 
-                                                              + n2))])
+        ifTrue: [ x negated * (alpha1 + n) * (alpha1 + alpha2 + n) 
+                                / ((alpha1 + n2) * (alpha1 + 1 + n2))]
+        ifFalse: [x * n * (alpha2 - n) / ((alpha1 + n2) * (alpha1 - 1 + n2)) ])
             with: 1
-
 \end{verbatim}
 

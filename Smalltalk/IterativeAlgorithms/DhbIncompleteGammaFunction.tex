@@ -9,10 +9,7 @@ Class methods
 {\bf shape:} {\tt aNumber}
 \begin{verbatim}
     ^super new initialize: aNumber
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -24,10 +21,8 @@ Instance methods
             fraction setParameter: alpha].
     fraction setArgument: aNumber.
     ^(DhbContinuedFraction server: fraction)
-        desiredPrecision: DhbFloatingPointMachine new 
-                                            defaultNumericalPrecision;
+        desiredPrecision: DhbFloatingPointMachine new  defaultNumericalPrecision;
         evaluate
-
 \end{verbatim}
 {\bf evaluateSeries:} {\tt aNumber}
 \begin{verbatim}
@@ -36,18 +31,15 @@ Instance methods
                   series setParameter: alpha.
                 ].
     series setArgument: aNumber.
-    ^(DhbInfiniteSeries server: series)
-        desiredPrecision: DhbFloatingPointMachine new 
-                                            defaultNumericalPrecision;
+    ^ (DhbInfiniteSeries server: series)
+        desiredPrecision: DhbFloatingPointMachine new defaultNumericalPrecision;
         evaluate
-
 \end{verbatim}
 {\bf initialize:} {\tt aNumber}
 \begin{verbatim}
     alpha := aNumber asFloat.
     alphaLogGamma := alpha logGamma.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf value:} {\tt aNumber}
 \begin{verbatim}
@@ -56,12 +48,11 @@ Instance methods
         ifTrue: [ ^0].
     x := aNumber asFloat.
     norm := [ ( x ln * alpha - x - alphaLogGamma) exp] when: ExAll 
-                                do: [ :signal | signal exitWith: nil].
+                                do: [ :signal | signal exitWith: nil ].
     norm isNil
         ifTrue: [ ^1].
     ^x - 1 < alpha
-        ifTrue: [ ( self evaluateSeries: x) * norm]
-        ifFalse:[ 1 - ( norm / ( self evaluateFraction: x))]
-
+        ifTrue: [ ( self evaluateSeries: x) * norm ]
+        ifFalse: [ 1 - ( norm / ( self evaluateFraction: x)) ]
 \end{verbatim}
 

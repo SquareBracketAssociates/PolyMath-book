@@ -9,10 +9,7 @@ Class methods
 {\bf server:} {\tt aTermServer}
 \begin{verbatim}
     ^self new initialize: aTermServer
-
 \end{verbatim}
-
-
 
 Instance methods
 {\parskip 1ex\par\noindent}
@@ -21,18 +18,15 @@ Instance methods
     | delta |
     delta := termServer termAt: iterations.
     result := result + delta.
-    ^self precisionOf: delta abs relativeTo: result abs
-
+    ^ self precisionOf: delta abs relativeTo: result abs
 \end{verbatim}
 {\bf initialize:} {\tt aTermServer}
 \begin{verbatim}
     termServer := aTermServer.
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf initializeIterations}
 \begin{verbatim}
     result := termServer initialTerm
-
 \end{verbatim}
 

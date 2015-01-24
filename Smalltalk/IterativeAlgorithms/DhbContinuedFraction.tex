@@ -10,27 +10,22 @@ Instance methods
 \begin{verbatim}
     | terms delta |
     terms := termServer termsAt: iterations.
-    denominator := 1 / ( self limitedSmallValue: ( (terms at: 1) * 
-                                        denominator + (terms at: 2))).
-    numerator := self limitedSmallValue: ( (terms at: 1) / numerator 
-                                                     + (terms at: 2)).
+    denominator := 1 / (self limitedSmallValue: ((terms at: 1) * denominator + (terms at: 2))).
+    numerator := self limitedSmallValue: ((terms at: 1) / numerator + (terms at: 2)).
     delta := numerator * denominator.
     result := result * delta.
-    ^( delta - 1) abs
-
+    ^ (delta - 1) abs
 \end{verbatim}
 {\bf initializeIterations}
 \begin{verbatim}
     numerator := self limitedSmallValue: termServer initialTerm.
     denominator := 0.
     result := numerator
-
 \end{verbatim}
 {\bf limitedSmallValue:} {\tt aNumber}
 \begin{verbatim}
     ^aNumber abs < DhbFloatingPointMachine new smallNumber
-            ifTrue: [ DhbFloatingPointMachine new smallNumber]
-            ifFalse:[ aNumber]
-
+            ifTrue: [ DhbFloatingPointMachine new smallNumber ]
+            ifFalse: [ aNumber ]
 \end{verbatim}
 

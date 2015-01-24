@@ -8,7 +8,6 @@ Instance methods
 {\bf *} {\tt aNumberOrMatrixOrVector}
 \begin{verbatim}
     ^aNumberOrMatrixOrVector productWithVector: self
-
 \end{verbatim}
 {\bf +} {\tt aVector}
 \begin{verbatim}
@@ -21,7 +20,6 @@ Instance methods
           answer at: n put: ( a + b).
         ].
     ^answer
-
 \end{verbatim}
 {\bf -} {\tt aVector}
 \begin{verbatim}
@@ -34,49 +32,40 @@ Instance methods
           answer at: n put: ( a - b).
         ].
     ^answer
-
 \end{verbatim}
 {\bf accumulate:} {\tt aVectorOrAnArray}
 \begin{verbatim}
     1 to: self size do: [ :n | self at: n put: ( ( self at: n) + ( 
                                             aVectorOrAnArray at: n))].
-
 \end{verbatim}
 {\bf accumulateNegated:} {\tt aVectorOrAnArray}
 \begin{verbatim}
     1 to: self size do: [ :n | self at: n put: ( ( self at: n) - ( 
                                             aVectorOrAnArray at: n))].
-
 \end{verbatim}
 {\bf asVector}
 \begin{verbatim}
-    ^self
-
+    ^ self
 \end{verbatim}
 {\bf dimension}
 \begin{verbatim}
-    ^self size
-
+    ^ self size
 \end{verbatim}
 {\bf negate}
 \begin{verbatim}
     1 to: self size do: [ :n | self at: n put: (self at: n) negated].
-
 \end{verbatim}
 {\bf norm}
 \begin{verbatim}
-    ^(self * self) sqrt
-
+    ^ (self * self) sqrt
 \end{verbatim}
 {\bf normalized}
 \begin{verbatim}
-    ^(1 / self norm) * self
-
+    ^ (1 / self norm) * self
 \end{verbatim}
 {\bf productWithMatrix:} {\tt aMatrix}
 \begin{verbatim}
-    ^aMatrix rowsCollect: [ :each | each * self]
-
+    ^ aMatrix rowsCollect: [ :each | each * self ]
 \end{verbatim}
 {\bf productWithVector:} {\tt aVector}
 \begin{verbatim}
@@ -84,14 +73,12 @@ Instance methods
     n := 0.
     ^self inject: 0
             into: [ :sum :each | n := n + 1. (aVector at: n) * each + 
-                                                                  sum]
-
+                                                                  sum ]
 \end{verbatim}
 {\bf scaleBy:} {\tt aNumber}
 \begin{verbatim}
     1 to: self size do: [ :n | self at: n put: ( ( self at: n) * 
-                                                            aNumber)].
-
+                                                            aNumber) ].
 \end{verbatim}
 {\bf tensorProduct:} {\tt aVector}
 \begin{verbatim}
@@ -100,6 +87,5 @@ Instance methods
                                                      tensor product'].
     ^DhbSymmetricMatrix rows: ( self collect: [ :a | aVector collect: 
                                                        [ :b | a * b]])
-
 \end{verbatim}
 

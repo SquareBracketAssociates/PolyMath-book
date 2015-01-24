@@ -8,19 +8,16 @@ Class methods
 {\parskip 1ex\par\noindent}
 {\bf defaultMaximumIterations}
 \begin{verbatim}
-    ^100
-
+    ^ 100
 \end{verbatim}
 {\bf matrix:} {\tt aMatrix}
 \begin{verbatim}
-    ^( self new) initialize: aMatrix; yourself
-
+    ^ self new initialize: aMatrix; yourself
 \end{verbatim}
 {\bf matrix:} {\tt aMatrix} {\bf precision:} {\tt aNumber}
 \begin{verbatim}
-    ^( self new) initialize: aMatrix; desiredPrecision: aNumber; 
+    ^ self new initialize: aMatrix; desiredPrecision: aNumber; 
                                                               yourself
-
 \end{verbatim}
 
 
@@ -29,13 +26,11 @@ Instance methods
 {\parskip 1ex\par\noindent}
 {\bf eigenvalue}
 \begin{verbatim}
-    ^result
-
+    ^ result
 \end{verbatim}
 {\bf eigenvector}
 \begin{verbatim}
-    ^eigenvector * (1 / eigenvector norm)
-
+    ^ eigenvector * (1 / eigenvector norm)
 \end{verbatim}
 {\bf evaluateIteration}
 \begin{verbatim}
@@ -48,14 +43,12 @@ Instance methods
     result := eigenvector at: 1.
     eigenvector := eigenvector * (1 / result).
     ^oldEigenvalue isNil 
-        ifTrue: [2 * desiredPrecision]
-        ifFalse: [(result - oldEigenvalue) abs]
-
+        ifTrue: [ 2 * desiredPrecision]
+        ifFalse: [ (result - oldEigenvalue) abs ]
 \end{verbatim}
 {\bf initialize:} {\tt aMatrix}
 \begin{verbatim}
     matrix := aMatrix.
-
 \end{verbatim}
 {\bf initializeIterations}
 \begin{verbatim}
@@ -63,7 +56,6 @@ Instance methods
     eigenvector atAllPut: 1.0.
     transposeEigenvector := DhbVector new: eigenvector size.
     transposeEigenvector atAllPut: 1.0
-
 \end{verbatim}
 {\bf nextLargestEigenValueFinder}
 \begin{verbatim}
@@ -75,6 +67,5 @@ Instance methods
                         - (eigenvector * norm tensorProduct: 
                                                 transposeEigenvector))
         precision: desiredPrecision
-
 \end{verbatim}
 

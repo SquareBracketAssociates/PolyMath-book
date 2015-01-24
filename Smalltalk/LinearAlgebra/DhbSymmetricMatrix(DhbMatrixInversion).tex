@@ -13,21 +13,17 @@ Class methods
     ( anArrayOfMatrices at: 1) rowsDo:
         [ :each |
           n := n + 1.
-          rows add: each, ( ( anArrayOfMatrices at: 3) columnAt: n).
-        ].
+          rows add: each, ((anArrayOfMatrices at: 3) columnAt: n) ].
     n := 0.
     ( anArrayOfMatrices at: 2) rowsDo:
         [ :each |
           n := n + 1.
-          rows add: ( ( anArrayOfMatrices at: 3) rowAt: n), each.
-        ].
-    ^self rows: rows 
-
+          rows add: ((anArrayOfMatrices at: 3) rowAt: n), each ].
+    ^ self rows: rows 
 \end{verbatim}
 {\bf lupCRLCriticalDimension}
 \begin{verbatim}
-    ^36
-
+    ^ 36
 \end{verbatim}
 
 
@@ -48,28 +44,25 @@ Instance methods
     matrices at: 1 put: ( b1 accumulate: (cb1 
                        transposeProductWithMatrix: (matrices at: 3))).
     (matrices at: 3) negate.
-    ^self class join: matrices
-
+    ^ self class join: matrices
 \end{verbatim}
 {\bf inverse}
 \begin{verbatim}
-    ^(rows size < self class lupCRLCriticalDimension or: 
-                                           [lupDecomposition notNil]) 
-            ifTrue: [self lupInverse]
-            ifFalse: [self crlInverse]
-
+    ^ (rows size < self class lupCRLCriticalDimension or: 
+                                           [ lupDecomposition notNil ]) 
+            ifTrue: [ self lupInverse ]
+            ifFalse: [ self crlInverse ]
 \end{verbatim}
 {\bf split}
 \begin{verbatim}
     | n b d c |
     n := self largestPowerOf2SmallerThan: rows size.
-    ^Array with: ( self class rows: ( ( 1 to: n) asVector collect: [ 
-                               :k | ( rows at: k) copyFrom: 1 to: n]))
-              with:( self class rows: ( ( (n+1) to: rows size) 
-      asVector collect: [ :k | ( rows at: k) copyFrom: (n+1) to: rows 
+    ^Array with: (self class rows: ((1 to: n) asVector collect: [ 
+                               :k | (rows at: k) copyFrom: 1 to: n]))
+              with:(self class rows: (((n+1) to: rows size) 
+      asVector collect: [ :k | (rows at: k) copyFrom: (n+1) to: rows 
       size]))
-              with: ( self class superclass rows: ( ( (n+1) to: rows 
-     size) asVector collect: [ :k | ( rows at: k) copyFrom: 1 to: n]))
-
+              with: (self class superclass rows: (((n+1) to: rows 
+     size) asVector collect: [ :k | (rows at: k) copyFrom: 1 to: n]))
 \end{verbatim}
 
