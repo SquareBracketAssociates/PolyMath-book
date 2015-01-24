@@ -1162,11 +1162,10 @@ of measurements .
  | linReg valueStream measurement slope intercept
    correlationCoefficient estimation value error|
  linReg := DhbLinearRegression new.
- [ valueStream atEnd]
-        whileFalse:[ measurement := valueStream next.
+ [ valueStream atEnd ]
+        whileFalse: [ measurement := valueStream next.
                      linReg addPoint: measurement point
-                              weight: measurement weigth
-                   ].
+                              weight: measurement weight ].
  slope := linReg slope.
  intercept := linReg intercept.
  correlationCoefficient := linReg correlationCoefficient.
@@ -1202,52 +1201,6 @@ correlationCoefficient} to {\tt nil} in the method {\tt reset}.
 
 \begin{listing} Smalltalk implementation of linear regression \label{ls:linreg}
 \input{Smalltalk/Estimation/DhbLinearRegression}
-\end{listing}
-
-\subsection{Linear regression --- Java  implementation}
-Listing \ref{lj:linreg} shows the complete implementation in Java.
-The following code shows how to use the class {\tt
-LinearRegression} to perform a linear regression over a series of
-measurements .
-\begin{codeExample}
-\begin{verbatim}
-
- double[] x, y, w;
-\end{verbatim}
-\hfil{\tt<\sl Gathering measurements into the arrays {\tt x}
-($x_i$), {\tt y} ($y_i$)\hfil \\ \hfil and {\tt w}
-($1/\sigma^2_i$)\tt
->}\hfil
-\begin{verbatim}
- LinearRegression linReg = new LinearRegression;
- for ( int i =  1, i < x.length, i++ )
-    linReg.add( x[i], y[i], w[i]);
- double slope = linReg.slope();
- double intercept = linReg.intercept();
- double correlationCoefficient = linReg.correlationCoefficient();
- EstimatedPolynomial estimation = linReg.asEstimatedPolynomial();
- double value = estimation.value(0.5);
- double error = estimation.error(0.5);
-\end{verbatim}
-\end{codeExample}
-This example assumes that the measurements and the weights are
-gathered into 3 arrays. The exact implementation of the gathering
-is not shown here. The first line after the gathering creates a
-new instance of class {\tt LinearRegression}. Next comes the loop
-accumulating the measurements into the linear regression object
-with the method {\tt add}.
-
-After all measurements have been accumulated, the results of the
-linear regression are fetched. The last three lines show how to
-obtain a polynomial object used to compute the value predicted by
-the linear regression at $x=0.5$ and the error on that prediction.
-
-The mechanism of lazy initialization is implemented by setting the
-three instance variables {\tt slope}, {\tt intercept} and {\tt
-correlationCoefficient} to {\tt NaN} in the method {\tt reset}.
-
-\begin{listing} Java implementation of linear regression \label{lj:linreg}
-\input{Java/DhbEstimation/LinearRegression.java}
 \end{listing}
 
 
@@ -1452,83 +1405,6 @@ call. This is suitable for plotting the resulting curve.
 \input{Smalltalk/Estimation/DhbEstimatedPolynomial}
 \end{listing}
 
-\subsection{Polynomial least square fits --- Java  implementation}
-\marginpar{Figure \ref{fig:estimationclasses} with the boxes {\bf
-PolynomialLeastSquareFit} and {\bf EstimatedPolynomial} grayed.}
-Listing \ref{lj:lspolynom} shows the complete implementation in
-Java. The following code example show how to perform the fit made
-in figure \ref{fig:femurLength}.
-\begin{codeExample}
-\begin{verbatim}
-
- double[] x, y, dy;
-\end{verbatim}
-\hfil{\tt<\sl Gathering measurements into the arrays {\tt x}
-($x_i$), {\tt y} ($y_i$)\hfil \\ \hfil and {\tt dy}
-($\sigma_i$)\tt
->}\hfil
-\begin{verbatim}
- PolynomialLeastSquareFit fit = new PolynomialLeastSquareFit(2);
- for( int i = 0; i < x.length; i++ )
-    fit.accumulatePoint( x, y, w);
- EstimatedPolynomial estimation = fit.evaluate();
- double value = estimation.value(20.5);
- double error = estimation.error(20.5);
-\end{verbatim}
-\end{codeExample}
-
-The class {\tt PolynomialLeastSquareFit} is organized like the
-linear regression class: data points are accumulated directly on
-each call as each value is not needed. One drawback is that the
-value of the sum of equation \ref{eq:lsestim} must be computed by
-another object when the $\chi^2$-test of the fit is required. The
-advantage is that the implementation of the class is very simple.
-The class {\tt PolynomialLeastSquareFit} has one constructor
-method whose argument is the degree of the polynomial used in the
-fit.
-
-The main accumulation method, {\tt accumulateWeightedPoint} takes
-the arguments $x_i$, $y_i$ and $1/\sigma_i^2$ in this order. Other
-constructor methods are convenience methods calling the method
-{\tt accumulateWeightedPoint} to do the real work:
-\begin{description}
-  \item[\tt accumulatePoint(double,double,double)] to accumulate
-  points with error, that is, the arguments are $x_i$, $y_i$ and $\sigma_i$ in this order
-  \item[\tt accumulateBin(double,int)] to accumulate the bin
-  contents of a histogram; the first argument is the middle of the
-  bin and the second the bin contents; the weight is computed as
-  described in section \ref{sec:chitesthist}.
-  \item[\tt accumulateAverage(double,StatisticalMoments)] to
-  accumulate points whose $y$ value is determined from an average
-  over several measurements; the first argument is $x_i$; $y_i$ and
-  $\sigma_i$ are obtained respectively from the average and error on average of
-  the statistical moments.
-  \item[\tt accumulatePoint(double,double)]  to accumulate a
-  point with a weight of 1; the arguments are $x_i$ and $y_i$.
-\end{description}
-The method {\tt evaluate} returns an estimated polynomial
-corresponding to the fit. The system of equation
-\ref{eq:lspolynom} is solved using LUP decomposition since the
-dimension of the matrix is usually small\footnote{Fitted
-polynomials of very high degree have the same bad behavior as the
-interpolation polynomials}. The calculation of the error matrix is
-obtained from the LUP decomposition. To avoid possible rounding
-errors, the off-diagonal elements are made exactly symmetric
-before being passed to the constructor method of a symmetric
-matrix.
-\begin{listing} Java implementation of a polynomial least square fit \label{lj:lspolynom}
-\input{Java/DhbEstimation/PolynomialLeastSquareFit.java}
-\end{listing}
-Listing \ref{lj:estpolynom} show the implementation of the class
-{\tt EstimatedPolynomial} which is a subclass of the class {\tt
-Polynomial} containing the error matrix of the fit performed to
-make a estimation of the polynomial's coefficients. The class {\tt
-EstimatedPolynomial} returns the estimated error of its value
-based on the error matrix of the fit using equation
-\ref{eq:fitError}.
-\begin{listing} Java implementation of a polynomial with error \label{lj:estpolynom}
-\input{Java/DhbEstimation/EstimatedPolynomial.java}
-\end{listing}
 
 \section{Least square fit with non-linear dependence}
 \label{sec:lsfnonlin} In the case of a non-linear function, the
@@ -1694,7 +1570,7 @@ could be the topic of a future book.}.
  hist := DhbHistogram new.
  hist freeExtent: true.
  genDistr := DhbFisherTippettDistribution shape: 0 scale: 1.
- 1000 timesRepeat: [ hist accumulate: genDistr random].
+ 1000 timesRepeat: [ hist accumulate: genDistr random ].
  fit := DhbLeastSquareFit histogram: hist
             distributionClass: DhbFisherTippettDistribution.
  fit evaluate.
@@ -1754,174 +1630,6 @@ vector and matrix operations described in chapter
 least square fit \label{ls:lsfnonlin}
 \input{Smalltalk/Estimation/DhbLeastSquareFit}
 \end{listing}
-
-\subsection{Non-linear fit --- Java implementation}
-\label{sec:jlsfnonlin}In Java, the fit function must be declared
-as an interface. Here we not only need to compute the functions
-value, but we need to value of the gradient of the function
-respective to the vector of parameters; in addition, the
-parameters of the fit function must be changed. Thus, the
-interface {\tt OneVariableFunction} is not sufficient as it only
-covers the retrieving of the function's value. A new interface
-{\tt ParametrizedOneVariableFunction} was derived from the
-interface {\tt OneVariableFunction} to handle the management of
-the function's parameters. It is shown in listing
-\ref{lj:paramFunc}. This interface has the following instance
-methods:
-\begin{description}
-  \item[\tt valueAndGradient] returns an array containing the
-  value of the function for the supplied argument in the first
-  position; the rest of the array contains the components of the
-  function's gradient or the same argument;
-  in other word, it returns the array $F\left(x,{\bf
-p}_0\right),\left.{\displaystyle\partial F\left(x,{\bf
-p}\right)\over\displaystyle\partial p_1}\right|_{{\bf p}={\bf
-p}_0},\ldots,\left.{\displaystyle\partial F\left(x,{\bf
-p}\right)\over\displaystyle\partial p_m}\right|_{{\bf p}={\bf
-p}_0}$ for the supplied argument $x$ (let us recall that $m$ is
-the number of parameters);
-  \item[\tt setParameters] defines the value of the function's
-  parameters; in other words, this method is used to set the value
-  of ${\bf p}$ in the fit function.
-\end{description}
-\begin{listing} Java parametrized function interface \label{lj:paramFunc}
-\input{Java/DhbInterfaces/ParametrizedOneVariableFunction.java}
-\end{listing}
-\note{This implementation of the least square fit is
-only\footnote{This is not the case in Smalltalk since one does not
-need to define explicit types.} for functions with a real argument
-(a {\tt double}). However, the mathematical derivation we gave is
-valid for an argument $x$ of any type. As an exercise, the reader
-can generalize this implementation for a function of a vector (or
-array) argument.}
-
-\noindent Listing \ref{lj:lsfnonlin} shows the implementation of a
-least square fit in Java. The following code example shows how
-figure \ref{fig:lsfExample} was generated up to the plotting
-facilities.
-\begin{codeExample}
-\label{exj:leastSquare}
-\begin{verbatim}
-
- FisherTippettDistribution genDistr = new FisherTippettDistribution( 0, 1);
- Histogram histogram = new Histogram();
- histogram.setGrowthAllowed();
- for ( int i = 0; i < 1000; i++ )
-    histogram.accumulate( genDistr.random());
- WeightedPoint[] wps = new WeightedPoint[histogram.size()];
- for ( int i = 0; i < wps.length; i++)
-    wps[i] = histogram.weightedPointAt(i);
- FisherTippettDistribution fitDistr =
-                                 new FisherTippettDistribution( histogram);
- LeastSquareFit fit = new LeastSquareFit( wps,
-               new ScaledProbabilityDensityFunction( fitDistr, histogram));
- fit.evaluate();
- ScaledProbabilityDensityFunction fittedScaledDistr =
-                (ScaledProbabilityDensityFunction) fit.getResult();
-\end{verbatim}
-\end{codeExample}
-The first line creates an instance of a Fisher-Tippett
-distribution with parameters $\alpha=0$ and $\beta=1$. The next
-two lines create an instance of a histogram with automatic
-adjustment of the limits. Then a loop accumulates random numbers
-generated according to the distribution into the histogram. After
-data have been accumulated, an array of weighted points is created
-and the bins of the histogram are collected into the array of
-weighted points. Next. the variable {\tt fitDistr} is created on
-the histogram. This constructor method calculate rough estimates
-of the distribution's parameters based on the histogram's content,
-this providing initial values for the fit. The last two statements
-repectively perform the fit and retrieve the fitted function as an
-instance of {\tt ScaledProbabilityDensityFunction}. A cast is
-necessary since the type of the object returned by the method {\tt
-getResult} is defined only by an interface.
-
-It is not necessary to retrieve the result as a scaled probability
-density function: after the fit has been performed the parameters
-of the distribution stored in variable {\tt fitDistr} are the
-fitted parameters because our implementation keeps the fit
-parameters in the supplied function object. In other words, the
-variable {\tt fitDistr} contains the fitted probability density
-function.
-
-\noindent The class {\tt LeastSquareFit} has the following
-instance variables:
-\begin{description}
-  \item[\tt result] the fit function; this object must implement
-  the {\tt ParametrizedOneVariableFunction} interface described at the beginning of this section;
-  \item[\tt points] an array of weighted points
-  containing the data, over which the fit is made;
-  \item[\tt systemMatrix] the components of the matrix ${\bf M}$ calculated at each
-  iterations;
-  \item[\tt systemConstants] the components of the vector ${\bf c}$ calculated at each
-  iterations;
-  \item[\tt systemLUP] an LUP decomposition object (the class {\tt
-  LUPDecomposition}) is described in section \ref{sec:lup}) needed to solve
-  equation \ref{eq:lslinequs} at each iterations;
-  \item[\tt errorMatrix] the error matrix of the fit, that is the
-  inverse of the matrix ${\bf M}$ obtained at the last iteration;
-  \item[\tt chiSquare] the sum of equation \ref{eq:lsestim};
-  \item[\tt degreeOfFreedom] the degree of freedom of the fit.
-\end{description}
-The class {\tt LeastSquareFit} has two constructor methods, each
-with two arguments. The arguments of the first method are
-respectively an array of weighted points(the class {\tt
-WeightedPoint} described in section \ref{sec:weightedPoint})
-representing the data, over which the fit is performed, and the
-fit function. The second method is a convenience method used to
-define the fit of a probability density function (second argument)
-over a histogram (first argument). In code example
-\ref{exj:leastSquare} one could have replaced the generation of
-the weighted points and the definition of  the fit function by the
-following line:
-\begin{verbatim}
- LeastSquareFit fit = new LeastSquareFit( histogram, fitDistr);
-\end{verbatim}
-Many methods may seem redundant to the reader. Their presence will
-become clear once the reader discovers the implementation of the
-maximum likelihood fit described in section \ref{lj:mlf}. In the
-maximum likelihood fit the weighted points are directly taken from
-a histogram. Thus, initializing the system (method {\tt
-initializeSystem}), reset the system at each iteration (method
-{\tt resetSystem}), the number of data points (method {\tt
-getDataSetSize}, access to each data point {\tt weightedPointAt}
-have been implemented with the up-coming subclassing\footnote{For
-Smalltalkers: these methods must be declared {\tt protected} since
-private methods are not inherited in Java.} in mind.
-
-The method {\tt evaluateIteration} first calculates the matrix
-${\bf M}$ and the vector $\Delta{\bf p}$ of equation
-\ref{eq:lslinequs}. Then, this system of linear equations is
-solved using LUP decomposition described in section \ref{sec:lup}.
-Then, the obtained vector $\Delta{\bf p}$ is added to the vector
-${\bf p}$ to get a new estimation of the parameters. This
-estimation is fed back into the fit function. The precision
-returned by the method {\tt evaluateIteration} is the largest of
-the relative change of the parameter's components.
-
-The method {\tt accumulate} calculates each term of the series of
-equations \ref{eq:mlfmatrix} and \ref{eq:mlfvector}. To optimize
-speed only the lower half of the symmetric matrix ${\bf M}$ is
-accumulated. At end of the summation, the method {\tt
-symmetrizeMatrix} is used to fill up the upper half of the matrix.
-
-A series of methods allows to retrieve information after the fit
-has been performed. They are all working with lazy initialization.
-When the fit is terminated, the method {\tt finalizeIterations}
-sets the instance variables {\tt systemMatrix} and {\tt
-systemConstants} to release no longer needed storage. It also sets
-the values of instance variables {\tt errorMatrix}, {\tt
-chiSquare} and {\tt degreeOfFreedom} to undefined values to force
-the computation of these when their respective accessor methods
-are called. The reader will note that space used by the LUP
-decomposition is reclaimed as soon as the error matrix is computed
-since it is no longer needed.
-
-\begin{listing} Java implementation of a non-linear
-least square fit \label{lj:lsfnonlin}
-\input{Java/DhbEstimation/LeastSquareFit.java}
-\end{listing}
-
 
 \section{Maximum likelihood fit of a probability density function}
 \label{sec:mlfhist} In section \ref{sec:histogram} histograms have
@@ -2134,8 +1842,8 @@ facilities.
  hist := DhbHistogram new.
  hist freeExtent: true.
  genDistr := DhbFisherTippettDistribution shape: 0 scale: 1.
- 1000 timesRepeat: [ hist accumulate: genDistr random].
- fit :=DhbMaximumLikekihoodHistogramFit histogram: hist
+ 1000 timesRepeat: [ hist accumulate: genDistr random ].
+ fit := DhbMaximumLikekihoodHistogramFit histogram: hist
             distributionClass: DhbFisherTippettDistribution.
  fit evaluate.
 \end{verbatim}
@@ -2145,7 +1853,7 @@ As the reader can see the only difference with code example
 where the instance of the fit is created.
 
 \noindent The class {\tt DhbMaximumLikekihoodHistogramFit} is a
-sublcass of the class {\tt DhbLeastSquareFit}. It has the
+subclass of the class {\tt DhbLeastSquareFit}. It has the
 following additional instance variables:
 \begin{description}
   \item[\tt count] the estimated normalization, that is $\bar{N}$;
@@ -2174,61 +1882,6 @@ obtained normalization into the scaled probability distribution.
 
 \begin{listing} Smalltalk implementation of a maximum likelihood fit \label{ls:mlf}
 \input{Smalltalk/Estimation/DhbMaximumLikekihoodHistogramFit}
-\end{listing}
-
-\subsection{Maximum likelihood fit --- Java  implementation}
-\label{sec:jmlfhist} Listing \ref{lj:mlf} shows the complete
-implementation in Java. The following code example shows how
-figure \ref{fig:mlfExample} was generated up to the plotting
-facilities.
-\begin{codeExample}
-\begin{verbatim}
-
- FisherTippettDistribution genDistr = new FisherTippettDistribution( 0, 1);
- Histogram histogram = new Histogram();
- histogram.setGrowthAllowed();
- for ( int i = 0; i < 1000; i++ )
-    histogram.accumulate( genDistr.random());
- FisherTippettDistribution fitDistr = new FisherTippettDistribution( histogram);
- MaximumLikelihoodHistogramFit fit = new MaximumLikelihoodHistogramFit( histogram, fitDistr);
- fit.evaluate();
-\end{verbatim}
-\end{codeExample} In this example the constructor method using a
-histogram and a probability density function is used. Otherwise,
-it is very similar to code example \ref{exj:leastSquare}.
-
-\noindent The class {\tt MaximumLikelihoodHistogramFit} is a
-subclass of class {\tt LeastSquareFit}. It has the following
-additional instance variables:
-\begin{description}
-  \item[\tt histogram] the histogram over which the fit is
-  performed; because of strong typing,
-   it was not possible to re-use the variable {\tt points};
-  \item[\tt count] the estimated normalization, that is $\bar{N}$;
-  \item[\tt countError] the estimated error on $\bar{N}$.
-\end{description}
-\noindent The class {\tt MaximumLikelihoodHistogramFit} has only
-one constructor method corresponding to the convenience
-constructor method of the class {\tt LeastSquareFit}. Assignment
-of the instance variable is different since data is accessed
-directly in the histogram.
-
-The method {\tt accumulate} calculates the terms of the sums in
-equations \ref{eq:mlfmatrix} and \ref{eq:mlfvector}. The methods
-{\tt getDataSetSize}, {\tt computeChanges} and {\tt
-weightedPointAt} overloads the corresponding methods of class {\tt
-LeastSquareFit} to reflect the fact that the data points are
-obtained directly from the histogram.
-
-The method {\tt finalizeComputation} first calls the method {\tt
-computeNormalization}, which calculates the estimation of the
-normalization and its error using equations \ref{eq:mlfnormsol}
-and \ref{eq:mlfnormsigma}. Then the obtained normalization is set
-into the fitted function. Unused space is release in the method of
-the superclass.
-
-\begin{listing} Java implementation of a maximum likelihood fit \label{lj:mlf}
-\input{Java/DhbEstimation/MaximumLikelihoodHistogramFit.java}
 \end{listing}
 
 
