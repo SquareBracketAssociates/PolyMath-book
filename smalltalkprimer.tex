@@ -199,7 +199,7 @@ Smalltalk.
  {\small 4}{\hskip 2ex}{\tt permutation := (1 to: n) asArray.}\\
  {\small 5}{\hskip 2ex}{\tt 1 to: ( n - 1) do:}\\
  {\small 6}{\hskip 5ex}{\tt [ :k |}\\
- {\small 7}{\hskip 5ex}{\tt self swapRow: k withRow: ( self largestPivotFrom:
+ {\small 7}{\hskip 5ex}{\tt self swapRow: k withRow: (self largestPivotFrom:
  k);}\\
  {\small 8}{\hskip 14ex}{\tt pivotAt: k.}\\
  {\small 9}{\hskip 5ex}{\tt ].}\\
@@ -289,7 +289,7 @@ computing polar coordinates from supplied Cartesian coordinates:
  | radius angle |
  radius := ( x squared + y squared) sqrt.
  angle := y arctan: x.
- Array with: radius with: angle]
+ Array with: radius with: angle ]
 \end{verbatim}
 \end{quote}
 The block  is delimited by a pair of brackets ({\tt []}).
@@ -310,7 +310,7 @@ used.
           | radius angle |
           radius := ( x squared + y squared) sqrt.
           angle := y arctan: x.
-          Array with: radius with: angle].
+          Array with: radius with: angle ].
  block value: 2 value: 3.
 \end{verbatim}
 \end{quote}
@@ -345,7 +345,7 @@ message {\tt sample} on each element of a collection one simply
 writes:
 \begin{quote}
 \begin{verbatim}
- aCollection do: [ :each | each sample].
+ aCollection do: [ :each | each sample ].
 \end{verbatim}
 \end{quote}
 It is customary to use the variable name {\tt each} as the
@@ -362,7 +362,7 @@ For example, here is how one can construct an array containing the
 sum of the squares of the integers 1 to 9:
 \begin{quote}
 \begin{verbatim}
- #(1 2 3 4 5 6 7 8 9) collect: [ :each | each squared].
+ #(1 2 3 4 5 6 7 8 9) collect: [ :each | each squared ].
 \end{verbatim}
 \end{quote}
 The result of the code above is the array {\tt \#(1 4 9 16 25 36
@@ -375,7 +375,7 @@ we shall start with an example. Here is how to compute the sum of
 the elements of an array:
 \begin{quote}
 \begin{verbatim}
- anArray inject: 0 into: [ :sum :each | sum + each].
+ anArray inject: 0 into: [ :sum :each | sum + each ].
 \end{verbatim}
 \end{quote}
 The iterator method {\tt inject:into:} is a keyword message. The
@@ -407,8 +407,8 @@ would look as follows:
 
  * aNumberOrPolynomial
     ^aNumberOrPolynomial class = DhbPolynomial
-        ifTrue: [ self productWithNumber: aNumberOrPolynomial]
-        ifFalse:[ self productWithPolynomial: aNumberOrPolynomial]
+        ifTrue: [ self productWithNumber: aNumberOrPolynomial ]
+        ifFalse:[ self productWithPolynomial: aNumberOrPolynomial ]
 \end{verbatim}
 \end{codeExample}
 The code above is a bad example. This is usually what beginners
@@ -431,7 +431,7 @@ as follows:
 \begin{verbatim}
 
  * aNumberOrPolynomial
-    ^aNumberOrPolynomial timesPolynomial: self
+    ^ aNumberOrPolynomial timesPolynomial: self
 \end{verbatim}
 \end{codeExample}
 In fact, the sending of the message {\tt timesPolynomial: self} to
