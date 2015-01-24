@@ -144,7 +144,7 @@ acceptance function and the random variable.  The confidence level
 corresponds to the surface of the shaded areas in the insert in
 the upper right corner of figure \ref{fig:fsnedecorDistr}.
 
-\rubrique{Example}. Here is an example used to investigate the
+\rubrique{Example.} Here is an example used to investigate the
 goodness of the two random number generators discussed in section
 \ref{sec:random}. The collected data are the error of the
 covariance test described in section \ref{sec:random}. The
@@ -236,38 +236,7 @@ method are polymorphic to both classes.
 \input{Smalltalk/Estimation/DhbHistogram(DhbEstimationF)}
 \end{listing}
 
-\subsection{Fisher-Snedecor distribution --- Java implementation}
-\marginpar{Figure \ref{fig:estimationclasses} with the box {\bf
-FisherSnedecorDistribution} grayed.} Listing \ref{lj:Fdist} shows
-the implementation of the Fisher-Snedecor distribution in Java.
-The following code example shows how to perform a $F$-test between
-two sets of experimental measurements.
-\begin{codeExample}
-\label{exj:Ftest}
-\begin{verbatim}
 
- StatisticalMoments mom1 = new StatisticalMoments();
-\end{verbatim}
-\hfil{\tt<\sl Collecting measurements of set 1 into \tt
-mom1>}\hfil
-\begin{verbatim}
- StatisticalMoments mom2 = new StatisticalMoments();
-\end{verbatim}
-\hfil{\tt<\sl Collecting measurements of set 2 into \tt
-mom1>}\hfil
-\begin{verbatim}
- double confidenceLevel = mom1.fConfidenceLevel( mom2);
-\end{verbatim}
-\end{codeExample}
-Two instances of statistical moments (\cf section
-\ref{sec:jrobustmoment}) are created. Experimental data are
-accumulated into each set separately (\cf code example
-\ref{ex:jmoments}). The last line returns the probability in
-percent that the two sets of data have the same standard
-deviation.
-\begin{listing} Java implementation of the Fisher-Snedecor distribution \label{lj:Fdist}
-\input{Java/DhbStatistics/FisherSnedecorDistribution.java}
-\end{listing}
 
 \section{$t$-test and the Student distribution}
 \label{sec:ttest} The $t$-test tries to answer the following
@@ -457,42 +426,6 @@ necessary to define this for that class.
 \input{Smalltalk/Estimation/DhbHistogram(DhbEstimation)}
 \end{listing}
 
-\subsection{Student distribution --- Java implementation}
-\marginpar{Figure \ref{fig:estimationclasses} with the box {\bf
-StudentDistribution} grayed.} Listing \ref{lj:tdist} shows the
-implementation of the Student distribution in Java.  Performing a
-$t$-test between two sets of experimental measurements is very
-similar to performing a $F$-test. In code example \ref{exj:Ftest}
-it suffices to replace the last line with the following:
-\begin{quote}
-\begin{verbatim}
- confidenceLevel = mom1.tConfidenceLevel( mom2);
-\end{verbatim}
-\end{quote}
-This last line returns the probability in percent that the two
-sets of data have the same average provided that the two sets have
-the same standard deviation.
-
-The class {\tt StudentDistribution} is implemented as a subclass
-of {\tt ProbabilityDensityFunction} because its distribution
-function can be computed numerically using the incomplete beta
-function (\cf section \ref{sec:incbeta}).
-
-The private method {\tt symmetricAcceptance} computes the
-symmetric acceptance function defined by equation
-\ref{eq:tsymacc}. This method is used to compute the distribution
-function and the confidence level. The method {\tt
-confidenceLevel} gives the confidence level in percent.
-\begin{listing} Java implementation of the Student distribution \label{lj:tdist}
-\input{Java/DhbStatistics/StudentDistribution.java}
-\end{listing}
-
-\begin{quote}
-{\bf Note:} The method {\tt tConfidenceLevel} for classes {\tt
-StatisticalMoments} and {\tt Histogram} are part of listing
-\ref{lj:genmoments} and \ref{lj:histogram} respectively.
-\end{quote}
-
 \section{$\chi^2$-test and $\chi^2$ distribution}
 \label{sec:chitest} The $\chi^2$-test tries to answer the
 following question: how well a theory is able to predict observed
@@ -635,23 +568,6 @@ method.
 \input{Smalltalk/Statistics/DhbChiSquareDistribution}
 \end{listing}
 
-\subsection{$\chi^2$ distribution --- Java implementation}
-\marginpar{Figure \ref{fig:estimationclasses} with the box {\bf
-ChiSquaredDistribution} grayed.} Listing \ref{lj:chidist} shows
-the implementation of the chi-square distribution in Java. The
-asymptotic form of the distribution has not been implemented. The
-reason is that a constructor method can only return an instance of
-the class it belongs to. The alternative requires to keep the
-asymptotic form in an instance variable and to overload all
-methods of the super class to add a test whether or not the
-computation must be delegated to the asymptotic form. This is
-somewhat tedious. In practice, however, one seldom needs to use
-the $\chi^2$ distribution as a probability density function. Only
-the distribution function is necessary to perform the
-$\chi^2$-test. Therefore, we did not implement an asymptotic form.
-\begin{listing} Java implementation of the $\chi^2$ distribution \label{lj:chidist}
-\input{Java/DhbStatistics/ChiSquareDistribution.java}
-\end{listing}
 
 \subsection{Weighted point implementation}
 \label{sec:weightedPoint} \marginpar{Figure
@@ -732,26 +648,6 @@ class creation method with an explicit name ({\tt fromMoment:}
 \label{ls:weightedPoint}
 \input{Smalltalk/Estimation/DhbWeightedPoint}
 \input{Smalltalk/Estimation/DhbStatisticalMoments(DhbEstimationChi2)}
-\end{listing}
-
-The constructor methods for the Java class {\tt WeightedPoint}
-are:
-\begin{description}
-  \item[(double,double,double)] fundamental method;
-  \item[(double,int)] convenience method 2;
-  \item[(double,double)] convenience method 3;
-  \item[(double,StatisticalMoments)] convenience method 4.
-\end{description}
-Convenience method 1 could not be implemented with a constructor
-method as the type of the arguments is the same as those in the
-fundamental method. So, it was necessary to create a method {\tt
-setError} which must be used in combination with convenience
-method 3 to implement a definition with values and error. A point
-for Smalltalk which makes it even with Java!
-
-\begin{listing} Java implementation of the weighted point class
-\label{lj:weightedPoint}
-\input{Java/DhbEstimation/WeightedPoint.java}
 \end{listing}
 
 \section{$\chi^2$-test on histograms}
@@ -841,7 +737,7 @@ random number generator.
  probDistr := DhbNormalDistribution new.
  histogram := DhbHistogram new.
  histogram freeExtent: true; setDesiredNumberOfBins: 100.
- trials timesRepeat: [ histogram accumulate: probDistr random].
+ trials timesRepeat: [ histogram accumulate: probDistr random ].
  histogram chi2ConfidenceLevelAgainst:
         ( DhbScaledProbabilityDensityFunction histogram: histogram
                                           against: probDistr)
@@ -888,55 +784,6 @@ sections \ref{sec:slsfnonlin} and \ref{sec:smlfhist}).
 
 \begin{listing} Smalltalk implementation of $\chi^2$-test on histograms \label{ls:chitesthist}
 \input{Smalltalk/Estimation/DhbHistogram(DhbEstimationChi2)}
-\end{listing}
-
-\subsection{$\chi^2$-test on histograms --- Java implementation}
-\marginpar{Figure \ref{fig:estimationclasses} with the box {\bf
-ScaledProbabilityDistribution} grayed.} Listing
-\ref{lj:scaleddist} shows the implementation of a scaled
-probability density function in Java. Examples of use are given in
-sections \ref{sec:jlsfnonlin} and \ref{sec:jmlfhist}. Here is a
-simple example showing how to compute a $\chi^2$-confidence level
-to estimate the goodness of a random number generator.
-\begin{codeExample}
-\label{exj:chitest}
-\begin{verbatim}
-
- NormalDistribution probDistr = new NormalDistribution();
- Histogram histogram = new Histogram( 50, 100);
- histogram.setGrowthAllowed();
- for( int i = 0; i < 5000; i++ )
-    histogram.accumulate( probDistr.random());
- double chiCL = histogram.chi2ConfidenceLevelAgainst(
-        new DhbScaledProbabilityDensityFunction
-                (histogram,probDistr));
-\end{verbatim}
-\end{codeExample}
-The first line creates an instance of a normal distribution with
-average 0 and variance 1. The second line creates an instance of a
-histogram with 100 desired bins and a cache of 50 elements. The
-next line defines that the limits of the histogram can be adjusted
-automatically. The {\tt for} loop accumulate random numbers
-generated according to the normal distribution into the histogram.
-The final statement --- spread over the last three lines ---
-compute the $\chi^2$-confidence level of the histogram's content
-against the normal distribution.
-
-The method {\tt chi2Against} of class {\tt Histogram} evaluates
-the sum of equation \ref{eq:defchitesthist}. The method {\tt
-chi2ConfidenceLevelAgainst} in the same class calculates the
-confidence level of the $\chi^2$-test. The code of these two
-methods can be found in listing \ref{ls:histogram}.
-
-The class {\tt ScaledProbabilityDensityFunction} has two
-constructor methods. The first one takes as arguments the
-probability density function, the total count and the bin width of
-the histogram. The second only takes the probability density
-function and the histogram as arguments.
-
-\begin{listing} Java implementation of a scaled
-probability density function \label{lj:scaleddist}
-\input{Java/DhbStatistics/ScaledProbabilityDensityFunction.java}
 \end{listing}
 
 \section{Definition of estimation}
