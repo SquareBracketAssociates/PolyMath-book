@@ -576,11 +576,7 @@ grayed.} As we shall see in the rest of this chapter, the
 evaluation of equation \ref{eq:defchitest} is performed at many
 places. Thus, it is convenient to create a new class handling this
 type of calculation. The new class is called {\tt
-DhbWeightedPoint} in Smalltalk and {\tt WeightedPoint} in Java. As
-the implementation in both languages are fully identical the two
-classes are described in a common section. An open-minded reader
-will see that, in this case, each language has one shortcoming
-over the other.
+DhbWeightedPoint} in Smalltalk.
 
 \noindent A weighted point has the following instance variables:
 \begin{description}
@@ -1324,11 +1320,6 @@ determined by a least square fit. An estimated polynomial keeps
 the error matrix of the fit is along with the coefficients of the
 fitted polynomial.
 
-\note{The Smalltalk and Java implementations are quite different
-from each other. The reader is advised to read both sections. As
-an exercise, the reader may attempt to write the alternate
-implementation in the desired language.}
-
 \subsection{Polynomial least square fits --- Smalltalk  implementation}
 \marginpar{Figure \ref{fig:estimationclasses} with the boxes {\bf
 PolynomialLeastSquareFit} and {\bf EstimatedPolynomial} grayed.}
@@ -1549,12 +1540,6 @@ and the confidence level of the fit ({\tt confidenceLevel}).
 Another convenience method, {\tt valueAndError} computes the
 prediction of the fit and its estimated error using equation
 \ref{eq:nllserror}.
-
-\note{The details of implementation are quite different between
-Smalltalk and Java. I therefore advise the reader to read both.
-Some are admittedly arbitrary, some are caused by the specific
-features of each language. A good exercise is to explain the
-reasons for the differences.}
 
 \subsection{Non-linear fit --- Smalltalk implementation}
 \label{sec:slsfnonlin}Listing \ref{ls:lsfnonlin} shows the
