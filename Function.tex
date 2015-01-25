@@ -70,7 +70,7 @@ We shall assume that the reader is familiar with elementary
 concepts about functions, namely derivatives and integrals. We
 shall concentrate mostly on implementation issues.
 
-\label{sec:stFunction}\marginpar{Figure \ref{fig:functions} with
+\marginpar{Figure \ref{fig:functions} with
 the box {\bf AbstractFunction} grayed.} A function in Smalltalk
 can be readily implemented with a block closure. Block closures in
 Smalltalk are treated like objects; thus, they can be manipulated
@@ -245,7 +245,7 @@ polynomials $P\left(x\right)$ and $T\left(x\right)$. The algorithm
 is similar to the algorithm taught in elementary school for
 dividing integers \cite{Knuth2}.
 
-\subsection{Polynomial --- General implementation}
+\subsection{Polynomial --- Smalltalk implementation}
 As we have seen a polynomial is uniquely defined by its
 coefficients. Thus, the creation of a new polynomial instance must
 have the coefficients given. Our implementation assumes that the
@@ -273,8 +273,7 @@ polynomials or between a number and a polynomial. In short, double
 dispatching allows one to identify the correct method based on the
 type of the two arguments.
 
-\subsection{Polynomial --- Smalltalk implementation}
-\label{sec:stPolynomial} \marginpar{Figure \ref{fig:functions}
+\marginpar{Figure \ref{fig:functions}
 with the box {\bf Polynomial} grayed.} Being a special case of a
 function a polynomial must of course implement the behavior of
 functions as discussed in section \ref{sec:stFunction}. Here is a
@@ -582,7 +581,6 @@ Smalltalk implementation of the Error function
 \input{Smalltalk/FunctionEvaluation/DhbErfApproximation}
 \end{listing}
 
-
 \section{Gamma function}
 The gamma function is used in many mathematical functions. In this
 book, the gamma function is needed to compute the normalization
@@ -790,8 +788,5 @@ Smalltalk implementation of the beta function
 \label{ls:betafunc}
 \input{Smalltalk/FunctionEvaluation/Number(DhbBetaFunction).tex}
 \end{listing}
-
-
-
 
 \ifx\wholebook\relax\else\end{document}\fi
