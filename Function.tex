@@ -45,9 +45,7 @@ areas of mathematics they are implemented as library functions ---
 such as a sine, log or exponential --- instead of using the
 general function formalism described in the first section.
 
-The two language implementations are quite different because the
-concepts are implemented at a very low level. Figure
-\ref{fig:functions} shows the diagram of the Smalltalk classes
+Figure \ref{fig:functions} shows the diagram of the Smalltalk classes
 described in this chapter.
 \begin{figure}
 \center\psfig{figure=Figures/FunctionS.eps, width=10cm}
@@ -58,16 +56,6 @@ Here we have used special notations to indicate that the functions
 are implemented as library functions. The functions are
 represented by oval and arrows shows which class is used to
 implement a function for the class {\tt Number}.
-
-Figure \ref{fig:functionj} shows the diagram of the Java classes
-described in this chapter.
-\begin{figure}
-\center\psfig{figure=Figures/FunctionS.eps, width=10cm}
-\caption{Java classes related to functions} \label{fig:functionj}
-\end{figure}
-The strangeness of the box for the {\tt NormalDistribution} class
-indicates that only the variables and methods relevant to this
-chapter are shown here. Both variables and methods are static.
 
 \section{Function concept}
 \label{sec:function}
@@ -399,8 +387,7 @@ supplied arguments. Double dispatching is explained in section
 
 \note{Because Smalltalk is a dynamically typed language, our
 implementation of polynomial is also valid for polynomials with
-complex coefficients. This is not the case in Java which requires
-explicit typing.}
+complex coefficients.}
 
 \begin{listing}
 Smalltalk implementation of the polynomial class
