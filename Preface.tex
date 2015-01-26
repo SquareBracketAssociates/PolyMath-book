@@ -1,34 +1,37 @@
 \ifx\wholebook\relax\else
 \documentclass[twoside]{book}
-\usepackage[active]{srcltx}
-%\usepackage[LY1]{em}
 \input{DhbDefinitions}
 \begin{document}
 \fi
 
-\begin{titlepage}
-\hbox{\/}\vspace{12 ex} {\Huge \bf About this version}
 
-\vspace{10 ex}
+\chapter*{About this version}
+
 We would like to thank Didier Besset for his great book and for his gift of the source and implementation to the community. 
 
 
-This version is a version without the Java implementation and Java reference. Our goal is to make this book slimmer and easier to read. Check the full version available at \textsf{http://https://github.com/SquareBracketAssociates/\-ArchiveOONumericalMethod/tree/master/NumericalMethods} if you want to get both the Java and Smalltalk implementations.
+This is an abridged version of Didier's book, without the Java implementation and reference; our goal is to make the book slimmer and easier to read.
+The implementation presented in this book is part of the SciSmalltalk library.
+Both versions of the book are now maintained under open-source terms and are available at the following URLs:
 
-The implementation presented in this book is part of the SciSmalltalk library available at
-\textsf{https://github.com/SergeStinckwich/SciSmalltalk}. 
+\begin{itemize}
+\item Abridged version (this book)\\
+  \url{https://github.com/SquareBracketAssociates/NumericalMethods}
+\item Archive of the original book, with code in both Java and Smalltalk\\
+  \url{https://github.com/SquareBracketAssociates/ArchiveOONumericalMethods}
+\item SciSmalltalk library
+  \url{https://github.com/SergeStinckwich/SciSmalltalk}
+\end{itemize}
+
+Both this and the full version are maintained by St\'ephane Ducasse and Serge Stinckwich.
+Remember that we are all Charlie.
+
+\bigskip\noindent
+--- 28 January 2015
 
 
-This version and the full version are maintained by S. Ducasse and S. Stinckwich.
-Remember that we are all Charly.
 
-\vspace{5 ex}
-28 January 2015.
-\end{titlepage}
-
-
-\begin{titlepage}
-\hbox{\/}\vspace{12 ex} {\Huge \bf Preface}
+\chapter*{Preface}
 
 \vspace{10 ex} \begin{flushright} {\sl Si je savais une chose
 utile \`{a} ma nation qui f\^{u}t ruineuse \`{a} une autre,\\je ne
@@ -38,10 +41,8 @@ homme,\\et que je ne suis Fran\c cais que par hasard.}\footnote{If I
 knew some trade useful to my country, but which would ruin
 another, I would not disclose it to my ruler, because I am a man
 before being French, because I belong to mankind while I am French
-only by a twist of fate.}\\ Charles de Montesquieux
+only by a twist of fate.}\\ Charles de Montesquieu
 \end{flushright}
-
-
 
 
 \vspace{8 ex} When I first encountered object-oriented
@@ -95,7 +96,8 @@ generality. The reader should study each example regardless of the
 field of application and concentrate on the universal aspects of
 it.
 
-\rubrique{Acknowledgements} The author wishes to express his
+\rubrique{Acknowledgements}%
+The author wishes to express his
 thanks to the many people with whom he had interactions about the
 object-oriented approach --- Smalltalk and Java in particular ---
 on the various electronic forums. One special person is Kent Beck
@@ -109,7 +111,7 @@ A special mention goes to Prof. Donald Knuth for being an
 inspiration for me and many other programmers with his series of
 books {\sl The Art of Computer Programming}, and for making this
 wonderful typesetting program \TeX. This present book was typeset
-with \TeX and \LaTeX.
+with \TeX{} and \LaTeX.
 
 Furthermore, I would like to give credit to a few people without
 whom this present book would never have been published. First,
@@ -131,5 +133,5 @@ only readable but entertaining.
 
 \vspace{5 ex}\relboxr{1}{Genolier, 11 April 2000}
 
-\end{titlepage}
+
 \ifx\wholebook\relax\else\end{document}\fi

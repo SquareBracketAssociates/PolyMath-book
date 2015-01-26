@@ -1,71 +1,33 @@
 \documentclass[twoside]{book}
-\usepackage{url}
 
-\usepackage[active]{srcltx}
-%\usepackage[LY1]{fontenc} "cela change le printing du code et si on l'utilise le code est affiche en times normal"
-%\usepackage{listing}
 \input{DhbDefinitions}
 \let\wholebook=\relax
-%\renewcommand{\baselinestretch}{2} % to produce double-spaced reference document
-%\renewcommand{\psfig}[1]{{ }}% to suppress references to figures
+
+\title{Object-Oriented Implementation \linebreak
+  of Numerical Methods\linebreak
+  An Introduction with Smalltalk}
+\author{Didier H. Besset \\
+  Maintained by S. Ducasse and S. Stinckwich}
 
 \begin{document}
-\title{\LARGE \textbf{Object-Oriented Implementation of \linebreak Numerical Methods\linebreak
- An Introduction with Smalltalk}}
-\author{Didier H. Besset \\ Maintained by S. Ducasse and S. Stinckwich}
-\maketitle \pagenumbering{roman}
+\frontmatter
+\maketitle
 
 
-\makeatletter
-\def\url@leostyle{%
-  \@ifundefined{selectfont}{\def\UrlFont{\sf}}{\def\UrlFont{\sffamily}}}
-\makeatother
-% Now actually use the newly defined style.
-\urlstyle{leo}
-
-%=================================================================
-~ % force the vfill
-\vfill
-\begin{footnotesize}
-\setlength{\parindent}{0pt}
-This book is available as a free download from \url{https://github.com/SquareBracketAssociates/NumericalMethods}.\\[1cm]
-
-Copyright \copyright~2001, 2015 by Didier H. Besset.\\[1cm]
-
-The contents of this book are protected under Creative Commons Attribution-ShareAlike 3.0 Unported license.
-
-\emph{You are free:}
-\begin{description}
-  \item[to Share] \,---\, to copy, distribute and transmit the work
-  \item[to Remix] \,---\, to adapt the work
-\end{description}
-\emph{Under the following conditions:}
-\begin{description}
-  \item[Attribution.] You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).
-  \item[Share Alike.] If you alter, transform, or build upon this work, you may distribute the resulting work only under the same, similar or a compatible license.
-\end{description}
-\begin{itemize}
-  \item For any reuse or distribution, you must make clear to others the license terms of this work. The best way to do this is with a link to this web page:
-  \url{creativecommons.org/licenses/by-sa/3.0/}
-  \item Any of the above conditions can be waived if you get permission from the copyright holder.
-  \item Nothing in this license impairs or restricts the author's moral rights.
-\end{itemize}
-\raisebox{-0.25cm}{\includegraphics[width=2cm]{Figures/CreativeCommons-BY-SA}}\quad
-\parbox{\textwidth}{
-	Your fair dealing and other rights are in no way affected by the above.\\
-	This is a human-readable summary of the Legal Code (the full license):\\
-	\url{creativecommons.org/licenses/by-sa/3.0/legalcode}}\\[1cm]
-Published by Square Bracket Associates, Switzerland.\\
-% ISBN 978-3-9523341-0-2\\
-First Edition, 2001
-\end{footnotesize}
-\vfill
+\input{Colophon}
 
 
 \input{Preface} %no Java
-{\parskip 0pt \tableofcontents \listoffigures \listoftables
-%\listoflistings
-} \cleardoublepage\pagenumbering{arabic}
+{\parskip 0pt
+  \tableofcontents
+  \listoffigures
+  \listoftables
+  % \listoflistings
+}
+\cleardoublepage
+
+\mainmatter
+
 \input{Introduction} % no java :)
 \input{Function} % no java :)
 \input{Interpolation} % no java :)

@@ -1,3 +1,11 @@
+\usepackage{url}
+\makeatletter
+\def\url@leostyle{%
+  \@ifundefined{selectfont}{\def\UrlFont{\sf}}{\def\UrlFont{\sffamily}}}
+\makeatother
+% Now actually use the newly defined style.
+\urlstyle{leo}
+
 \usepackage{graphicx}
 \def\etc{{\it etc}}
 \def\eg{{\it e.g.}}
