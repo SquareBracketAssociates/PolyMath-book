@@ -272,12 +272,12 @@ symmetric matrix for any matrix ${\bf A}$. If the matrix ${\bf A}$
 represented in equation \ref{eq:matrixcomp} is symmetric, we have
 ${\bf D}={\bf C}^{\mathop{\rm T}}$.
 
-\subsection{Vector and matrix --- Smalltalk  implementation}
+\subsection{Vector and matrix implementation}
 \label{sec:slinearalgebra} \marginpar{Figure
 \ref{fig:linearalgebraclasses} with the box {\bf Vector} and {\bf
 Matrix} grayed.} Listings \ref{ls:vector} and \ref{ls:matrix} show
-respectively the implementation of vectors and matrices as
-Smalltalk classes. A special implementation for symmetric matrices
+respectively the implementation of vectors and matrices. 
+A special implementation for symmetric matrices
 is shown in listing \ref{ls:symmatrix}.
 
 The public interface is designed as to map itself as close as
@@ -321,7 +321,7 @@ up to the case of the operands.
 The next assignment redefines the vector ${\bf v}$ as the product
 of the matrix ${\bf A}$ with the vector ${\bf u}$. It is now a
 2-dimensional vector. Here again the correspondence between the
-Smalltalk and the mathematical expression is direct.
+Pharo and the mathematical expression is direct.
 
 The last two lines compute the vector ${\bf w}$ as the transpose
 product with the matrix ${\bf a}$. The result of both line is the
@@ -342,8 +342,8 @@ in equations \ref{eq:vectorsum} to \ref{eq:matrixproduct} are left
 as an exercise to the reader.
 
 \rubrique{Implementation} A vector is akin to an instance of the
-Smalltalk class {\tt Array}, for which mathematical operations
-have been defined. Thus, a vector in Smalltalk can be implemented
+Pharo class {\tt Array}, for which mathematical operations
+have been defined. Thus, a vector in Pharo can be implemented
 directly as a subclass of the class {\tt Array}. A matrix is an
 object whose instance variable is an array of vectors.
 
@@ -403,7 +403,7 @@ of addition can make a big difference in performance since many
 large short-lived objects put a heavy toll of the garbage
 collector.
 
-\begin{listing} Vector class in Smalltalk \label{ls:vector}
+\begin{listing} Vector class in Pharo \label{ls:vector}
 \input{Smalltalk/LinearAlgebra/DhbVector}
 \end{listing}
 
@@ -443,10 +443,6 @@ The method {\tt square} implements the product of the transpose of
 a matrix with itself. This construct is used in several algorithms
 presented in this book.
 
-The reader should compare the Smalltalk code with the Java code.
-The Java implementation makes the index management explicit. Since
-there are no iterator methods in Java, there is no other choice.
-
 \begin{quotation}
 \noindent {\bf Note:} The presented matrix implementation is
 straightforward. Depending on the problem to solve, however, it is
@@ -462,7 +458,7 @@ multiple dispatching are explained in sections
 \ref{sec:doubledisp} and \ref{sec:multipledisp}. The reader who is
 not familiar with multiple dispatching should trace down a few
 examples between simple matrices using the debugger.
-\begin{listing} Matrix classes in Smalltalk \label{ls:matrix}
+\begin{listing} Matrix classes \label{ls:matrix}
 \input{Smalltalk/LinearAlgebra/DhbMatrix}
 \end{listing}
 Listing \ref{ls:symmatrix} shows the implementation of the class
@@ -475,7 +471,7 @@ ensure that the addition or subtraction of two symmetric matrices
 yields a symmetric matrix whereas the same operations between a
 symmetric matrix and a normal matrix yield a normal matrix.
 Product requires quadruple dispatching.
-\begin{listing} Symmetric matrix classes in Smalltalk \label{ls:symmatrix}
+\begin{listing} Symmetric matrix classes \label{ls:symmatrix}
 \input{Smalltalk/LinearAlgebra/DhbSymmetricMatrix}
 \end{listing}
 
@@ -690,7 +686,7 @@ either a matrix and a vector or an array of arrays and an array.
 The class implementing Gaussian elimination has the following
 instance variables:
 \begin{description}
-  \item[\tt rows] an array or a vector whose elements contain the rows of the
+  \item[\texttt{rows}] an array or a vector whose elements contain the rows of the
   matrix ${\bf S}$.
   \item[\tt solutions] an array whose elements contain the solutions of the
   system corresponding to each constant vector.
@@ -708,18 +704,14 @@ vector. If the solution for the specified index has not yet been
 computed, backward substitution is performed and the result is
 stored in the solution array.
 
-\subsection{Linear equations --- Smalltalk implementation}
-Listing \ref{ls:lineqs} shows the class {\tt
-DhbLinearEquationSystem} implementing Gaussian elimination in
-Smalltalk.
+\subsection{Linear equation implementation}
+Listing \ref{ls:lineqs} shows the class {\tt DhbLinearEquationSystem} implementing Gaussian elimination.
 
-To solve the system of equations \ref{eq:lineqex} using Gaussian
-elimination, one needs to write to evaluate the following
-expression:
+To solve the system of equations \ref{eq:lineqex} using Gaussian elimination, one needs to write the following expression:
 \begin{codeExample}
 \begin{verbatim}
 
- ( DhbLinearEquationSystem equations: #( (3 2 4)
+ (DhbLinearEquationSystem equations: #( (3 2 4)
                                    (2 -5 -1)
                                    (1 -2 2))
                       constant: #(16 6 10)
@@ -750,8 +742,8 @@ In this case, the creation method differs in that the two constant
 vectors are supplied in an array columns by columns. Similarly,
 the two solutions must be fetched one after the other.
 
-The class {\tt DhbLinearEquationSystem} The class method {\tt
-equations:constants:} allows to create a new instance for a given
+The class {\tt DhbLinearEquationSystem}. The class method {\tt
+equations:constants:} allows one to create a new instance for a given
 matrix and a series of constant vectors.
 
 The method {\tt solutionAt:} returns the solution for a given
@@ -779,7 +771,7 @@ special value --- the integer 0 --- as a flag to prevent
 attempting Gaussian elimination a second time. Then, the value
 {\tt nil} is returned to represent the non-existent solution.
 
-\begin{listing} Smalltalk implementation of a system of linear equations
+\begin{listing} Implementation of a system of linear equations
 \label{ls:lineqs}
 \input{Smalltalk/LinearAlgebra/DhbLinearEquationSystem}
 \end{listing}
@@ -978,9 +970,9 @@ LUP decomposition has been performed. If not, LUP decomposition is
 attempted. Then, the methods implementing the forward and backward
 substitution algorithms are called in succession.
 
-\subsection{LUP decomposition --- Smalltalk implementation}
+\subsection{LUP decomposition}
 Listing \ref{ls:lup} shows the methods of the class {\tt
-DhbLUPDecomposition} implementing LUP decomposition in Smalltalk.
+DhbLUPDecomposition} implementing LUP decomposition.
 
 To solve the system of equations \ref{eq:lineqex} using LUP
 decomposition, one needs to write to evaluate the following
@@ -1015,17 +1007,12 @@ performed; then the solution is computed using forward and
 backward substitutions. When the second solution is fetched, only
 forward and backward substitutions are performed.
 
-The default creation class method {\tt new} has been overloaded to
-prevent creating an object without initialized instance variables.
 The proper creation class method, {\tt equations:}, takes an array
 of arrays, the components of the matrix ${\bf A}$. When a new
 instance is initialized the supplied coefficients are copied into
 the instance variable {\tt rows} and the parity of the permutation
 is set to one. Copying the coefficients is necessary since the
-storage is reused during the decomposition steps. In addition,
-some Smalltalk protect constants such as the one used in the code
-examples above. In this later case, copying is necessary to
-prevent a read-only exception.
+storage is reused during the decomposition steps. 
 
 A second creation method {\tt direct:} allows the creation of an
 instance using the supplied system's coefficients directly. The
@@ -1042,7 +1029,7 @@ this occurs, the instance variable {\tt permutation} is set to the
 integer 0 to flag the singular case. Then, any subsequent calls to
 the method {\tt solve:} returns {\tt nil}.
 
-\begin{listing} Smalltalk implementation of the LUP decomposition
+\begin{listing} Implementation of the LUP decomposition
 \label{ls:lup}
 \input{Smalltalk/LinearAlgebra/DhbLUPDecomposition}
 \end{listing}
@@ -1103,12 +1090,12 @@ the matrix of the LUP decomposition object and multiplies the
 product by the parity of the permutation to obtain the final
 result.
 
-\subsection{Computing the determinant of matrix --- Smalltalk implementation}
+\subsection{Computing the determinant of matrix implementation}
 Listing \ref{ls:determinant} shows the methods of classes {\tt
 DhbMatrix} and {\tt DhbLUPDecomposition} needed to compute a
 matrix determinant.
 
-\begin{listing} Smalltalk methods to compute a matrix determinant \label{ls:determinant}
+\begin{listing} Methods to compute a matrix determinant \label{ls:determinant}
 \input{Smalltalk/LinearAlgebra/DhbMatrix(DhbMatrixDeterminant)}
 \input{Smalltalk/LinearAlgebra/DhbLUPDecomposition(DhbMatrixDeterminant)}
 \end{listing}
@@ -1276,9 +1263,9 @@ inverse can be computed with the CRL algorithm. In practice,
 however. this technique is plagued with rounding errors and should
 be used with caution (\cf section \ref{sec:matrixrounding}).
 
-\subsection{Matrix inversion --- Smalltalk implementation}
+\subsection{Matrix inversion implementation}
 Listing \ref{ls:inversion} shows the complete implementation in
-Smalltalk. It contains additional methods for the classes {\tt
+Pharo. It contains additional methods for the classes {\tt
 DhbMatrix} and {\tt DhbSymmetricMatrix}.
 
 For symmetric matrices the method {\tt inverse} first tests
@@ -1301,7 +1288,7 @@ In both cases there is no error handling. Inverting a singular
 matrix produces an arithmetic error which must be handled by the
 calling method.
 
-\begin{listing} Smalltalk implementation of matrix inversion \label{ls:inversion}
+\begin{listing}  Implementation of matrix inversion \label{ls:inversion}
 \input{Smalltalk/LinearAlgebra/DhbSymmetricMatrix(DhbMatrixInversion)}
 \input{Smalltalk/LinearAlgebra/DhbMatrix(DhbMatrixInversion)}
 \end{listing}
@@ -1496,8 +1483,7 @@ which can be used to compute the next largest eigenvalue, by
 computing a new matrix as described in equation
 \ref{eq:eigennext}.
 
-\subsection{Finding the largest eigenvalue --- Smalltalk
-implementation} Listing \ref{ls:eigenlarge} shows the Smalltalk
+\subsection{Finding the largest eigenvalue  implementation} Listing \ref{ls:eigenlarge} shows the Pharo
 implementation of the  class {\tt DhbLargestEigenValueFinder},
 subclass of the class {\tt DhbIterativeProcess}.
 
@@ -1528,7 +1514,7 @@ instance of {\tt DhbLargestEigenValueFinder} is obtained from the
 first one. The next largest eigenvalue and its eigenvector are
 retrieved from this new instance exactly as before.
 
-\begin{listing} Smalltalk implementation of the search for the largest eigenvalue
+\begin{listing} Implementation of the search for the largest eigenvalue
 \label{ls:eigenlarge}
 \input{Smalltalk/LinearAlgebra/DhbLargestEigenValueFinder}
 \end{listing}
@@ -1794,8 +1780,8 @@ sorted eigenvalues plus the transformation matrix ${\bf O}$
 containing the eigenvectors. Extracting these results is language
 dependent.
 
-\subsection{Jacobi's algorithm --- Smalltalk implementation}
-Listing \ref{ls:jacobi} shows the Smalltalk implementation of
+\subsection{Jacobi's algorithm implementation}
+Listing \ref{ls:jacobi} shows the implementation of
 Jacobi's algorithm.
 
 The following code example shows how to use the class to find the
@@ -1840,7 +1826,7 @@ eigenvectors in the same order. The code example shown at the
 beginning of this section shows how to obtain the eigenvectors
 from the matrix.
 
-\begin{listing} Smalltalk implementation of Jacobi's algorithm \label{ls:jacobi}
+\begin{listing} Implementation of Jacobi's algorithm \label{ls:jacobi}
 \input{Smalltalk/LinearAlgebra/DhbJacobiTransformation}
 \end{listing}
 
