@@ -43,23 +43,12 @@ derivatives of the goal function respective to all parameters, a
 tedious but manageable job. In most cases, however, the goal
 function cannot always be expressed analytically.
 
-The classes described in this chapter are different in Smalltalk
-and in Java. Therefore we present two class diagrams: figure
-\ref{fig:soptimizingclasses} shows the Smalltalk class diagram and
-figure \ref{fig:joptimizingclasses} shows the Java class diagram.
-The main reason for the difference is the strong typing imposed in
-Java preventing the reuse of instance variables.
+Figure \ref{fig:soptimizingclasses} shows the Smalltalk class diagram.
 \begin{figure}
 \centering\includegraphics[width=11cm]{Figures/Optimizing}
 \caption{Smalltak classes used in optimization}
 \label{fig:soptimizingclasses}
 \end{figure}
-\begin{figure}
-\centering\includegraphics[width=11cm]{Figures/OptimizingJ}
-\caption{Java classes used in optimization}
-\label{fig:joptimizingclasses}
-\end{figure}
-
 
 \section{Introduction}
 \label{sec:optimum} Let us state the problem is general term. Let
@@ -247,9 +236,7 @@ is better than another. The method {\tt betterThan} can be used in
 all parts of the optimizing algorithms to find out which point is
 the optimum so far. In algorithms working in multiple dimensions,
 the method {\tt betterThan} is also used to sort the points from
-the best to the worst. In Java, the architecture is a little more
-complex because of typing requirements, but the basic design
-concept is the same.
+the best to the worst.
 
 A convenience instance creation method allows to create instances
 for a given function with a given argument. The instance is then
@@ -976,9 +963,7 @@ following methods:
 Finally the chromosome manager must also implement methods
 performing each of the genetic operations: reproduction, mutation
 and crossover. The Smalltalk implementation supplies methods that
-returns a new individual; the Java implementation supplies methods
-that add a new individual to the population. The reason for this
-difference come from the static typing requirements of Java.
+returns a new individual.
 
 The genetic optimizer is the object implementing the genetic
 algorithm proper. It is a subclass of the iterative process class
@@ -1183,8 +1168,7 @@ optimizer. As a consequence, there will only be a single
 iteration.
 
 Listing \ref{ls:optimizergeneral} shows the implementation in
-Smalltalk. Listing \ref{lj:optimizergeneral} gives the code for
-the Java implementation. At this point we shall abstain from
+Smalltalk. At this point we shall abstain from
 commenting the code as the reader should have no more need for
 such thing$\ldots$ Hopefully!
 
