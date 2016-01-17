@@ -906,17 +906,14 @@ covariance clusters can have different shapes since the metric
 adapts itself to the shape of each cluster. As the algorithm
 progresses the metric changes dynamically.
 
-\subsection{Covariance clusters --- General implementation}
 \marginpar{Figure \ref{fig:dataminingclasses} with the boxes {\bf
 CovarianceCluster} grayed.} Covariance clusters need little
 implementation. All tasks are delegated to a Mahalanobis center
 described in section \ref{sec:mahalanobis}. Listing
-\ref{ls:mahacluster} shows the Smalltalk implementation and the
-Java implementation is shown in listing \ref{lj:mahacluster}.
+\ref{ls:mahacluster} shows the Smalltalk implementation.
 
 \begin{listing} Smalltalk covariance cluster \label{ls:mahacluster}
 \input{Smalltalk/DataMining/DhbCovarianceCluster}
 \end{listing}
-
 
 \ifx\wholebook\relax\else\end{document}\fi

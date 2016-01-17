@@ -960,7 +960,7 @@ steps and it is much faster than computing the parity.}.
 \end{description}
 
 The instance variable {\tt permutation} is set to undefined ({\tt
-nil} in Smalltlak, {\tt null} in Java) at initialization time by
+nil} in Smalltalk) at initialization time by
 default. It is used to check whether the decomposition has already
 been made or not.
 
@@ -1075,7 +1075,6 @@ to the rest of the algorithm so that it can be done whether or not
 the determinant is needed . The initial parity is 1. Each
 additional permutation of the rows multiplies the parity by -1.
 
-\subsection{Computing the determinant of matrix --- General implementation}
 Our implementation uses the fact that objects of the class {\tt
 Matrix} have an instance variable in which the LUP decomposition
 is kept. This variable is initialized using lazy initialization:
@@ -1090,7 +1089,6 @@ the matrix of the LUP decomposition object and multiplies the
 product by the parity of the permutation to obtain the final
 result.
 
-\subsection{Computing the determinant of matrix implementation}
 Listing \ref{ls:determinant} shows the methods of classes {\tt
 DhbMatrix} and {\tt DhbLUPDecomposition} needed to compute a
 matrix determinant.
@@ -1099,14 +1097,6 @@ matrix determinant.
 \input{Smalltalk/LinearAlgebra/DhbMatrix(DhbMatrixDeterminant)}
 \input{Smalltalk/LinearAlgebra/DhbLUPDecomposition(DhbMatrixDeterminant)}
 \end{listing}
-
-
-\subsection{Computing the determinant of matrix --- Java implementation}
-The code computing the determinant of a matrix consists of the
-method {\tt determinant} of the class {\tt Matrix} (\cf listing
-\ref{ls:matrix}) and the method {\tt determinant} of the class
-{\tt LUPDecomposition} (\cf listing \ref{lj:lup}).
-
 
 \section{Matrix inversion}
 \label{sec:matrixinversion} The inverse of a square matrix ${\bf

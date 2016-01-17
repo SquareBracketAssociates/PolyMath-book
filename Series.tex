@@ -47,41 +47,19 @@ two examples of application of this framework by implementing two
 functions, which are very important to compute probabilities: the
 incomplete gamma function and the incomplete beta function.
 
-For illustrative purposes, the implementation in Smalltalk is
-using a different architecture from the one used by the Java
-implementation. It should be noted that each implementation could
-have been implemented in the other language. Figure
-\ref{fig:StSeriesClass} shows the class diagram of the Smalltalk
-implementation. Figure \ref{fig:JvSeriesClass} shows the class
-diagram of the Java implementation.
+Figure \ref{fig:StSeriesClass} shows the class diagram of the Smalltalk
+implementation.
 
 \begin{figure}
 \centering\includegraphics[width=11cm]{Figures/SeriesClassDiagram}
 \caption{Smalltalk class diagram for infinite series and continued
 fractions}\label{fig:StSeriesClass}
 \end{figure}
-\begin{figure}
-\centering\includegraphics[width=11cm]{Figures/SeriesClassDiagramJ}
-\caption{Java class diagram for infinite series and continued
-fractions}\label{fig:JvSeriesClass}
-\end{figure}
 
 The Smalltalk implementation uses two general-purpose classes to
 implement an infinite series and a continued fraction
 respectively. Each class then use a \patstyle{Strategy} pattern
 class \cite{GoF} to compute each term of the expansion.
-
-The Java implementation uses two abstract classes to implement an
-infinite series and a continued fraction respectively. Each
-concrete implementation necessitates the creation of a concrete
-subclass.
-
-In spite of the difference in architecture, the reader can verify
-on each class diagram that the number of classes needed for a
-concrete implementation is the same in each case.
-
-An interesting exercise for the reader is to implement the
-architecture presented in Java in Smalltalk and {\it vice versa}.
 
 \section{Infinite series}
 Many functions are defined with an infinite series, that is a sum

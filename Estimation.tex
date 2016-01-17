@@ -594,15 +594,7 @@ The method {\tt chi2Contribution} --- with an added semicolon at
 the end of the name for Smalltalk --- implements the computation
 of one term of the sum in equation \ref{eq:defchitest}. The
 argument of the method is any object implementing the behavior of
-a one-variable function defined in section \ref{sec:function}. In
-Java one can use the same method name to define a similar method
-to compute the terms of the sum of equation
-\ref{eq:defchitestcmp}: in this case, the argument of the method
-is another weighted point. This is not possible in Smalltalk,
-which cannot distinguish the types of the arguments. Thus, for
-Smalltalk the second method must have a different name: {\tt
-chi2ComparisonContribution:}. Here Java marks a point over
-Smalltalk.
+a one-variable function defined in section \ref{sec:function}.
 
 Creating instances of the classes can be done in many ways. The
 fundamental method takes as arguments $x_i$, $y_i$ and the weight

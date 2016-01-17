@@ -1125,30 +1125,30 @@ In the rest of this chapter we shall present the distributions
 used in this book. Other important distributions are presented in
 appendix \ref{ch:distributions}.
 
-\subsection{Probability distributions --- General implementation}
+\subsection{Probability distributions --- Smalltalk implementation}
 \marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\bf
 ProbabilityDensity} and {\bf
 ProbabilityDensityWithUnknownDistribution} grayed.} Table
 \ref{tb:distrgenimpl} shows the description of the public methods
-of the implementations of both languages.
+of the implementation.
 \begin{table}[h]
   \centering
   \caption{Public methods for probability density functions}
   \label{tb:distrgenimpl}
 \vspace{1 ex}
-\begin{tabular}{|l | l | l|} \hline
-  Description & \hfil Smalltalk & \hfil Java \\ \hline
-  $P\left(x\right)$ & {\tt value:} & {\tt value(double)} \\
-  $F\left(x\right)$ & {\tt distributionValue:} & {\tt distributionValue(double)} \\
-  $F\left(x_1,x_2\right)$ & {\tt acceptanceBetween:and:} & {\tt distributionValue(double,double)} \\
-  $F^{-1}\left(x\right)$ & {\tt inverseDistributionValue:} & {\tt inverseDistributionValue(double)} \\
-  $x^{\dag}$ & {\tt random} & {\tt random()} \\
+\begin{tabular}{|l | l |} \hline
+  Description & \hfil Smalltalk \\ \hline
+  $P\left(x\right)$ & {\tt value:} \\
+  $F\left(x\right)$ & {\tt distributionValue:} \\
+  $F\left(x_1,x_2\right)$ & {\tt acceptanceBetween:and:} \\
+  $F^{-1}\left(x\right)$ & {\tt inverseDistributionValue:} \\
+  $x^{\dag}$ & {\tt random} \\
   \hline
-  $\bar{x}$ & {\tt average} & {\tt average()} \\
-  $\sigma^2$ & {\tt variance} & {\tt variance()} \\
-  $\sigma$ & {\tt standardDeviation} & {\tt standardDeviation()} \\
-  skewness & {\tt skewness} & {\tt skewness()} \\
-  kurtosis & {\tt kurtosis} & {\tt kurtosis()} \\
+  $\bar{x}$ & {\tt average} \\
+  $\sigma^2$ & {\tt variance} \\
+  $\sigma$ & {\tt standardDeviation} \\
+  skewness & {\tt skewness} \\
+  kurtosis & {\tt kurtosis} \\
   \hline
 \end{tabular}
 $\dag$ $x$ represents the random variable itself. In other words,
@@ -1174,7 +1174,6 @@ distribution function is also a function, a \patstyle{Adapter}
 must be provided to create a function (as defined in section
 \ref{sec:function}) for the distribution function.
 
-\subsection{Probability distributions --- Smalltalk implementation}
 Listing \ref{ls:probdistr} shows the implementation of a general
 probability density distribution in Smalltalk. The class {\tt
 DhbProbabilityDensity} is an abstract implementation. Concrete
