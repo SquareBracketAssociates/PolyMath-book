@@ -177,17 +177,17 @@ languages) usually fail the inheritance and polymorphism
 requirements.
 \par
 The code implementation of the algorithms presented in this book
-is given in two languages: Smalltalk and Java. Both languages are
-excellent object-oriented languages. I would strongly recommend
-people reading this book to consult the implementation sections of
-both languages regardless of their personal taste of language.
-First, I have made some effort to use of the best feature of each
-language. Second, each implementation has been made independently.
-The fact that the code of each implementation is different shows
-that there is indeed many ways to skin a cat, even when written by
-the same person. Thus, looking seriously at both implementations
-can be quite instructive for someone who wants to progress with
-the object-oriented paradigm.
+is given in Smalltalk, one of the best object-oriented programming language.
+For this book, we are using Pharo\footnote{http://www.pharo.org/}, a modern
+open-source implementation of Smalltalk.
+
+%Both languages are excellent object-oriented languages. I would strongly
+%recommend people reading this book to consult the implementation sections of both languages regardless of their personal taste of language. First, I have
+%made some effort to use of the best feature of each language. Second, each
+%implementation has been made independently. The fact that the code of each
+%implementation is different shows that there is indeed many ways to skin a cat,
+%even when written by the same person. Thus, looking seriously at both
+%implementations can be quite instructive for someone who wants to progress with the object-oriented paradigm.
 
 \section{Dealing with numerical data}
 The numerical methods exposed in this book are all applicable to
@@ -597,7 +597,7 @@ by zero exception and can obtain the correct value. This value of
 the small number has been defined as the square root of the
 smallest number that can be represented on the machine.
 
-\subsection{Computer numerical precision --- General implementation}
+\subsection{Computer numerical precision}
 The computation of the parameters only needs to be executed once.
 We have introduced a specific class to hold the variables
 described earlier and made them available to any object.
@@ -608,7 +608,6 @@ is used while all parameters may not be needed at a given time.
 Methods in charge of computing the parameters are all prefixed
 with the word compute.
 
-\subsection{Computer numerical precision --- Smalltalk implementation}
 Listing \ref{ls:floatmachine} shows the class {\tt
 DhbFloatingPointMachine} responsible of computing the parameters
 of the floating-point representation. This class is implemented as
@@ -617,8 +616,7 @@ only. For that reason no code optimization was made and priority
 is given to readability.
 
 \noindent The computation of the smallest and largest numbers uses
-exceptions\footnote{The code is using the implementation of Visual
-Age For Smalltalk\tm.} to detect the underflow and the overflow.
+exceptions to detect the underflow and the overflow.
 
 \noindent The method {\tt showParameters} can be used to print the
 values of the parameters onto the Transcript window.
@@ -632,7 +630,7 @@ values of the parameters onto the Transcript window.
 \section{Comparing floating point numbers}
 It is very surprising to see how frequently questions about the
 lack of equality between two floating-point numbers are posted on
-the Smalltalk and Java electronic discussion groups. As we have
+the Smalltalk electronic discussion groups. As we have
 seen in section \ref{sec-rounding} one should always expect the
 result of two different computations that should have yielded the
 same number from a mathematical standpoint to be different using a
@@ -668,7 +666,6 @@ numerical precision defined in section \ref{sec:findprecision}. If
 one can determine the precision of each number, then the method
 {\tt relativelyEqual} can be used.
 
-\subsection{Comparing floating point numbers --- Smalltalk code}
 In Smalltalk this means adding a new method to the class Number as
 shown in Listing \ref{ls:fltcompare}.
 
@@ -678,25 +675,18 @@ Comparison of floating point numbers in Smalltalk
 \input{Smalltalk/NumericalPrecision/Number(DhbNumericalPrecision)}
 \end{listing}
 
-\subsection{Comparing floating point numbers --- Java code}
-\label{sec:eqfltjava} In Java the methods have been added to the
-class {\tt DhbMath}. The code of that class is shown in listing
-\ref{lj:floatmachine}.
-
 \section{Speed consideration (to be revisited)}
 \label{sec:speed} Some people may think that implementing
-numerical methods for object-oriented languages such as Smalltalk
-or Java is just a waste of time. Those languages are notoriously
-slow or so they think.
+numerical methods for object-oriented languages such as Smalltalk just a waste
+of time. Those languages are notoriously slow or so they think.
 
 First of all, things should be put in perspective with other
 actions performed by the computer. If a computation does not take
 longer than the time needed to refresh a screen, it does not
 really matter if the application is interactive. For example,
-performing a least square fit to a histogram in Smalltalk and Java
-and drawing the resulting fitted function is usually hardly
-perceptible to the eye on a personal computer using a 200MHz
-Pentium. Thus, even though a C version runs 10 times faster, it
+performing a least square fit to a histogram in Smalltalk and drawing the
+resulting fitted function is usually hardly perceptible to the eye on a personal
+computer. Thus, even though a C version runs 10 times faster, it
 does not make any difference for the end user. The main difference
 comes, however, when you need to modify the code. Object-oriented
 software is well known for its maintainability. As $80\%$ of the
@@ -713,19 +703,19 @@ intermediate results was included in the measurement of the C
 code, otherwise the comparison with object-oriented code would not
 be fair. The Smalltalk code was run under version 4.0 of Visual
 Age\tm for Smalltalk from IBM Corporation using the ENVY benchmark
-tool provided. The Java code was run under version 2.0 of Visual
-Age\tm for Java from IBM Corporation. Elapsed time were measured
+tool provided.
+Elapsed time were measured
 by repeating the measured evaluation a sufficient number of time
 so that the error caused by the CPU clock is less that the last
 digit shown in the final result.
 \begin{table}[h]
-\caption{Compared execution speed between C, Smalltalk and Java}
+\caption{Compared execution speed between C and Smalltalk}
 \label{tb:speed} \vspace{1 ex}
-\begin{tabular}{|l | c r r r|} \hline
-  \hfil {\bf Operation} & {\bf Units} & {\bf C}\hfil & {\bf Smalltalk}\hfil & {\bf Java}\hfil \\ \hline
-  Polynomial $10\th$ degree & msec. & 1.1 & 27.7 & 9.0 \\
-  Neville interpolation (20 points) & msec. & 0.9 & 11.0 & 0.8 \\
-  LUP matrix inversion ($100\times 100$)& sec. & 3.9 & 22.9 & 1.0 \\ \hline
+\begin{tabular}{|l | c r r |} \hline
+  \hfil {\bf Operation} & {\bf Units} & {\bf C}\hfil & {\bf Smalltalk}\hfil \\ \hline
+  Polynomial $10\th$ degree & msec. & 1.1 & 27.7 \\
+  Neville interpolation (20 points) & msec. & 0.9 & 11.0 \\
+  LUP matrix inversion ($100\times 100$)& sec. & 3.9 & 22.9 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -733,19 +723,19 @@ One can see that object-oriented code is quite efficient,
 especially when it comes to complex algorithms: good
 object-oriented code can actually beat up C code.
 
-My early tests with Java, a couple of years ago, were showing that
-Java was 5-10 times slower than C. One can see that vendors did a
-great job in optimizing the generated code and in accelerating the
-virtual machine. I would like to see the same efforts going in
-optimizing Smalltalk. The spectacular improvement of Java shows
-that it is possible. Actually, my early tests made with Visual
-Smalltalk\tm from Digitalk Inc.\footnote{Unfortunately, the future
-of Visual Smalltalk now owned by Cincom Inc. is quite uncertain at
-this time of writing.} were 5 times better.
+%My early tests with Java, a couple of years ago, were showing that
+%Java was 5-10 times slower than C. One can see that vendors did a
+%great job in optimizing the generated code and in accelerating the
+%virtual machine. I would like to see the same efforts going in
+%optimizing Smalltalk. The spectacular improvement of Java shows
+%that it is possible. Actually, my early tests made with Visual
+%Smalltalk\tm from Digitalk Inc.\footnote{Unfortunately, the future
+%of Visual Smalltalk now owned by Cincom Inc. is quite uncertain at
+%this time of writing.} were 5 times better.
 
-Today admittedly, I would not use Smalltalk to build a structural
-analysis program, but Java would certainly be a contender.
-Nevertheless, I have successfully build data mining Smalltalk
+%Today admittedly, I would not use Smalltalk to build a structural
+%analysis program, but Java would certainly be a contender.
+I have successfully build data mining Smalltalk
 applications using {\bf all the code}\footnote{I want to emphasize
 here that all the code of this book is real code, which I have
 used personally in real applications.} presented in this book.
@@ -842,7 +832,7 @@ class within a rectangle with rounded corner represents a class
 already discussed in an earlier chapter; the reference to the
 chapter is written below the class name. Class {\tt
 ClassInOtherChapter} in figure \ref{fig:classDiagram} is such a
-class. To save space, we have used the Java class names and the
+class. To save space, we have used the
 Smalltalk method names. It is quite easy to identify methods
 needing parameters when one uses Smalltalk method names: a
 colon in the middle or at the end of the method name indicates
