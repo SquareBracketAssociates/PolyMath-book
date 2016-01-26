@@ -47,19 +47,20 @@ mining, numerical methods are back on the scene of information
 technologies.
 
 \section{Object-oriented paradigm and mathematical objects}
-In the recent years object-oriented programming --- OOP for short
---- has been welcomed for its ability to represent objects from the
-real world - employees, bank accounts, etc. - inside a computer.
+In recent years object-oriented programming (OOP) has been welcomed for its
+ability to represent objects from the real world (employees, bank accounts,
+etc.) inside a computer.
 Herein resides the formidable leverage of object-oriented
-programming. It turns out that this way of looking at OOP is
-somewhat overstated (as these lines are written). Objects
-manipulated inside an object-oriented program certainly do not
+programming.
+It turns out that this way of looking at OOP is somewhat overstated (as these
+lines are written).
+Objects manipulated inside an object-oriented program certainly do not
 behave like their real world counterparts. Computer objects are
-only models of those of the real world. The UML user guides goes
-further in stating that {\it a model is a simplification of
+only models of those of the real world. The Unified Modeling Language (UML) user
+guide goes further in stating that {\it a model is a simplification of
 reality} and we should emphasize that it is {\sl only that}. OOP
-modeling is so powerful, however, that people tend to forgot about
-it and only think in terms of real world objects.
+modeling is so powerful, however, that people tend to forget about
+it and only think in terms of real-world objects.
 \par
 An area where the behavior of computer objects nearly reproduces
 that of their real-world counterparts is mathematics. Mathematical
@@ -71,7 +72,7 @@ operation can be defined on several entities. For example,
 addition and multiplication are defined for numbers, vectors,
 matrices, polynomials --- as we shall see in this book --- and
 many other mathematical entities. Common properties can be
-established as an abstract concept --- a group \eg --- without the
+established as an abstract concept (\eg a group) without the
 need to specify a concrete implementation. Such concepts can then
 be used to prove a given property for a concrete case. All this
 looks very similar to {\sl class hierarchies}, {\sl methods} and
@@ -81,19 +82,18 @@ Because of these similarities OOP offers the possibility to
 manipulate mathematical objects in such a way that the boundary
 between real objects and their computer models becomes almost
 non-existent. This is no surprise since the structure of OOP
-objects is equivalent  to that of mathematical
-objects\footnote{From the point of view of computer science OOP
-objects are considered as mathematical objects.}. When dealing
-with numerical evaluations the equivalence between mathematical
+objects is equivalent to that of mathematical
+objects\footnote{From the point of view of computer science, OOP
+objects are considered as mathematical objects.}. In numerical evaluations,
+the equivalence between mathematical
 objects and computer objects is almost perfect. One notable
-difference remains, however, namely the finite size of the
-representation for non-integer number in a computer limiting the
+difference remains, however -- namely the finite size of the
+representation for noninteger number in a computer limiting the
 attainable precision. We shall address this important topic in
 section \ref{sec-rounding}.
 \par
-Most numerical algorithms have been invented long before the wide
-spread use of computers. Algorithms were designed to speed up
-human computation and therefore were constructed as to minimize
+Most numerical algorithms have been invented long before the widespread use of computers. Algorithms were designed to speed up
+human computation and therefore were constructed to minimize
 the number of operations to be carried out by the human operator.
 Minimizing the number of operations is the best thing to do to
 speed up code execution.
@@ -102,7 +102,7 @@ One of the most heralded benefits of object-oriented programming
 is code reuse, a consequence, in principle, of the hierarchical
 structure and of inheritance. The last statement is pondered by
 "in principle" since, to date, code reuse of real world objects is
-still far from being common place.
+still far from being commonplace.
 \par
 For all these reasons, this book tries to convince you that using
 object-oriented programming for numerical evaluations can exploit
@@ -111,7 +111,7 @@ different algorithms. Such a high degree of reuse yields very
 concise code. Not surprisingly, this code is quite efficient and,
 most importantly, highly maintainable. Better than an
 argumentation, we show how to implement some numerical algorithms
-selected among those which we think are most useful for the areas
+selected among those that, in my opinion, are most useful for the areas
 where object-oriented software is used primarily: finance,
 medicine and decision support.
 
@@ -131,10 +131,10 @@ to say that all products bearing a name with the prefix {\it
 Visual} are not object-oriented.}. Visual programming is something
 entirely different from object-oriented programming.
 \par
-Object-oriented is something different, not intrinsically linked
+Object-oriented is not intrinsically linked
 with the user interface. Recently, object-oriented techniques
 applied to user interfaces have been widely exposed to the public,
-hence the confusion. There are 3 properties, which are considered
+hence the confusion. Three properties are considered
 essential for object-oriented software:
 \begin{enumerate}
 \item data encapsulation,
@@ -154,7 +154,7 @@ be modified without impacting the application, as long as the
 public methods are kept identical.
 \par
 {\it Class hierarchy and inheritance} is the keystone
-implementation of any object-oriented system. A class is a
+implementation of any object-oriented system. {\it A class} is a
 description of all properties of all objects of the same type.
 These properties can be structural (static) or behavioral
 (dynamic). Static properties are mostly described with instance
