@@ -58,7 +58,7 @@ represented by oval and arrows shows which class is used to
 implement a function for the class {\tt Number}.
 
 \section{Function -- Smalltalk implementation}
-\label{sec:function}
+\label{sec:stFunction}
 A mathematical function is an object
 associating a value to a variable. If the variable is a single
 value one talks about a one variable function. If the variable is
@@ -256,7 +256,7 @@ argument. This methods implements equation \ref{eq:horner}.
 The methods {\tt derivative} and {\tt integral} return each a new
 instance of a polynomial. The method {\tt integral:} must have an
 argument specifying the value of the integral of the polynomial at
-0. A convenience {\tt integral} method without argument is
+0. A convenience {\tt integral} method without a<rgument is
 equivalent to call the method {\tt integral} with argument 0.
 
 The implementation of polynomial arithmetic is rarely used in
@@ -271,10 +271,10 @@ dispatching allows one to identify the correct method based on the
 type of the two arguments.
 
 \marginpar{Figure \ref{fig:functions}
-with the box {\bf Polynomial} grayed.} Being a special case of a
-function a polynomial must of course implement the behavior of
-functions as discussed in section \ref{sec:stFunction}. Here is a
-code example on how to use the class {\tt DhbPolynomial}.
+with the box {\bf Polynomial} grayed.}
+Being a special case of a function a polynomial must of course implement the behavior of
+functions as discussed in section \ref{sec:stFunction}.
+Here is a code example on how to use the class {\tt DhbPolynomial}.
 \begin{codeExample}
 \begin{verbatim}
 
