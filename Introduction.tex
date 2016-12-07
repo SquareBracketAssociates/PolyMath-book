@@ -878,24 +878,23 @@ this more ancient convention. In fact, requiring the use of {\tt
 default} amounts to reveal to the client the details of
 implementation used by the class. This is in clear contradiction
 with the principle of hiding the implementation to the external
-world. Thus, singleton classes in all code presented in this book
-are obtained by sending the method {\tt new} to the class. A
-method named {\tt default} is reserved for the very semantic of
+world.
+Thus, singleton classes in all code presented in this book
+are obtained by sending the method {\tt new} to the class.
+A method named {\tt default} is reserved for the very semantic of
 the word default: the instance returned by these methods is an
 instance initialized with some default contents, well specified.
 Whether or not the instance is a singleton is not the problem of
 the client application.
 
-
-
-\section{Road map}
-This last section of the introduction describes the road map of
+\section{Roadmap}
+This last section of the introduction describes the roadmap of
 the algorithms discussed in the book chapter by chapter. Figure
 \ref{fig:roadmap} shows a schematic view of the major classes
 discussed in this book together with their dependency relations.
 \begin{figure}
 \centering\includegraphics[width=13cm]{Figures/Roadmap}
-\caption{Book road map} \label{fig:roadmap}
+\caption{Book roadmap} \label{fig:roadmap}
 \end{figure}
 In this figure, abstract classes are represented with an ellipse,
 concrete classes with a rectangle. Dependencies between the
