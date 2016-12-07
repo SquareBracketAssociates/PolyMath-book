@@ -274,17 +274,17 @@ type of the two arguments.
 with the box {\bf Polynomial} grayed.}
 Being a special case of a function a polynomial must of course implement the behavior of
 functions as discussed in section \ref{sec:stFunction}.
-Here is a code example on how to use the class {\tt DhbPolynomial}.
+Here is a code example on how to use the class {\tt PMPolynomial}.
 \begin{codeExample}
 \begin{verbatim}
 
  | polynomial |
- polynomial := DhbPolynomial coefficients: #(2 -3 1).
+ polynomial := PMPolynomial coefficients: #(2 -3 1).
  polynomial value: 1.
 \end{verbatim}
 \end{codeExample}
 The code above creates an instance of the class {\tt
-DhbPolynomial} by giving the coefficient of the polynomial. In
+PMPolynomial} by giving the coefficient of the polynomial. In
 this example the polynomial $x^2-3x+2$. The final line of the code
 computes the value of the polynomial at $x=1$.
 
@@ -294,8 +294,8 @@ form.
 \begin{verbatim}
 
  | pol1 pol2 polynomial polD polI |
- pol1:= DhbPolynomial coefficients: #(2 -3 1).
- pol2:= DhbPolynomial coefficients: #(-3 7 2 1).
+ pol1:= PMPolynomial coefficients: #(2 -3 1).
+ pol2:= PMPolynomial coefficients: #(-3 7 2 1).
  polynomial := pol1 * pol2.
  polD := polynomial derivative.
  polI := polynomial integral.
@@ -309,16 +309,16 @@ two polynomials, respectively the derivative and the integral of
 the polynomial created in the third line.
 
 Listing \ref{ls:polynomial} shows the Smalltalk implementation of
-the class {\tt DhbPolynomial}.
+the class {\tt PMPolynomial}.
 
-A beginner may have been tempted to make {\tt DhbPolynomial} a
+A beginner may have been tempted to make {\tt PMPolynomial} a
 subclass of {\tt Array} to spare the need for an instance
 variable. This is of course quite wrong. An array is a subclass of
 {\tt Collection}. Most methods implemented or inherited by {\tt
 Array} have nothing to do with the behavior of a polynomial as a
 mathematical entity.
 
-Thus, a good choice is to make the class {\tt DhbPolynomial} a
+Thus, a good choice is to make the class {\tt PMPolynomial} a
 subclass of Object. It has a single instance variable, an Array
 containing the coefficients of the polynomial.
 
@@ -358,7 +358,7 @@ and of the integral, reversing of the coefficients is done in the
 creation method to make things transparent.
 
 The methods {\tt derivative} and {\tt integral} return a new
-instance of the class {\tt DhbPolynomial}. They do not modify the
+instance of the class {\tt PMPolynomial}. They do not modify the
 object receiving the message. This is also true for all operations
 between polynomials. The methods {\tt derivative} and {\tt
 integral} use the method {\tt collect:} returning a collection of
