@@ -151,7 +151,7 @@ moments up to order 4. One can then easily compute the parameters
 of the distribution. It can be used in all cases where
 distribution parameters are needed.
 
-\subsection{Statistical moments --- General implementation}
+\subsection{Statistical moments --- Smalltalk implementation}
 \marginpar{Figure \ref{fig:statisticsclasses} with the box {\bf
 FastStatisticalMoments} grayed.} To describe this implementation
 we must anticipated on the next section: the class {\bf
@@ -168,11 +168,9 @@ compute the respective quantities using explicit expansion of the
 central moments as a function of the moments.
 
 The computation of the standard deviation and of the error on the
-average are handled by the superclass (\cf listings
-\ref{ls:genmoments} and \ref{lj:genmoments}).
+average are handled by the superclass (\cf listing
+\ref{ls:genmoments}).
 
-
-\subsection{Statistical moments --- Smalltalk implementation}
 \label{sec:smoments}Listing \ref{ls:fastmoments} shows the
 Smalltalk implementation. The class {\tt
 DhbFastStatisticalMoments} is a subclass of class {\tt
