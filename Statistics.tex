@@ -1302,6 +1302,47 @@ DhbProbabilityDensity}.
 \input{Smalltalk/Statistics/DhbNormalDistribution}
 \end{listing}
 
+\section{Gamma distribution}
+\label{sec:gammadist} The gamma distribution is used to describe
+the time between some task, for example the time between repairs.
+
+The generalization of the gamma distribution to a range of the
+random variable of the type $\left[x_{\min},+\infty\right[$ is
+called a Pearson type III distribution. The average of a Pearson
+type III distribution is $x_{\min}+\alpha\beta$. The central
+moments are the same as those of the gamma distribution.
+
+Table \ref{tb:gammadist} shows the properties of the gamma
+distribution.
+\begin{table}[h]
+  \centering
+  \caption{Properties of the gamma distribution}\label{tb:gammadist}
+\vspace{1 ex}
+\begin{tabular}{|l|c|} \hline
+  \vbox to 3ex{}Range of random variable & $\left[0,+\infty\right[ $\\ *[1ex] \hline
+  \vbox to 4ex{}Probability density function & $\displaystyle P\left(x\right)=
+  {x^{\alpha - 1}\over \beta^{\alpha}\Gamma\left(\alpha\right)}e^{-{x\over\beta}}$ \\*[2ex]  \hline
+  \vbox to 3ex{}Parameters & $0<\alpha<+\infty$ \\
+  & $0<\beta<+\infty$\\*[1ex]  \hline
+  \vbox to 4ex{}Distribution function & $\displaystyle F\left(x\right)=\Gamma\left({x\over\beta},\alpha\right)$ \\
+  &(\cf section \ref{sec:incgamma}) \\*[1ex]  \hline
+  \vbox to 3ex{}Average & $\alpha\beta$ \\*[1ex] \hline
+  \vbox to 3ex{}Variance & $\alpha\beta^2$ \\*[1ex] \hline
+  \vbox to 4ex{}Skewness & $\displaystyle{2\over\sqrt{\alpha}}$ \\*[2ex] \hline
+  \vbox to 4ex{}Kurtosis & $\displaystyle{6\over\alpha}$ \\*[2ex] \hline
+\end{tabular}
+\end{table}
+Figure \ref{fig:gammaDistr} shows the shape of the gamma
+distribution for several values of the parameter $\alpha$ with
+$\beta = 1$. The shape of the distribution for values of the
+parameter $\beta$ can be obtained by modifying the scale of the
+$x$-axis since $\beta$ is just a scale factor of the random
+variable.
+\begin{figure}
+  \centering\includegraphics[width=12cm]{Figures/GammaDistribution}
+  \caption{Gamma distribution for various values of $\alpha$
+  }\label{fig:gammaDistr}
+\end{figure}
 
 \subsection{Gamma distribution --- Smalltalk implementation}
 \label{sec:sgammadist}\marginpar{Figure
