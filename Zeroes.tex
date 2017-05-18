@@ -290,8 +290,15 @@ is assigned to 0. Then the method checks whether the user supplied
 a derivative. If not a default derivative function is supplied as
 a block closure by the method {\tt defaultDerivativeBlock}. The
 supplied block closure implements the formula of equation
-\ref{eq:derivative} (on page \pageref{eq:derivative}). If a
-derivative is supplied, it is compared to the result of the
+\ref{eq:derivative}.
+
+\begin{mainEquation}
+\label{eq:derivative} {df\left(x\right)\over dx}=\lim_{\epsilon\to
+0}{f\left(x+\epsilon\right)-f\left(x-\epsilon\right)\over
+2\epsilon}.
+\end{mainEquation}
+
+If a derivative is supplied, it is compared to the result of the
 derivative supplied by default. This may save a lot of trouble if
 the user made an error in coding the derivative. Not supplying a
 derivative has some negative effect on the speed and limits the
