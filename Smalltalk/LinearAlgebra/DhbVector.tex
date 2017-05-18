@@ -1,4 +1,4 @@
-$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbVector}\cr
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf PMVector}\cr
 {\sl Subclass of }&{\tt Array}\cr\noalign{\vskip 1ex}
 }$$
 
@@ -85,7 +85,7 @@ Instance methods
     self dimension = aVector dimension
         ifFalse:[ ^self error: 'Vector dimensions mismatch to build 
                                                      tensor product'].
-    ^DhbSymmetricMatrix rows: ( self collect: [ :a | aVector collect: 
+    ^PMSymmetricMatrix rows: ( self collect: [ :a | aVector collect: 
                                                        [ :b | a * b]])
 \end{verbatim}
 

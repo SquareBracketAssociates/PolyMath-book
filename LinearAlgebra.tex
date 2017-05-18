@@ -703,13 +703,13 @@ computed, backward substitution is performed and the result is
 stored in the solution array.
 
 \subsection{Linear equation implementation}
-Listing \ref{ls:lineqs} shows the class {\tt DhbLinearEquationSystem} implementing Gaussian elimination.
+Listing \ref{ls:lineqs} shows the class {\tt PMLinearEquationSystem} implementing Gaussian elimination.
 
 To solve the system of equations \ref{eq:lineqex} using Gaussian elimination, one needs to write the following expression:
 \begin{codeExample}
 \begin{verbatim}
 
- (DhbLinearEquationSystem equations: #( (3 2 4)
+(PMLinearEquationSystem equations: #((3 2 4)
                                    (2 -5 -1)
                                    (1 -2 2))
                       constant: #(16 6 10)
@@ -718,7 +718,7 @@ To solve the system of equations \ref{eq:lineqex} using Gaussian elimination, on
 \end{codeExample}
 This expression has been written on three lines to delineate the
 various steps. The first two lines create an instance of the class
-{\tt DhbLinearEquationSystem} by feeding the coefficients of the
+{\tt PMLinearEquationSystem} by feeding the coefficients of the
 equations, rows by rows, on the first line and giving the constant
 vector on the second line. The last line is a call to the method
 {\tt solution} retrieving the solution of the system.
@@ -729,9 +729,9 @@ requires a little more code, but not much:
 \begin{verbatim}
 
  | s sol1 sol2 |
- s := DhbLinearEquationSystem equations: #( (3 2 4) (2 -5 -1) (1 -2 2))
-                        constants: #( (16 6 10)
-                                      (7 10 9)).
+ s := PMLinearEquationSystem equations: #((3 2 4) (2 -5 -1) (1 -2 2))
+                        constants: #((16 6 10)
+                                     (7 10 9)).
  sol1 := s solutionAt: 1.
  sol2 := s solutionAt: 2.
 \end{verbatim}
@@ -740,7 +740,7 @@ In this case, the creation method differs in that the two constant
 vectors are supplied in an array columns by columns. Similarly,
 the two solutions must be fetched one after the other.
 
-The class {\tt DhbLinearEquationSystem}. The class method {\tt
+The class {\tt PMLinearEquationSystem}. The class method {\tt
 equations:constants:} allows one to create a new instance for a given
 matrix and a series of constant vectors.
 
@@ -970,7 +970,7 @@ substitution algorithms are called in succession.
 
 \subsection{LUP decomposition}
 Listing \ref{ls:lup} shows the methods of the class {\tt
-DhbLUPDecomposition} implementing LUP decomposition.
+PMLUPDecomposition} implementing LUP decomposition.
 
 To solve the system of equations \ref{eq:lineqex} using LUP
 decomposition, one needs to write to evaluate the following
@@ -978,13 +978,13 @@ expression:
 \begin{codeExample}
 \begin{verbatim}
 
- ( DhbLUPDecomposition equations: #( (3 2 4) (2 -5 -1) (1 -2 2)) )
+ (PMLUPDecomposition equations: #( (3 2 4) (2 -5 -1) (1 -2 2)) )
             solve: #(16 6 10).
 \end{verbatim}
 \end{codeExample}
 This expression has been written on two lines to delineate the
 various steps. The first line creates an instance of the class
-{\tt DhbLUPDecomposition} by giving the coefficients of the
+{\tt PMLUPDecomposition} by giving the coefficients of the
 equations, rows by rows. The second line is a call to the method
 {\tt solve:} retrieving the solution of the system for the
 supplied constant vector.
@@ -995,7 +995,7 @@ storing the LUP decomposition in a variable:
 \begin{verbatim}
 
  | s sol1 sol2 |
- s := DhbLUPDecomposition equations: #( (3 2 4) (2 -5 -1) (1 -2 2)).
+ s := PMLUPDecomposition equations: #( (3 2 4) (2 -5 -1) (1 -2 2)).
  sol1 := s solve: #(16 6 10).
  sol2 := s solve: #(7 10 9).
 \end{verbatim}
@@ -1088,7 +1088,7 @@ product by the parity of the permutation to obtain the final
 result.
 
 Listing \ref{ls:determinant} shows the methods of classes {\tt
-DhbMatrix} and {\tt DhbLUPDecomposition} needed to compute a
+PMMatrix} and {\tt PMLUPDecomposition} needed to compute a
 matrix determinant.
 
 \begin{listing} Methods to compute a matrix determinant \label{ls:determinant}
@@ -1254,7 +1254,7 @@ be used with caution (\cf section \ref{sec:matrixrounding}).
 \subsection{Matrix inversion implementation}
 Listing \ref{ls:inversion} shows the complete implementation in
 Pharo. It contains additional methods for the classes {\tt
-DhbMatrix} and {\tt DhbSymmetricMatrix}.
+PMMatrix} and {\tt PMSymmetricMatrix}.
 
 For symmetric matrices the method {\tt inverse} first tests
 whether the dimension of the matrix is below a given threshold ---
@@ -1472,8 +1472,8 @@ computing a new matrix as described in equation
 \ref{eq:eigennext}.
 
 \subsection{Finding the largest eigenvalue  implementation} Listing \ref{ls:eigenlarge} shows the Pharo
-implementation of the  class {\tt DhbLargestEigenValueFinder},
-subclass of the class {\tt DhbIterativeProcess}.
+implementation of the  class {\tt PMLargestEigenValueFinder},
+subclass of the class {\tt PMIterativeProcess}.
 
 The following code example shows how to use the class to find the
 first two largest eigenvalues of a matrix.
@@ -1481,11 +1481,11 @@ first two largest eigenvalues of a matrix.
 \begin{verbatim}
 
  | m finder eigenvalue eigenvector nextFinder nextEigenvalue nextEigenvector |
- m := DhbMatrix rows: #((84 -79 58 55)
+ m := PMMatrix rows: #((84 -79 58 55)
                         (-79 84 -55 -58)
                         (58 -55 84 79)
                         (55 -58 79 84)).
- finder := DhbLargestEigenValueFinder matrix: m.
+ finder := PMLargestEigenValueFinder matrix: m.
  eigenvalue := finder evaluate.
  eigenvector := finder eigenvector.
  nextFinder := finder nextLargestEigenValueFinder.
@@ -1494,11 +1494,11 @@ first two largest eigenvalues of a matrix.
 \end{verbatim}
 \end{codeExample}
 First the matrix {\tt m} is defined from its components. Then, an
-instance of the class {\tt DhbLargestEigenValueFinder} is created
+instance of the class {\tt PMLargestEigenValueFinder} is created
 for this matrix. The iterative process is started as described in
 section \ref{sec:siteration}. Its result is the eigenvalue. The
 eigenvector is retrieved using an accessor method. Then, a new
-instance of {\tt DhbLargestEigenValueFinder} is obtained from the
+instance of {\tt PMLargestEigenValueFinder} is obtained from the
 first one. The next largest eigenvalue and its eigenvector are
 retrieved from this new instance exactly as before.
 
@@ -1778,24 +1778,24 @@ eigenvalues and eigenvectors of a symmetric matrix.
 \begin{verbatim}
 
  | m jacobi eigenvalues eigenvectors |
- m := DhbSymmetricMatrix rows: #((84 -79 58 55)
+ m := PMSymmetricMatrix rows: #((84 -79 58 55)
                                  (-79 84 -55 -58)
                                  (58 -55 84 79)
                                  (55 -58 79 84)).
- jacobi := DhbJacobiTransformation matrix: m.
+ jacobi := PMJacobiTransformation matrix: m.
  eigenvalues := jacobi evaluate.
  eigenvectors := jacobi transform columnsCollect: [ :each | each].
 \end{verbatim}
 \end{codeExample}
 First the matrix {\tt m} is defined from its components. Then, an
-instance of the class {\tt DhbJacobiTransformation} is created for
+instance of the class {\tt PMJacobiTransformation} is created for
 this matrix. The iterative process is started as described in
 section \ref{sec:siteration}. Its result is an array containing
 the eigenvalues sorted in decreasing order. The corresponding
 eigenvectors are retrieved from the columns of the matrix ${\bf
 O}$ obtained from the method {\tt transform}.
 
-The class {\tt DhbJacobiTransformation} has two instance variables
+The class {\tt PMJacobiTransformation} has two instance variables
 \begin{description}
   \item[\tt lowerRows] an array of array containing the lower part
   of the matrix and
