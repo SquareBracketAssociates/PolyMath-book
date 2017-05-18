@@ -286,21 +286,21 @@ code using operations between vectors and matrices:
 \begin{codeExample}
 \begin{verbatim}
 
-| u v w a b c|
-u := #(1 2 3) asVector.
-v := #(3 4 5) asVector.
-a := DhbMatrix rows: #( ( 1 0 1 ) (-1 -2 3)).
-b := DhbMatrix rows: #( ( 1 2 3 ) (-2 1 7) (5 6 7)).
+| u v w a b c |
+u := #(1 2 3) asPMVector.
+v := #(3 4 5) asPMVector.
+a := PMMatrix rows: #((1 0 1) (-1 -2 3)).
+b := PMMatrix rows: #((1 2 3) (-2 1 7) (5 6 7)).
 w := 4 * u + (3 * v).
 c := a * b.
 v := a * u.
 w := c transpose * v.
-w := v * c.
+w := v * c
 \end{verbatim}
 \end{codeExample}
 In the first two lines after the declarative statement, the
 vectors ${\bf u}$ and ${\bf v}$ are defined from their component
-array using the creator method {\tt asVector}. They are
+array using the creator method {\tt asPMVector}. They are
 3-dimensional vectors. The matrices ${\bf a}$ and ${\bf b}$ are
 created by supplying the components to the class creation method
 {\tt rows:}. The matrix ${\bf a}$ is a 2 by 3 matrix, whereas the
@@ -361,11 +361,9 @@ dispatching as explained in section \ref{sec:polymath} for
 operations between polynomials. Double dispatching is described in
 appendix (\cf section \ref{sec:doubledisp}).
 
-The method {\tt asVector} is defined for compatibility with a
-similar method defined in the class {\tt Array} to construct a
-vector out of an array object. A method {\tt asVector} could be
-defined also for instances of the class {\tt Collection}. This is
-left as an exercise for the reader.
+The method {\tt asPMVector} is defined for compatibility with a
+similar method defined in the class {\tt Collection} to construct a
+vector out of any collection object.
 
 The method {\tt tensorProduct} returns an instance of a symmetric
 matrix. This class is defined in listing \ref{ls:symmatrix}.
@@ -376,10 +374,10 @@ need to add several vectors. Indeed the following code
 \begin{verbatim}
 
 | a b c d e |
-a := #(1 2 3 4 5) asVector.
-b := #(2 3 4 5 6) asVector.
-c := #(3 4 5 6 7) asVector.
-d := #(4 5 6 7 8) asVector.
+a := #(1 2 3 4 5) asPMVector.
+b := #(2 3 4 5 6) asPMVector.
+c := #(3 4 5 6 7) asPMVector.
+d := #(4 5 6 7 8) asPMVector.
 e := a+b+c+d.
 \end{verbatim}
 \end{codeExample}
@@ -390,10 +388,10 @@ memory allocation:
 \begin{verbatim}
 
 | a b c d e |
-a := #(1 2 3 4 5) asVector.
-b := #(2 3 4 5 6) asVector.
-c := #(3 4 5 6 7) asVector.
-d := #(4 5 6 7 8) asVector.
+a := #(1 2 3 4 5) asPMVector.
+b := #(2 3 4 5 6) asPMVector.
+c := #(3 4 5 6 7) asPMVector.
+d := #(4 5 6 7 8) asPMVector.
 e := a copy.
 e accumulate: b; accumulate: c; accumulate: d.
 \end{verbatim}
@@ -407,7 +405,7 @@ collector.
 \input{Smalltalk/LinearAlgebra/DhbVector}
 \end{listing}
 
-\noindent The class {\tt DhbMatrix} has two instance variables:
+\noindent The class {\tt PMMatrix} has two instance variables:
 \begin{description}
 \item[\tt rows] an array of vectors, each representing a
 row of the matrix and
@@ -462,7 +460,7 @@ examples between simple matrices using the debugger.
 \input{Smalltalk/LinearAlgebra/DhbMatrix}
 \end{listing}
 Listing \ref{ls:symmatrix} shows the implementation of the class
-{\tt DhbSymmetricMatrix} representing symmetric matrices. A few
+{\tt PMSymmetricMatrix} representing symmetric matrices. A few
 algorithms are implemented differently for symmetric matrices.
 
 The reader should pay attention to the methods implementing
