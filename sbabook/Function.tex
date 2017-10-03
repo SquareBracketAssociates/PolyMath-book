@@ -521,38 +521,32 @@ require special attention.
 
 \subsection{Error function --- Smalltalk implementation}
 \label{sec:sterrorfunction} \marginpar{Figure \ref{fig:functions}
-with the box {\texbf ErfApproximation} grayed.} The error function is
+with the box {\textbf ErfApproximation} grayed.} The error function is
 implemented as a single method for the class Number. Thus,
 computing the centile of our preceding example is simply coded as:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
  | weight average stDev centile |
  weight := 2.85.
  average := 3.39.
  stDev := 0.44.
  centile := ( ( weight - average) / stDev) erf * 100.
-\end{verbatim}
-\end{codeExample}
+\end{listing}
 If you want to compute the probability for a measurement to lay
 within 3 standard deviations from its mean, you need to evaluate
 the following expression using equation \ref{eq:normaccept}:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
  3 errorFunction * 2 - 1
-\end{verbatim}
-\end{codeExample}
+\end{listing}
 If one needs to use the error function as a function, one must use
 it inside a block closure. In this case one defines a function
 object as follows:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
 | errorFunction |
 errorFunction := [ :x | x errorFunction ].
-\end{verbatim}
-\end{codeExample}
+\end{lsiting}
 Listing \ref{ls:errorFunction} shows the Smalltalk implementation
 of the error function.
 
@@ -662,11 +656,11 @@ formula hereafter:
 In summary, the algorithm to compute the Gamma function for any
 argument goes as follows:
 \begin{enumerate}
-  \textitem If $x$ is a non-positive integer ($x\le0$), raise an exception.
-  \textitem If $x$ is smaller than or equal to 1 ($x<1$), use the recurrence formula \ref{eq:gammarec}.
-  \textitem If $x$ is negative ($x<0$, but non integer), use the reflection
+  \item If $x$ is a non-positive integer ($x\le0$), raise an exception.
+  \item If $x$ is smaller than or equal to 1 ($x<1$), use the recurrence formula \ref{eq:gammarec}.
+  \item If $x$ is negative ($x<0$, but non integer), use the reflection
 formula \ref{eq:gammaneg}.
-  \textitem Otherwise use Lanczos' formula \ref{eq:lanczos}.
+  \item Otherwise use Lanczos' formula \ref{eq:lanczos}.
 \end{enumerate}
 
 One can see from the leading term of Lanczos' formula that the
@@ -696,26 +690,23 @@ For similar reasons the leading factors of Lanczos formula are
 evaluated using logarithms in both implementations.
 
 \subsection{Gamma function --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:functions} with the box {\texbf
+\marginpar{Figure \ref{fig:functions} with the box {\textbf
 LanczosFormula} grayed.} Like the error function, the gamma
 function is implemented as a single method of the class {\texttt
 Number}. Thus, computing the gamma function of 2.5 is simply coded
 as:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
  2.5 gamma
-\end{verbatim}
-\end{codeExample}
+\end{listing}
 To obtain the logarithm of the gamma function, you need to
 evaluate the following expression:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
  2.5 logGamma
-\end{verbatim}
-\end{codeExample}
-Listing 11 shows the Smalltalk implementation of the gamma
+\end{listing}
+
+Listing \ref{ls:gammafunc} shows the Smalltalk implementation of the gamma
 function.
 
 Here, the gamma function is implemented with two methods: one for
@@ -734,9 +725,8 @@ subclasses of {\texttt Number}: {\texttt Float} and {\texttt Fraction}.
 
 The execution time to compute the gamma function for floating
 argument given in Table \ref{tb:speed} in section \ref{sec:speed}.
-\begin{listing}
-Smalltalk implementation of the gamma function
-\label{ls:gammafunc}
+\begin{listing}[label=ls:gammafunc]{Smalltalk}
+{Smalltalk implementation of the gamma function}
 \input{Smalltalk/FunctionEvaluation/Integer(DhbGammaFunction).tex}
 \input{Smalltalk/FunctionEvaluation/Number(DhbGammaFunction).tex}
 \input{Smalltalk/FunctionEvaluation/DhbLanczosFormula.tex}
@@ -766,30 +756,27 @@ section \ref{sec:gammafunc}), it is best to evaluate the above
 formula using the logarithm of the gamma function.
 
 \subsection{Beta function --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:functions} with the box {\texbf
+\marginpar{Figure \ref{fig:functions} with the box {\textbf
 LanczosFormula} grayed.} Like the error and gamma functions, the
 gamma function is implemented as a single method of the class {\texttt
 Number}. Thus, computing the beta function of 2.5 and 5.5 is
 simply coded as:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
 2.5 beta: 5.5
-\end{verbatim}
-\end{codeExample} Computing the logarithm of the beta function of
+\end{listing}
+
+Computing the logarithm of the beta function of
 2.5 and 5.5 is simply coded as:
-\begin{codeExample}
-\begin{verbatim}
+\begin{listing}{Smalltalk}
 
 2.5 logBeta: 5.5
-\end{verbatim}
-\end{codeExample}
+\end{listing}
 Listing \ref{ls:betafunc} shows the
 implementation of the beta function in Smalltalk.
 
-\begin{listing}
-Smalltalk implementation of the beta function
-\label{ls:betafunc}
+\begin{listing}[label=ls:betafun]{Smalltalk}
+{Smalltalk implementation of the beta function}
 \input{Smalltalk/FunctionEvaluation/Number(DhbBetaFunction).tex}
 \end{listing}
 
