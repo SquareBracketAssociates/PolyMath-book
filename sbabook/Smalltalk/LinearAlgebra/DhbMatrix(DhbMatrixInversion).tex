@@ -1,0 +1,34 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMatrix}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  rows lupDecomposition }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf lupCRLCriticalDimension}
+\begin{verbatim}
+    ^ 40
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf inverse}
+\begin{verbatim}
+    ^self isSquare 
+        ifTrue: [ self lupInverse ]
+        ifFalse: [ self squared inverse * self transpose ]
+\end{verbatim}
+{\bf largestPowerOf2SmallerThan:} {\tt anInteger}
+\begin{verbatim}
+    | m m2|
+    m := 2.
+    [ m2 := m * 2.
+      m2 < anInteger ] whileTrue:[ m := m2 ].
+    ^ m
+\end{verbatim}
+{\bf lupInverse}
+\begin{verbatim}
+    ^ self class rows: self lupDecomposition inverseMatrixComponents
+\end{verbatim}
+

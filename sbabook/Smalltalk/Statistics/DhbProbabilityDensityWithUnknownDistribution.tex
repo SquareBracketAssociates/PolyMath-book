@@ -1,0 +1,21 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbProbabilityDensityWithUnknownDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+}$$
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^ (DhbRombergIntegrator new: self from: aNumber1 to: aNumber2) 
+                                                              evaluate
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^ (DhbRombergIntegrator new: self from: self lowestValue to: 
+                                                     aNumber) evaluate
+\end{verbatim}
+{\bf lowestValue}
+\begin{verbatim}
+    ^ 0
+\end{verbatim}
+

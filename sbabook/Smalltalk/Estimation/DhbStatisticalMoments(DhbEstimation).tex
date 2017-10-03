@@ -1,0 +1,22 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbStatisticalMoments}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  moments }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf tConfidenceLevel:} {\tt aStatisticalMomentsOrHistogram}
+\begin{verbatim}
+    | sbar dof |
+    dof := self count + aStatisticalMomentsOrHistogram count - 2.
+    sbar := ( ( self unnormalizedVariance + 
+     aStatisticalMomentsOrHistogram unnormalizedVariance) / dof) sqrt.
+    ^( DhbStudentDistribution degreeOfFreedom: dof)
+        confidenceLevel: ( self average - 
+                             (aStatisticalMomentsOrHistogram average))
+                            / ( ( 1 / self count + ( 
+                   aStatisticalMomentsOrHistogram count)) sqrt * sbar)
+
+\end{verbatim}
+

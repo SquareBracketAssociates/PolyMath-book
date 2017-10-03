@@ -1,0 +1,24 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbHistogramLeastSquareFit}\cr
+{\sl Subclass of }&{\tt DhbLeastSquareFit}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf new:} {\tt aHistogram} {\bf distributionClass:} {\tt aProbabilityDensityFunctionClass}
+\begin{verbatim}
+    ^self new: aHistogram function: ( 
+                  DhbScaledProbabilityDensityFunction new: aHistogram 
+                  distributionClass: aProbabilityDensityFunctionClass)
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf findInitialValues}
+\begin{verbatim}
+
+\end{verbatim}
+

@@ -1,0 +1,117 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbSimplexOptimizer}\cr
+{\sl Subclass of }&{\tt DhbFunctionOptimizer}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  worstVector }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultPrecision}
+\begin{verbatim}
+    ^DhbFloatingPointMachine new defaultNumericalPrecision * 1000
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf buildInitialSimplex}
+\begin{verbatim}
+    | projectedFunction finder partialResult |
+    projectedFunction := DhbProjectedOneVariableFunction 
+                function: functionBlock.
+    finder := DhbOneVariableFunctionOptimizer forOptimizer: self.
+    finder setFunction: projectedFunction.
+    [bestPoints size < (result size + 1)] whileTrue: 
+            [projectedFunction
+                setArgument: result;
+                bumpIndex.
+            partialResult := finder
+                        reset;
+                        evaluate.
+            bestPoints add: (optimizingPointClass 
+                        vector: (projectedFunction argumentWith: 
+                                                        partialResult)
+                        function: functionBlock)]
+
+\end{verbatim}
+{\bf computeInitialValues}
+\begin{verbatim}
+    bestPoints 
+        add: (optimizingPointClass vector: result function: 
+                                                       functionBlock).
+    self buildInitialSimplex.
+    worstVector := bestPoints removeLast position
+
+\end{verbatim}
+{\bf computePrecision}
+\begin{verbatim}
+    | functionValues bestFunctionValue |
+    functionValues := bestPoints collect: [ :each | each value].
+    bestFunctionValue := functionValues removeFirst.
+    ^functionValues inject: 0
+                    into: [ :max :each | ( self precisionOf: ( each - 
+   bestFunctionValue) abs relativeTo: bestFunctionValue abs) max: max]
+
+\end{verbatim}
+{\bf contract}
+\begin{verbatim}
+    | bestVector oldVectors |
+    bestVector := bestPoints first position.
+    oldVectors := OrderedCollection with: worstVector.
+    [bestPoints size > 1] whileTrue: [oldVectors add: bestPoints 
+                                                 removeLast position].
+    oldVectors do: [:each | self contract: each around: bestVector].
+    worstVector := bestPoints removeLast position.
+    ^self computePrecision
+
+\end{verbatim}
+{\bf contract:} {\tt aVector} {\bf around:} {\tt bestVector}
+\begin{verbatim}
+    bestPoints 
+        add: (optimizingPointClass vector: bestVector * 0.5 + 
+                                                       (aVector * 0.5)
+                function: functionBlock)
+
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | centerOfGravity newPoint nextPoint |
+    centerOfGravity := (bestPoints inject: ((worstVector copy)
+                        atAllPut: 0;
+                        yourself)
+                into: [:sum :each | each position + sum]) * (1 / 
+                                                     bestPoints size).
+    newPoint := optimizingPointClass vector: 2 * centerOfGravity - 
+                                                           worstVector
+                function: functionBlock.
+    (newPoint betterThan: bestPoints first) 
+        ifTrue: 
+            [nextPoint := optimizingPointClass 
+                        vector: newPoint position * 2 - 
+                                                       centerOfGravity
+                        function: functionBlock.
+            (nextPoint betterThan: newPoint) ifTrue: [newPoint := 
+                                                           nextPoint]]
+        ifFalse: 
+            [newPoint := optimizingPointClass 
+                        vector: centerOfGravity * 0.666667 + 
+                                              (worstVector * 0.333333)
+                        function: functionBlock.
+            (newPoint betterThan: bestPoints first) ifFalse: [^self 
+                                                           contract]].
+    worstVector := bestPoints removeLast position.
+    bestPoints add: newPoint.
+    result := bestPoints first position.
+    ^self computePrecision
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    super printOn: aStream.
+    aStream cr. 
+    worstVector printOn: aStream.
+
+\end{verbatim}
+

@@ -1,0 +1,35 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbSymmetricMatrix}\cr
+{\sl Subclass of }&{\tt DhbMatrix}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf lowerRows:} {\tt anArrayOfArray}
+\begin{verbatim}
+    ^self new lowerRows: anArrayOfArray
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf lowerRows:} {\tt anArrayOfArray}
+\begin{verbatim}
+    | n v |
+    n := anArrayOfArray size.
+    rows := DhbVector new: n.
+    1 to: n do:
+        [ :i |
+          v := DhbVector new: n.
+          1 to: i do: [ :j | v at: j put: ( ( anArrayOfArray at: i) 
+                                                              at: j)].
+          ( i + 1) to: n do: [ :j | v at: j put: ( ( anArrayOfArray 
+                                                       at: j) at: i)].
+          rows at: i put: v.
+        ].
+    ^self
+
+\end{verbatim}
+

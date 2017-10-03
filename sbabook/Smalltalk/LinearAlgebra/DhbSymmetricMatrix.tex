@@ -1,0 +1,58 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbSymmetricMatrix}\cr
+{\sl Subclass of }&{\tt DhbMatrix}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf identity:} {\tt anInteger}
+\begin{verbatim}
+    ^ self new initializeIdentity: anInteger
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf +} {\tt aMatrix}
+\begin{verbatim}
+    ^ aMatrix addWithSymmetricMatrix: self
+\end{verbatim}
+{\bf -} {\tt aMatrix}
+\begin{verbatim}
+    ^ aMatrix subtractWithSymmetricMatrix: self
+\end{verbatim}
+{\bf addWithSymmetricMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^ aMatrix addWithMatrix: self class: self class
+\end{verbatim}
+{\bf clear}
+\begin{verbatim}
+    rows do: [ :each | each atAllPut: 0].
+\end{verbatim}
+{\bf initializeIdentity:} {\tt anInteger}
+\begin{verbatim}
+    rows := ( 1 to: anInteger) asVector collect: [ :n | (DhbVector 
+                 new: anInteger) atAllPut: 0; at: n put: 1; yourself].
+\end{verbatim}
+{\bf isSquare}
+\begin{verbatim}
+    ^ true
+\end{verbatim}
+{\bf isSymmetric}
+\begin{verbatim}
+    ^ true
+\end{verbatim}
+{\bf productWithMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^ aMatrix productWithSymmetricMatrix: self
+\end{verbatim}
+{\bf productWithSymmetricMatrix:} {\tt aSymmetricMatrix}
+\begin{verbatim}
+    ^ aSymmetricMatrix productWithMatrixFinal: self
+\end{verbatim}
+{\bf subtractWithSymmetricMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^ aMatrix subtractWithMatrix: self class: self class
+\end{verbatim}
+

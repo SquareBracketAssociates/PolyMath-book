@@ -1,0 +1,19 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf Number}\cr
+{\sl Subclass of }&{\tt Magnitude}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf productWithMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^aMatrix class rows: ( aMatrix rowsCollect: [ :each | each * 
+                                                                self])
+
+\end{verbatim}
+{\bf productWithVector:} {\tt aVector}
+\begin{verbatim}
+    ^aVector collect: [ :each | each * self]
+
+\end{verbatim}
+

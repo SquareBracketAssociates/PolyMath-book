@@ -1,0 +1,29 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbEstimatedPolynomial}\cr
+{\sl Subclass of }&{\tt DhbPolynomial}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  errorMatrix }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf error:} {\tt aNumber}
+\begin{verbatim}
+    | errorVector term nextTerm |
+    nextTerm := 1.
+    errorVector := (coefficients collect: [ :each | term := 
+            nextTerm. nextTerm := aNumber * nextTerm. term]) asVector.
+    ^ (errorVector * errorMatrix * errorVector) sqrt
+\end{verbatim}
+{\bf errorMatrix}
+\begin{verbatim}
+    ^ errorMatrix
+\end{verbatim}
+{\bf errorMatrix:} {\tt aMatrix}
+\begin{verbatim}
+    errorMatrix := aMatrix.
+\end{verbatim}
+{\bf valueAndError:} {\tt aNumber}
+\begin{verbatim}
+    ^ Array with: ( self value: aNumber) with: ( self error: aNumber)
+\end{verbatim}
+

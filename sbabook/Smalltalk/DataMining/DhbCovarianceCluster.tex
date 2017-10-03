@@ -1,0 +1,29 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbCovarianceCluster}\cr
+{\sl Subclass of }&{\tt DhbCluster}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  center }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf centerOn:} {\tt aVector}
+\begin{verbatim}
+    accumulator := aVector ifNotNil: [ :v | DhbMahalanobisCenter onVector: v ].
+\end{verbatim}
+{\bf collectAccumulatorResults}
+\begin{verbatim}
+    accumulator computeParameters.
+\end{verbatim}
+{\bf distanceTo:} {\tt aVector}
+\begin{verbatim}
+    ^ accumulator distanceTo: aVector
+\end{verbatim}
+{\bf isUndefined}
+\begin{verbatim}
+    ^ accumulator isNil
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    accumulator printOn: aStream.
+\end{verbatim}
+

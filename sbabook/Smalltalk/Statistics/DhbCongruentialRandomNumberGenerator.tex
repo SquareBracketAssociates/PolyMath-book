@@ -1,0 +1,61 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbCongruentialRandomNumberGenerator}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  constant modulus multiplicator seed }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  UniqueInstance }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf constant:} {\tt aNumber1} {\bf multiplicator:} {\tt aNumber2} {\bf modulus:} {\tt aNumber3}
+\begin{verbatim}
+    ^ super new 
+        initialize: aNumber1
+        multiplicator: aNumber2
+        modulus: aNumber3
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    UniqueInstance isNil
+        ifTrue: [ UniqueInstance := super new initialize.
+                     UniqueInstance setSeed: 1 ].
+    ^ UniqueInstance
+\end{verbatim}
+{\bf seed:} {\tt aNumber}
+\begin{verbatim}
+    ^ super new initialize; setSeed: aNumber; yourself
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf floatValue}
+\begin{verbatim}
+    ^ self value asFloat / modulus
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    self initialize: 2718281829.0 multiplicator: 3141592653.0 
+                                                modulus: 4294967296.0.
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf multiplicator:} {\tt aNumber2} {\bf modulus:} {\tt aNumber3}
+\begin{verbatim}
+    constant := aNumber1.
+    modulus := aNumber2.
+    multiplicator := aNumber3.
+    self setSeed: 1.
+\end{verbatim}
+{\bf integerValue:} {\tt anInteger}
+\begin{verbatim}
+    ^ (self value \\ ( anInteger * 1000)) // 1000
+\end{verbatim}
+{\bf setSeed:} {\tt aNumber}
+\begin{verbatim}
+    seed := aNumber.
+\end{verbatim}
+{\bf value}
+\begin{verbatim}
+    seed := (seed * multiplicator + constant) \\ modulus.
+    ^ seed
+\end{verbatim}
+

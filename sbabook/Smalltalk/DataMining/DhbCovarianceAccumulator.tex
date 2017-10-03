@@ -1,0 +1,43 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbCovarianceAccumulator}\cr
+{\sl Subclass of }&{\tt DhbVectorAccumulator}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  covariance }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt anArray}
+\begin{verbatim}
+    | delta count1 r |
+    count1 := count.
+    delta := super accumulate: anArray.
+    r := count1 / count.
+    1 to: delta size
+        do: [ :n |
+              1 to: n do:
+                  [ :m |
+                    ( covariance at: n) at: m put: ( count1 * ( delta 
+       at: n) * ( delta at: m) + ( r * ( ( covariance at: n) at: m))).
+                  ].
+            ].
+\end{verbatim}
+{\bf covarianceMatrix}
+\begin{verbatim}
+    | rows n |
+    n := 0.
+    rows := covariance collect:
+                [ :row | n := n + 1. row, ( ( ( n + 1) to: covariance 
+                  size) collect: [ :m | ( covariance at: m) at: n ])].
+    ^ DhbSymmetricMatrix rows: rows
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    covariance := ( ( 1 to: anInteger) collect: [ :n | DhbVector new: n]) asVector.
+    ^ super initialize: anInteger
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    super reset.
+    covariance do: [ :each | each atAllPut: 0 ].
+\end{verbatim}
+

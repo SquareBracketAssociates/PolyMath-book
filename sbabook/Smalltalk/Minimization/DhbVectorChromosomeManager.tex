@@ -1,0 +1,46 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbVectorChromosomeManager}\cr
+{\sl Subclass of }&{\tt DhbChromosomeManager}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  origin range }\cr\noalign{\vskip 1ex}}$$
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf crossover:} {\tt aChromosome1} {\bf and:} {\tt aChromosome2}
+\begin{verbatim}
+    | index new1 new2|
+    index := (aChromosome1 size - 1) random + 2.
+    new1 := self clone: aChromosome1.
+    new1 replaceFrom: index to: new1 size with: aChromosome2 
+                                                    startingAt: index.
+    new2 := self clone: aChromosome2.
+    new2 replaceFrom: index to: new2 size with: aChromosome1 
+                                                    startingAt: index.
+    ^  Array with: new1 with: new2
+
+\end{verbatim}
+{\bf mutate:} {\tt aVector}
+\begin{verbatim}
+    | index |
+    index := aVector size random + 1.
+    ^  aVector copy
+            at: index put: (self randomComponent: index);
+            yourself
+\end{verbatim}
+{\bf origin:} {\tt aVector}
+\begin{verbatim}
+    origin := aVector.
+\end{verbatim}
+{\bf randomChromosome}
+\begin{verbatim}
+    ^ ((1 to: origin size) collect: [ :n | self randomComponent: n]) 
+                                                              asVector
+\end{verbatim}
+{\bf randomComponent:} {\tt anInteger}
+\begin{verbatim}
+    ^ (range at: anInteger) random + (origin at: anInteger)
+\end{verbatim}
+{\bf range:} {\tt aVector}
+\begin{verbatim}
+    range := aVector.
+\end{verbatim}
+

@@ -1,0 +1,37 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMemoryBasedDataServer}\cr
+{\sl Subclass of }&{\tt DhbAbstractDataServer}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  data position }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf atEnd}
+\begin{verbatim}
+    ^ data size < position
+\end{verbatim}
+{\bf data:} {\tt anOrderedCollection}
+\begin{verbatim}
+    data := anOrderedCollection.
+    self reset.
+\end{verbatim}
+{\bf dimension}
+\begin{verbatim}
+    ^ data first size
+\end{verbatim}
+{\bf next}
+\begin{verbatim}
+    | answer |
+    answer := data at: position.
+    position := position + 1.
+    ^ answer
+\end{verbatim}
+{\bf open}
+\begin{verbatim}
+    self reset
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    position := 1.
+\end{verbatim}
+

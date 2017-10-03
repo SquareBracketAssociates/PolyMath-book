@@ -1,0 +1,103 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbCauchyDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  mu beta }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Cauchy distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    ^self shape: aHistogram average
+        scale: 4 * aHistogram variance 
+                / (Float pi * (aHistogram maximum squared + 
+                                         aHistogram minimum squared)) 
+                        sqrt
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self shape: 0 scale: 1
+
+\end{verbatim}
+{\bf shape:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 scale: aNumber2
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^self privateAcceptanceBetween: aNumber1 and: aNumber2
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^mu
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    mu := mu + ( aVector at: 1).
+    beta := beta + ( aVector at: 2).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^(( aNumber - mu) / beta) arcTan / Float pi + (1 / 2)
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    mu := aNumber1.
+    beta := aNumber2.
+    ^self
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: mu with: beta
+
+\end{verbatim}
+{\bf privateInverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^( ( aNumber - (1 / 2)) * Float pi) tan * beta + mu
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^nil
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^beta / ( Float pi * ( beta squared + ( aNumber - mu) squared))
+
+\end{verbatim}
+{\bf valueAndGradient:} {\tt aNumber}
+\begin{verbatim}
+    | dp denominator |
+    dp := self value: aNumber.
+    denominator := 1 / ( ( aNumber - mu) squared + beta squared).
+    ^Array with: dp
+           with: ( DhbVector with: 2 * dp * ( aNumber - mu) * 
+                                                           denominator
+                             with: dp * ( 1 / beta - ( 2 * beta * 
+                                                        denominator)))
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^nil
+
+\end{verbatim}
+

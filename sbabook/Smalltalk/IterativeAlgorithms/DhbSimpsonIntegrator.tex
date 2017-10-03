@@ -1,0 +1,19 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbSimpsonIntegrator}\cr
+{\sl Subclass of }&{\tt DhbTrapezeIntegrator}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | oldResult oldSum |
+    iterations < 2
+        ifTrue: [ self higherOrderSum.
+                  ^ 1 ].
+    oldResult := result.
+    oldSum := sum.
+    result := (self higherOrderSum * 4 - oldSum) / 3.
+    ^self relativePrecision: ( result - oldResult) abs
+\end{verbatim}
+

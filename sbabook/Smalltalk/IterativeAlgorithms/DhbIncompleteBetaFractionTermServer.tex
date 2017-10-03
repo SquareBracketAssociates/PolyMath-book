@@ -1,0 +1,29 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbIncompleteBetaFractionTermServer}\cr
+{\sl Subclass of }&{\tt DhbSeriesTermServer}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha1 alpha2 }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf initialTerm}
+\begin{verbatim}
+    ^ 1
+\end{verbatim}
+{\bf setParameter:} {\tt aNumber1} {\bf second:} {\tt aNumber2}
+\begin{verbatim}
+    alpha1 := aNumber1.
+    alpha2 := aNumber2
+\end{verbatim}
+{\bf termsAt:} {\tt anInteger}
+\begin{verbatim}
+    | n n2 |
+    n := anInteger // 2.
+    n2 := 2 * n.
+    ^Array with: ( n2 < anInteger 
+        ifTrue: [ x negated * (alpha1 + n) * (alpha1 + alpha2 + n) 
+                                / ((alpha1 + n2) * (alpha1 + 1 + n2))]
+        ifFalse: [x * n * (alpha2 - n) / ((alpha1 + n2) * (alpha1 - 1 + n2)) ])
+            with: 1
+\end{verbatim}
+

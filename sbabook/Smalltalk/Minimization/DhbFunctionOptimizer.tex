@@ -1,0 +1,81 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbFunctionOptimizer}\cr
+{\sl Subclass of }&{\tt DhbFunctionalIterator}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  optimizingPointClass bestPoints }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultPrecision}
+\begin{verbatim}
+    ^ super defaultPrecision * 100
+\end{verbatim}
+{\bf forOptimizer:} {\tt aFunctionOptimizer}
+\begin{verbatim}
+    ^ self new initializeForOptimizer: aFunctionOptimizer
+\end{verbatim}
+{\bf maximizingFunction:} {\tt aFunction}
+\begin{verbatim}
+    ^ super new initializeAsMaximizer; setFunction: aFunction
+\end{verbatim}
+{\bf minimizingFunction:} {\tt aFunction}
+\begin{verbatim}
+    ^ super new initializeAsMinimizer; setFunction: aFunction
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf addPointAt:} {\tt aNumber}
+\begin{verbatim}
+    bestPoints add: (optimizingPointClass vector: aNumber
+                                        function: functionBlock)
+\end{verbatim}
+{\bf bestPoints}
+\begin{verbatim}
+    ^ bestPoints
+\end{verbatim}
+{\bf finalizeIterations}
+\begin{verbatim}
+    result := bestPoints first position.
+\end{verbatim}
+{\bf functionBlock}
+\begin{verbatim}
+    ^ functionBlock
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    bestPoints := SortedCollection sortBlock:
+                                         [ :a :b | a betterThan: b ].
+    ^ super initialize
+\end{verbatim}
+{\bf initializeAsMaximizer}
+\begin{verbatim}
+    optimizingPointClass := DhbMaximizingPoint.
+    ^ self initialize
+\end{verbatim}
+{\bf initializeAsMinimizer}
+\begin{verbatim}
+    optimizingPointClass := DhbMinimizingPoint.
+    ^ self
+\end{verbatim}
+{\bf initializeForOptimizer:} {\tt aFunctionOptimizer}
+\begin{verbatim}
+    optimizingPointClass := aFunctionOptimizer pointClass.
+    functionBlock := aFunctionOptimizer functionBlock.
+    ^ self initialize
+\end{verbatim}
+{\bf initialValue:} {\tt aVector}
+\begin{verbatim}
+    result := aVector copy.
+\end{verbatim}
+{\bf pointClass}
+\begin{verbatim}
+    ^ optimizingPointClass
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    super printOn: aStream.
+    bestPoints do: [ :each | aStream cr. each printOn: aStream ].
+\end{verbatim}

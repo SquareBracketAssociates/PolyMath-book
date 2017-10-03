@@ -1,0 +1,139 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLUPDecomposition}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  rows permutation parity }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf direct:} {\tt anArrayOfArrays}
+\begin{verbatim}
+    ^ self new initialize: anArrayOfArrays.
+\end{verbatim}
+{\bf equations:} {\tt anArrayOfArrays}
+\begin{verbatim}
+        ^self new initialize: ( anArrayOfArrays collect: [ :each | 
+                                                      each deepCopy]).
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf backwardSubstitution:} {\tt anArray}
+\begin{verbatim}
+    | n sum answer|
+    n := rows size.
+    answer := DhbVector new: n.
+    n to: 1 by: -1 do:
+        [ :i |
+          sum := anArray at: i.
+          ( i + 1) to: n do: [ :j | sum := sum - ( ( ( rows at: i) 
+                                           at: j) * ( answer at: j))].
+          answer at: i put: sum / ( ( rows at: i) at: i) ].
+    ^ answer
+\end{verbatim}
+{\bf decompose}
+\begin{verbatim}
+    | n |
+    n := rows size.
+    permutation := (1 to: n) asArray.
+    1 to: ( n - 1) do:
+        [ :k |
+          self swapRow: k withRow: ( self largestPivotFrom: k);
+               pivotAt: k ].
+\end{verbatim}
+{\bf forwardSubstitution:} {\tt anArray}
+\begin{verbatim}
+    | n sum answer |
+    answer := permutation collect: [ :each | anArray at: each].
+    n := rows size.
+    2 to: n do:
+        [ :i |
+          sum := answer at: i.
+          1 to: ( i - 1) do: [ :j | sum := sum - ( ( ( rows at: i) 
+                                           at: j) * ( answer at: j))].
+          answer at: i put: sum ].
+    ^ answer
+\end{verbatim}
+{\bf initialize:} {\tt anArrayOfArrays}
+\begin{verbatim}
+    rows := anArrayOfArrays.
+    parity := 1.
+    ^ self
+\end{verbatim}
+{\bf largestPivotFrom:} {\tt anInteger}
+\begin{verbatim}
+    | valueOfMaximum indexOfMaximum value |
+    valueOfMaximum := ( ( rows at: anInteger) at: anInteger) abs.
+    indexOfMaximum := anInteger.
+    ( anInteger + 1) to: rows size do:
+        [ :n |
+          value := ( ( rows at: n) at: anInteger) abs.
+          value > valueOfMaximum
+                ifTrue: [ valueOfMaximum := value.
+                          indexOfMaximum := n ] ].
+    ^ indexOfMaximum 
+\end{verbatim}
+{\bf pivotAt:} {\tt anInteger}
+\begin{verbatim}
+    | inversePivot size k |
+    inversePivot := 1 / ((rows at: anInteger) at: anInteger).
+    size := rows size.
+    k := anInteger + 1.
+    k to: size
+        do: [ :i |
+              ( rows at: i) at: anInteger put: (( rows at: i) at: 
+                                            anInteger) * inversePivot.
+              k to: size
+                do: [ :j |
+                      ( rows at: i) at: j put: ( ( rows at: i) at: j) 
+   - ( (( rows at: i) at: anInteger) * (( rows at: anInteger) at: j)) ]
+            ].
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    | first delimitingString n k |
+    n := rows size.
+    first := true.
+    rows do:
+        [ :row |
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
+          delimitingString := '('.
+          row do:
+            [ :each |
+                aStream nextPutAll: delimitingString.
+                each printOn: aStream.
+                delimitingString := ' ' ].
+          aStream nextPut: $) ].
+\end{verbatim}
+{\bf protectedDecomposition}
+\begin{verbatim}
+    [ self decompose] when: ExAll do: [ :signal | permutation := 0. 
+                                                signal exitWith: nil ].
+\end{verbatim}
+{\bf solve:} {\tt anArrayOrVector}
+\begin{verbatim}
+    permutation isNil
+        ifTrue: [ self protectedDecomposition ].
+    ^permutation = 0
+        ifTrue: [ nil ]
+        ifFalse:[ self backwardSubstitution: ( self 
+                                forwardSubstitution: anArrayOrVector)] 
+\end{verbatim}
+{\bf swapRow:} {\tt anInteger1} {\bf withRow:} {\tt anInteger2}
+\begin{verbatim}
+    anInteger1 = anInteger2
+        ifFalse: [ | swappedRow |
+                  swappedRow := rows at: anInteger1.
+                  rows at: anInteger1 put: ( rows at: anInteger2).
+                  rows at: anInteger2 put: swappedRow.
+                  swappedRow := permutation at: anInteger1.
+                  permutation at: anInteger1 put: ( permutation at: 
+                                                          anInteger2).
+                  permutation at: anInteger2 put: swappedRow.
+                  parity := parity negated.
+                ].
+\end{verbatim}
+

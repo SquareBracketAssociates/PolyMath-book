@@ -1,0 +1,71 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbLargestEigenValueFinder}\cr
+{\sl Subclass of }&{\tt DhbIterativeProcess}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  matrix eigenvector transposeEigenvector }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultMaximumIterations}
+\begin{verbatim}
+    ^ 100
+\end{verbatim}
+{\bf matrix:} {\tt aMatrix}
+\begin{verbatim}
+    ^ self new initialize: aMatrix; yourself
+\end{verbatim}
+{\bf matrix:} {\tt aMatrix} {\bf precision:} {\tt aNumber}
+\begin{verbatim}
+    ^ self new initialize: aMatrix; desiredPrecision: aNumber; 
+                                                              yourself
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf eigenvalue}
+\begin{verbatim}
+    ^ result
+\end{verbatim}
+{\bf eigenvector}
+\begin{verbatim}
+    ^ eigenvector * (1 / eigenvector norm)
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | oldEigenvalue |
+    oldEigenvalue := result.
+    transposeEigenvector := transposeEigenvector * matrix.
+    transposeEigenvector := transposeEigenvector 
+                * (1 / (transposeEigenvector at: 1)).
+    eigenvector := matrix * eigenvector.
+    result := eigenvector at: 1.
+    eigenvector := eigenvector * (1 / result).
+    ^oldEigenvalue isNil 
+        ifTrue: [ 2 * desiredPrecision]
+        ifFalse: [ (result - oldEigenvalue) abs ]
+\end{verbatim}
+{\bf initialize:} {\tt aMatrix}
+\begin{verbatim}
+    matrix := aMatrix.
+\end{verbatim}
+{\bf initializeIterations}
+\begin{verbatim}
+    eigenvector := DhbVector new: matrix numberOfRows.
+    eigenvector atAllPut: 1.0.
+    transposeEigenvector := DhbVector new: eigenvector size.
+    transposeEigenvector atAllPut: 1.0
+\end{verbatim}
+{\bf nextLargestEigenValueFinder}
+\begin{verbatim}
+    | norm |
+    norm := 1 / (eigenvector * transposeEigenvector).
+    ^self class 
+        new: matrix * ((DhbSymmetricMatrix identity: eigenvector 
+                                                                size) 
+                        - (eigenvector * norm tensorProduct: 
+                                                transposeEigenvector))
+        precision: desiredPrecision
+\end{verbatim}
+

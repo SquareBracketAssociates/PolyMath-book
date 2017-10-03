@@ -1,0 +1,85 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbIterativeProcess}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  precision desiredPrecision maximumIterations result iterations }\cr\noalign{\vskip 1ex}}$$
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultMaximumIterations}
+\begin{verbatim}
+    ^50
+
+\end{verbatim}
+{\bf defaultPrecision}
+\begin{verbatim}
+    ^DhbFloatingPointMachine new defaultNumericalPrecision
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf desiredPrecision:} {\tt aNumber}
+\begin{verbatim}
+    aNumber > 0
+        ifFalse: [ ^self error: 'Illegal precision: ', aNumber 
+                                                         printString].
+    desiredPrecision := aNumber.
+\end{verbatim}
+{\bf evaluate}
+\begin{verbatim}
+    iterations := 0.
+    self initializeIterations.
+    [iterations := iterations + 1.
+    precision := self evaluateIteration.
+    self hasConverged or: [iterations >= maximumIterations]] 
+            whileFalse: [].
+    self finalizeIterations.
+    ^self result
+\end{verbatim}
+{\bf evaluateIteration}
+\begin{verbatim}
+    ^self subclassResponsibility
+\end{verbatim}
+{\bf finalizeIterations}
+\begin{verbatim}
+
+\end{verbatim}
+{\bf hasConverged}
+\begin{verbatim}
+    ^precision <= desiredPrecision
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    desiredPrecision := self class defaultPrecision.
+    maximumIterations := self class defaultMaximumIterations.
+    ^self
+\end{verbatim}
+{\bf initializeIterations}
+\begin{verbatim}
+    ^self
+\end{verbatim}
+{\bf iterations}
+\begin{verbatim}
+    ^iterations
+\end{verbatim}
+{\bf maximumIterations:} {\tt anInteger}
+\begin{verbatim}
+    ( anInteger isInteger and: [ anInteger > 1])
+        ifFalse: [ ^self error: 'Invalid maximum number of iteration: 
+                                            ', anInteger printString].
+    maximumIterations := anInteger.
+\end{verbatim}
+{\bf precision}
+\begin{verbatim}
+    ^precision
+\end{verbatim}
+{\bf precisionOf:} {\tt aNumber1} {\bf relativeTo:} {\tt aNumber2}
+\begin{verbatim}
+    ^aNumber2 > DhbFloatingPointMachine new defaultNumericalPrecision
+        ifTrue: [ aNumber1 / aNumber2]
+        ifFalse:[ aNumber1]
+\end{verbatim}
+{\bf result}
+\begin{verbatim}
+    ^result
+\end{verbatim}
+

@@ -1,0 +1,25 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbProbabilityDistributionFunction}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  probabilityDensity }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf density:} {\tt aProbabilityDensity}
+\begin{verbatim}
+    ^ self new initialize: aProbabilityDensity
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf initialize:} {\tt aProbabilityDensity}
+\begin{verbatim}
+    probabilityDensity := aProbabilityDensity.
+    ^ self
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^ probabilityDensity distributionValue: aNumber
+\end{verbatim}
+

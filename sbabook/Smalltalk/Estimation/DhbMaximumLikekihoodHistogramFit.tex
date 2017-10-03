@@ -1,0 +1,99 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMaximumLikekihoodHistogramFit}\cr
+{\sl Subclass of }&{\tt DhbLeastSquareFit}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  count countVariance }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aWeightedPoint}
+\begin{verbatim}
+    | f g temp inverseProbability|
+    f := result valueAndGradient: aWeightedPoint xValue.
+    g := f last copyFrom: 1 to: ( f last size - 1).
+    f := f first.
+    f = 0 ifTrue: [ ^nil].
+    inverseProbability := 1 / f.
+    temp := aWeightedPoint yValue * inverseProbability.
+    constants accumulate: g * temp.
+    temp := temp * inverseProbability.
+    1 to: g size do:
+        [ :k |
+          ( equations at: k) accumulate: g * ( ( g at: k) * temp).
+        ].
+
+\end{verbatim}
+{\bf computeChanges}
+\begin{verbatim}
+    ^super computeChanges copyWith: 0
+
+\end{verbatim}
+{\bf computeNormalization}
+\begin{verbatim}
+    | numerator denominator temp |
+    numerator := 0.
+    denominator := 0.
+    dataHolder pointsAndErrorsDo: 
+            [:each | 
+            temp := result value: each xValue.
+            temp = 0 
+                ifFalse: 
+                    [numerator := numerator + (each yValue squared / 
+                                                                temp).
+                    denominator := denominator + temp]].
+    count := ( numerator / denominator) sqrt.
+    countVariance := numerator / ( 4 * count).
+
+\end{verbatim}
+{\bf finalizeIterations}
+\begin{verbatim}
+    self computeNormalization.
+    result setCount: count.
+    super finalizeIterations
+
+\end{verbatim}
+{\bf fitType}
+\begin{verbatim}
+    ^'Maximum likelihood fit'
+
+\end{verbatim}
+{\bf initializeIterations}
+\begin{verbatim}
+    result setCount: 1.
+    count := dataHolder totalCount.
+    super initializeIterations
+
+\end{verbatim}
+{\bf normalization}
+\begin{verbatim}
+    ^count
+
+\end{verbatim}
+{\bf normalizationError}
+\begin{verbatim}
+    ^countVariance sqrt
+
+\end{verbatim}
+{\bf numberOfFreeParameters}
+\begin{verbatim}
+    ^super numberOfParameters
+
+\end{verbatim}
+{\bf numberOfParameters}
+\begin{verbatim}
+    ^super numberOfParameters - 1
+
+\end{verbatim}
+{\bf valueAndError:} {\tt aNumber}
+\begin{verbatim}
+    | valueGradient gradient gVar |
+    valueGradient := result valueAndGradient: aNumber.
+    gradient := valueGradient last copyFrom: 1 to: valueGradient last 
+                                                             size - 1.
+    gVar := gradient * (self errorMatrix * gradient) / count.
+    ^Array with: valueGradient first
+        with: ((valueGradient first / count) squared * countVariance 
+                                                          + gVar) sqrt
+
+\end{verbatim}
+

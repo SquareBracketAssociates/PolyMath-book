@@ -1,0 +1,66 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbMitchellMooreGenerator}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  randoms lowIndex highIndex }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  UniqueInstance }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf constants:} {\tt anArray} {\bf lowIndex:} {\tt anInteger}
+\begin{verbatim}
+    ^super new initialize: anArray lowIndex: anInteger
+
+\end{verbatim}
+{\bf default}
+\begin{verbatim}
+    | congruentialGenerator |
+    congruentialGenerator := DhbCongruentialRandomNumberGenerator 
+                                                                  new.
+    ^ self generateSeeds: congruentialGenerator
+\end{verbatim}
+{\bf generateSeeds:} {\tt congruentialGenerator}
+\begin{verbatim}
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    UniqueInstance isNil
+        ifTrue: [ UniqueInstance := self default].
+    ^ UniqueInstance
+\end{verbatim}
+{\bf seed:} {\tt anInteger}
+\begin{verbatim}
+    | congruentialGenerator |
+    congruentialGenerator := DhbCongruentialRandomNumberGenerator 
+                                                      seed: anInteger.
+    ^self generateSeeds: congruentialGenerator
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf floatValue}
+\begin{verbatim}
+    | x |
+    x := (randoms at: lowIndex) + (randoms at: highIndex).
+    x < 1.0 ifFalse: [x := x - 1.0].
+    randoms at: highIndex put: x.
+    highIndex := highIndex + 1.
+    highIndex > randoms size ifTrue: [highIndex := 1].
+    lowIndex := lowIndex + 1.
+    lowIndex > randoms size ifTrue: [lowIndex := 1].
+    ^ x
+
+\end{verbatim}
+{\bf initialize:} {\tt anArray} {\bf lowIndex:} {\tt anInteger}
+\begin{verbatim}
+    randoms := anArray.
+    lowIndex := anInteger.
+    highIndex := randoms size.
+    ^ self
+\end{verbatim}
+{\bf integerValue:} {\tt anInteger}
+\begin{verbatim}
+    ^ (self floatValue * anInteger) truncated
+\end{verbatim}
+

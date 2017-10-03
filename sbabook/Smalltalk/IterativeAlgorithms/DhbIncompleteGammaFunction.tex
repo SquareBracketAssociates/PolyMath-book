@@ -1,0 +1,58 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbIncompleteGammaFunction}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha alphaLogGamma series fraction }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf shape:} {\tt aNumber}
+\begin{verbatim}
+    ^super new initialize: aNumber
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf evaluateFraction:} {\tt aNumber}
+\begin{verbatim}
+    fraction isNil 
+        ifTrue: 
+            [fraction := DhbIncompleteGammaFractionTermServer new.
+            fraction setParameter: alpha].
+    fraction setArgument: aNumber.
+    ^(DhbContinuedFraction server: fraction)
+        desiredPrecision: DhbFloatingPointMachine new  defaultNumericalPrecision;
+        evaluate
+\end{verbatim}
+{\bf evaluateSeries:} {\tt aNumber}
+\begin{verbatim}
+    series isNil
+        ifTrue: [ series := DhbIncompleteGammaSeriesTermServer new.
+                  series setParameter: alpha.
+                ].
+    series setArgument: aNumber.
+    ^ (DhbInfiniteSeries server: series)
+        desiredPrecision: DhbFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{verbatim}
+{\bf initialize:} {\tt aNumber}
+\begin{verbatim}
+    alpha := aNumber asFloat.
+    alphaLogGamma := alpha logGamma.
+    ^ self
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | x norm |
+    aNumber = 0
+        ifTrue: [ ^0].
+    x := aNumber asFloat.
+    norm := [ ( x ln * alpha - x - alphaLogGamma) exp] when: ExAll 
+                                do: [ :signal | signal exitWith: nil ].
+    norm isNil
+        ifTrue: [ ^1].
+    ^x - 1 < alpha
+        ifTrue: [ ( self evaluateSeries: x) * norm ]
+        ifFalse: [ 1 - ( norm / ( self evaluateFraction: x)) ]
+\end{verbatim}
+

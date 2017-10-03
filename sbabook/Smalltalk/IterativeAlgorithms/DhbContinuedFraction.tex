@@ -1,0 +1,31 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbContinuedFraction}\cr
+{\sl Subclass of }&{\tt DhbInfiniteSeries}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  numerator denominator }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf evaluateIteration}
+\begin{verbatim}
+    | terms delta |
+    terms := termServer termsAt: iterations.
+    denominator := 1 / (self limitedSmallValue: ((terms at: 1) * denominator + (terms at: 2))).
+    numerator := self limitedSmallValue: ((terms at: 1) / numerator + (terms at: 2)).
+    delta := numerator * denominator.
+    result := result * delta.
+    ^ (delta - 1) abs
+\end{verbatim}
+{\bf initializeIterations}
+\begin{verbatim}
+    numerator := self limitedSmallValue: termServer initialTerm.
+    denominator := 0.
+    result := numerator
+\end{verbatim}
+{\bf limitedSmallValue:} {\tt aNumber}
+\begin{verbatim}
+    ^aNumber abs < DhbFloatingPointMachine new smallNumber
+            ifTrue: [ DhbFloatingPointMachine new smallNumber ]
+            ifFalse: [ aNumber ]
+\end{verbatim}
+

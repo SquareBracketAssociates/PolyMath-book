@@ -1,0 +1,24 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbBulirschStoerInterpolator}\cr
+{\sl Subclass of }&{\tt DhbNevilleInterpolator}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf computeDifference:} {\tt aNumber} {\bf at:} {\tt anInteger1} {\bf order:} {\tt anInteger2}
+\begin{verbatim}
+    | diff ratio |
+    ratio := ( ( self xPointAt: anInteger1) - aNumber) * ( 
+                                           rightErrors at: anInteger1)
+                            / ( (  self xPointAt: ( anInteger1 + 
+                                              anInteger2)) - aNumber).
+    diff := ( ( leftErrors at: ( anInteger1 + 1)) - ( rightErrors at: 
+                                                          anInteger1))
+                            / ( ratio - ( leftErrors at: ( anInteger1 
+                                                               + 1))).
+    rightErrors at: anInteger1 put: ( leftErrors at: ( anInteger1 + 
+                                                          1)) * diff. 
+    leftErrors at: anInteger1 put: ratio * diff.
+
+\end{verbatim}
+

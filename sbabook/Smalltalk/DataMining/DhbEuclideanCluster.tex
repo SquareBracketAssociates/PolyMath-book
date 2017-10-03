@@ -1,0 +1,32 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbEuclideanCluster}\cr
+{\sl Subclass of }&{\tt DhbCluster}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  center }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf centerOn:} {\tt aVector}
+\begin{verbatim}
+    center := aVector.
+    accumulator := DhbVectorAccumulator new: aVector size.
+\end{verbatim}
+{\bf collectAccumulatorResults}
+\begin{verbatim}
+    center := accumulator average copy.
+\end{verbatim}
+{\bf distanceTo:} {\tt aVector}
+\begin{verbatim}
+    ^ (aVector - center) norm
+\end{verbatim}
+{\bf isUndefined}
+\begin{verbatim}
+    ^ center isNil
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    accumulator count printOn: aStream.
+    aStream nextPutAll: ': '.
+    center printOn: aStream.
+\end{verbatim}
+

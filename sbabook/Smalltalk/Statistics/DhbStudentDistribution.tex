@@ -1,0 +1,139 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbStudentDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  degreeOfFreedom norm chiSquareDistribution incompleteBetaFunction }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf asymptoticLimit}
+\begin{verbatim}
+    ^ 30
+\end{verbatim}
+{\bf degreeOfFreedom:} {\tt anInteger}
+\begin{verbatim}
+    ^anInteger > self asymptoticLimit 
+        ifTrue: [DhbNormalDistribution new]
+        ifFalse: 
+            [anInteger = 1 
+                ifTrue: [DhbCauchyDistribution shape: 0 scale: 1]
+                ifFalse: [super new initialize: anInteger]]
+\end{verbatim}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Student distribution'
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | dof var |
+    var := aHistogram variance.
+    var = 0
+        ifTrue: [ ^nil].
+    dof :=  ( 2 / (1 - (1 / aHistogram variance))) rounded max: 1.
+    ^dof > self asymptoticLimit ifTrue: [ nil]
+                                ifFalse:[ self degreeOfFreedom: dof]
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self error: 'Illegal creation message for this class'
+\end{verbatim}
+{\bf test:} {\tt aStatisticalMoment1} {\bf with:} {\tt aStatisticalMoment2}
+\begin{verbatim}
+    | t |
+    t := ( aStatisticalMoment1 average - aStatisticalMoment2 average) 
+                                                                  abs.
+    ^1 - ( ( self class degreeOfFreedom: (  aStatisticalMoment1 count 
+  + aStatisticalMoment2 count - 2)) acceptanceBetween: t negated and: 
+  t)
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf average}
+\begin{verbatim}
+    ^ 0
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    degreeOfFreedom := degreeOfFreedom + ( aVector at: 1).
+    self computeNorm.
+\end{verbatim}
+{\bf chiSquareDistribution}
+\begin{verbatim}
+    chiSquareDistribution isNil
+        ifTrue: [ chiSquareDistribution := DhbChiSquareDistribution 
+                              degreeOfFreedom: (degreeOfFreedom - 1)].
+    ^ chiSquareDistribution
+\end{verbatim}
+{\bf computeNorm}
+\begin{verbatim}
+    norm := ( ( degreeOfFreedom / 2 logBeta: ( 1 / 2) ) + ( 
+                                     degreeOfFreedom ln / 2)) negated.
+\end{verbatim}
+{\bf confidenceLevel:} {\tt aNumber}
+\begin{verbatim}
+    ^ (1 - (self symmetricAcceptance: aNumber abs)) * 100
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    aNumber = 0
+        ifTrue: [ ^0.5].
+    ^ (aNumber > 0
+        ifTrue: [ 2 - (self symmetricAcceptance: aNumber abs) ]
+        ifFalse:[ self symmetricAcceptance: aNumber abs ]) / 2
+
+\end{verbatim}
+{\bf incompleteBetaFunction}
+\begin{verbatim}
+    incompleteBetaFunction isNil 
+        ifTrue: 
+            [incompleteBetaFunction := DhbIncompleteBetaFunction 
+                        shape: degreeOfFreedom / 2
+                        shape: 0.5].
+    ^ incompleteBetaFunction
+\end{verbatim}
+{\bf initialize:} {\tt anInteger}
+\begin{verbatim}
+    anInteger > 0
+        ifFalse: [ self error: 'Degree of freedom must be positive'].
+    degreeOfFreedom := anInteger.
+    self computeNorm.
+    ^ self
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^ degreeOfFreedom > 4 ifTrue: [ 6 / ( degreeOfFreedom - 4)]
+                         ifFalse: [ nil ]
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: degreeOfFreedom
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    ^DhbNormalDistribution random * ( ( (degreeOfFreedom - 1) / self 
+                                  chiSquareDistribution random ) sqrt)
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^ 0
+\end{verbatim}
+{\bf symmetricAcceptance:} {\tt aNumber}
+\begin{verbatim}
+    ^ self incompleteBetaFunction value: ( degreeOfFreedom / ( 
+                                   aNumber squared + degreeOfFreedom))
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^(norm - ((aNumber squared / degreeOfFreedom + 1) ln * ( ( 
+                                       degreeOfFreedom + 1) / 2))) exp
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^ degreeOfFreedom > 2 ifTrue: [ degreeOfFreedom / ( 
+                                                 degreeOfFreedom - 2) ]
+                         ifFalse:[ nil ]
+\end{verbatim}
+

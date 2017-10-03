@@ -1,0 +1,24 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf Number}\cr
+{\sl Subclass of }&{\tt Magnitude}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf addPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^aPolynomial addNumber: self
+\end{verbatim}
+{\bf dividingPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^aPolynomial timesNumber: (1 / self)
+\end{verbatim}
+{\bf subtractToPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^aPolynomial addNumber: self negated
+\end{verbatim}
+{\bf timesPolynomial:} {\tt aPolynomial}
+\begin{verbatim}
+    ^aPolynomial timesNumber: self
+\end{verbatim}
+

@@ -1,0 +1,82 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbHistogrammedDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  histogram }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^ 'Experimental distribution'
+\end{verbatim}
+{\bf histogram:} {\tt aHistogram}
+\begin{verbatim}
+    ^ super new initialize: aHistogram
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^ self error: 'Illegal creation message for this class'
+\end{verbatim}
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^ (histogram countsBetween: (aNumber1 max: histogram minimum)
+                        and: (aNumber2 min: histogram maximum) ) / 
+                                                  histogram totalCount
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^ histogram average
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^ aNumber < histogram minimum
+        ifTrue: [ 0 ]
+        ifFalse:[ aNumber < histogram maximum
+                            ifTrue: [ ( histogram countsUpTo: 
+                                      aNumber) / histogram totalCount ]
+                            ifFalse:[ 1 ]
+                    ]
+\end{verbatim}
+{\bf initialize:} {\tt aHistogram}
+\begin{verbatim}
+    aHistogram count = 0
+        ifTrue: [ self error: 'Cannot define probability density on 
+                                                 an empty histogram'].
+    histogram := aHistogram.
+    ^ self
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^ histogram kurtosis
+\end{verbatim}
+{\bf privateInverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^ histogram inverseDistributionValue: aNumber
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^ histogram skewness
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^ histogram standardDeviation
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^ (aNumber >= histogram minimum and: [ aNumber < histogram 
+                                                             maximum])
+        ifTrue: [ ( histogram countAt: aNumber) / ( histogram 
+                                     totalCount * histogram binWidth)]
+        ifFalse:[ 0 ]
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^ histogram variance
+\end{verbatim}
+

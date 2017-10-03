@@ -1,0 +1,53 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbProjectedOneVariableFunction}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  index function argument }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf function:} {\tt aVectorFunction}
+\begin{verbatim}
+    ^ super new initialize: aVectorFunction
+\end{verbatim}
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf argumentWith:} {\tt aNumber}
+\begin{verbatim}
+    ^ argument at: index put: aNumber; yourself
+\end{verbatim}
+{\bf bumpIndex}
+\begin{verbatim}
+    index isNil
+        ifTrue: [ index := 1]
+        ifFalse: [ index := index + 1.
+                  index > argument size
+                    ifTrue: [ index := 1].
+                ].
+\end{verbatim}
+{\bf index}
+\begin{verbatim}
+    index isNil
+        ifTrue: [ index := 1].
+    ^ index
+\end{verbatim}
+{\bf initialize:} {\tt aFunction}
+\begin{verbatim}
+    function := aFunction.
+    ^ self
+\end{verbatim}
+{\bf setArgument:} {\tt anArrayOrVector}
+\begin{verbatim}
+    argument := anArrayOrVector copy.
+\end{verbatim}
+{\bf setIndex:} {\tt anInteger}
+\begin{verbatim}
+    index := anInteger.
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^ function value: ( self argumentWith: aNumber)
+\end{verbatim}
+

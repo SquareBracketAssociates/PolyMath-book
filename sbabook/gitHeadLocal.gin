@@ -1,0 +1,17 @@
+\usepackage[%
+        shash={314aef6},
+        lhash={314aef616216ad81712a4df6d549b394d97b50ee},
+        authname={Serge Stinckwich},
+        authemail={Serge.Stinckwich@gmail.com},
+        authsdate={2017-05-18},
+        authidate={2017-05-18 16:35:11 +0200},
+        authudate={1495118111},
+        commname={Serge Stinckwich},
+        commemail={Serge.Stinckwich@gmail.com},
+        commsdate={2017-05-18},
+        commidate={2017-05-18 16:35:11 +0200},
+        commudate={1495118111},
+        refnames={ (HEAD -> master, origin/master, origin/HEAD)},
+        firsttagdescribe={snapshot-2016-01-17-16-g314aef6},
+        reltag={314aef6}
+    ]{gitexinfo}

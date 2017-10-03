@@ -1,0 +1,141 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbBetaDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha1 alpha2 gamma1 gamma2 logNorm incompleteBetaFunction }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Beta distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | average variance a b c discr |
+    ( aHistogram minimum < 0 or: [ aHistogram maximum > 1])
+        ifTrue: [ ^nil].
+    average := aHistogram average.
+    variance := aHistogram variance.
+    a := ( ( 1 - average) / variance - 1) * average.
+    a > 0
+        ifFalse:[ ^nil].
+    b := ( 1 / average - 1) * a.
+    b > 0
+        ifFalse:[ ^nil].
+    ^self shape: a shape: b
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self error: 'Illegal creation message for this class'
+
+\end{verbatim}
+{\bf shape:} {\tt aNumber1} {\bf shape:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 shape: aNumber2
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf average}
+\begin{verbatim}
+    ^alpha1 / ( alpha1 + alpha2)
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    alpha1 := alpha1 + ( aVector at: 1).
+    alpha2 := alpha2 + ( aVector at: 2).
+    self computeNorm.
+    gamma1 := nil.
+    gamma2 := nil.
+    incompleteBetaFunction := nil.
+
+\end{verbatim}
+{\bf computeNorm}
+\begin{verbatim}
+    logNorm := (alpha1 + alpha2) logGamma - alpha1 logGamma - alpha2 
+                                                             logGamma.
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    incompleteBetaFunction isNil
+        ifTrue: [ incompleteBetaFunction := DhbIncompleteBetaFunction 
+                                         shape: alpha1 shape: alpha2].
+    ^incompleteBetaFunction value: aNumber
+
+\end{verbatim}
+{\bf firstGammaDistribution}
+\begin{verbatim}
+    gamma1 isNil
+        ifTrue: [ gamma1 := DhbGammaDistribution shape: alpha1 scale: 
+                                                                   1].
+     ^gamma1
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf shape:} {\tt aNumber2}
+\begin{verbatim}
+    (aNumber1 > 0 and: [aNumber2 > 0]) 
+        ifFalse: [self error: 'Illegal distribution parameters'].
+    alpha1 := aNumber1.
+    alpha2 := aNumber2.
+    self computeNorm.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^3 * ( alpha1 + alpha2 + 1) * ( (alpha1 + alpha2) squared * 2 + ( 
+                             ( alpha1 + alpha2 - 6) * alpha1 * alpha2)
+            / ( ( alpha1 + alpha2 + 2) * ( alpha1 + alpha2 + 3) * 
+                                                 alpha1 * alpha2)) - 3
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: alpha1 with: alpha2
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    | r |
+    r := self firstGammaDistribution random.
+    ^r / ( self secondGammaDistribution random + r)
+
+\end{verbatim}
+{\bf secondGammaDistribution}
+\begin{verbatim}
+    gamma2 isNil
+        ifTrue: [ gamma2 := DhbGammaDistribution shape: alpha2 scale: 
+                                                                   1].
+     ^gamma2
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^( alpha1 + alpha2 + 1) sqrt * 2 * ( alpha2 - alpha1) / ( ( 
+                       alpha1 * alpha2) sqrt * ( alpha1 + alpha2 + 2))
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^(aNumber > 0 and: [ aNumber < 1]) 
+        ifTrue: 
+            [( ( aNumber ln * (alpha1 - 1) ) + ( ( 1 - aNumber) ln * 
+                                        ( alpha2 - 1)) + logNorm) exp]
+        ifFalse: [0]
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^alpha1 * alpha2 / ( ( alpha1 + alpha2) squared * ( alpha1 + 
+                                                          alpha2 + 1))
+
+\end{verbatim}
+

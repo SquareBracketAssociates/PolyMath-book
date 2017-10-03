@@ -1,0 +1,22 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbIncompleteGammaFractionTermServer}\cr
+{\sl Subclass of }&{\tt DhbSeriesTermServer}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha }\cr\noalign{\vskip 1ex}}$$
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf initialTerm}
+\begin{verbatim}
+    lastTerm := x - alpha + 1.
+    ^ lastTerm
+\end{verbatim}
+{\bf setParameter:} {\tt aNumber}
+\begin{verbatim}
+    alpha := aNumber asFloat
+\end{verbatim}
+{\bf termsAt:} {\tt anInteger}
+\begin{verbatim}
+    lastTerm := lastTerm + 2.
+    ^ Array with: (alpha - anInteger) * anInteger with: lastTerm
+\end{verbatim}
+

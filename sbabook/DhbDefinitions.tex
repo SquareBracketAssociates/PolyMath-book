@@ -1,0 +1,43 @@
+\usepackage{url}
+\makeatletter
+\def\url@leostyle{%
+  \@ifundefined{selectfont}{\def\UrlFont{\sf}}{\def\UrlFont{\sffamily}}}
+\makeatother
+% Now actually use the newly defined style.
+\urlstyle{leo}
+
+\usepackage{graphicx}
+\def\etc{{\textit etc}}
+\def\eg{{\textit e.g.}}
+\def\ie{{\textit i.e.}}
+\def\cf{{\textit c.f.}\ }
+\def\erf{\mathop{\rm erf}}
+\def\sign{\mathop{\rm sign}}
+\def\prob{\mathop{\rm Prob}}
+\def\var{\mathop{\rm var}}
+\def\mod{\mathop{\rm mod}}
+\def\cor{\mathop{\rm cor}}
+\def\cov{\mathop{\rm cov}}
+\def\cl{\mathop{\rm CL}}
+\def\kg{\mathop{\rm Kg}}
+\def\patstyle#1{{\sc #1}}
+\def\th{^{\mathop{\rm th}}}
+%\def\st#1{^{\mathop{\rm #1}}}
+\def\note#1{\begin{quote}{\textbf Note:} #1\end{quote}}
+\def\braket#1{\left\langle #1\right\rangle}
+\def\order#1{\let\o=#1{\cal O}\ifx\o 1$\left(n\right)$\else$\left(n^{#1}\right)$\fi}
+%\newtheorem{privListing}{Listing}[chapter]
+%\newenvironment{listing}{\vskip 3ex\hrule\vskip 1ex\begin{privListing}}{\end{privListing}\hrule\vskip 1ex}
+\newtheorem{privExample}{Code example}[chapter]
+\newenvironment{codeExample}{\begin{privExample}\begin{quote}\tt}{\end{quote}\end{privExample}}
+\def\relboxl#1#2{\hbox to #1\hsize{#2\hfil}}
+\def\relboxc#1#2{\hbox to #1\hsize{\hfil #2\hfil}}
+\def\relboxr#1#2{\hbox to #1\hsize{\hfil #2}}
+\def\transpose#1{{\bf #1}^{\mathop{\rm T}}}
+\def\inverse#1{{\bf #1}^{-1}}
+%\def\tm{$^{\mathop{\rm TM}}$}
+\def\tm{ }
+\newenvironment{mainEquation}{\marginpar[\vspace{3 ex} Main
+equation$\Rightarrow$]{\vspace{3 ex}$\Leftarrow$Main
+equation}\begin{equation}}{\end{equation}}
+\def\rubrique#1{\paragraph{#1}\hfil\par\noindent}

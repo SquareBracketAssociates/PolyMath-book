@@ -1,0 +1,59 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbIncompleteBetaFunction}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha1 alpha2 fraction inverseFraction logNorm }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf shape:} {\tt aNumber1} {\bf shape:} {\tt aNumber2}
+\begin{verbatim}
+    ^ super new initialize: aNumber1 shape: aNumber2
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf evaluateFraction:} {\tt aNumber}
+\begin{verbatim}
+    fraction isNil 
+        ifTrue: 
+            [ fraction := DhbIncompleteBetaFractionTermServer new.
+            fraction setParameter: alpha1 second: alpha2 ].
+    fraction setArgument: aNumber.
+    ^(DhbContinuedFraction server: fraction)
+        desiredPrecision: DhbFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{verbatim}
+{\bf evaluateInverseFraction:} {\tt aNumber}
+\begin{verbatim}
+    inverseFraction isNil 
+        ifTrue: 
+            [ inverseFraction := DhbIncompleteBetaFractionTermServer new.
+            inverseFraction setParameter: alpha2 second: alpha1 ].
+    inverseFraction setArgument: (1 - aNumber).
+    ^(DhbContinuedFraction server: inverseFraction)
+        desiredPrecision: DhbFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf shape:} {\tt aNumber2}
+\begin{verbatim}
+    alpha1 := aNumber1.
+    alpha2 := aNumber2.
+    logNorm := ( alpha1 + alpha2) logGamma - alpha1 logGamma - alpha2 logGamma.
+    ^ self
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | norm |
+    aNumber = 0
+        ifTrue: [ ^ 0 ].
+    aNumber = 1
+        ifTrue: [ ^ 1 ].
+    norm :=  (aNumber ln * alpha1 + ((1 - aNumber) ln * alpha2) + logNorm) exp.
+    ^ (alpha1 + alpha2 + 2) * aNumber < (alpha1 + 1)
+        ifTrue: [ norm / ( ( self evaluateFraction: aNumber) * alpha1)]
+        ifFalse: [ 1 - ( norm / ( ( self evaluateInverseFraction: aNumber) * alpha2)) ]
+\end{verbatim}
+

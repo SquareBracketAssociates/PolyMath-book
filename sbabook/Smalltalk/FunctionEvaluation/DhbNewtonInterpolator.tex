@@ -1,0 +1,52 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbNewtonInterpolator}\cr
+{\sl Subclass of }&{\tt DhbLagrangeInterpolator}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  coefficients }\cr\noalign{\vskip 1ex}}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf add:} {\tt aPoint}
+\begin{verbatim}
+    self resetCoefficients.
+    ^super add: aPoint
+
+\end{verbatim}
+{\bf computeCoefficients}
+\begin{verbatim}
+    | size k1 kn|
+    size := pointCollection size.
+    coefficients := ( 1 to: size) collect: [ :n | self yPointAt: n].
+    1 to: (size - 1)
+        do: [ :n |
+              size to: ( n + 1)  by: -1
+                do: [ :k |
+                      k1 := k - 1.
+                      kn := k - n.
+                      coefficients at: k put: ( (( coefficients at: 
+                                         k) - ( coefficients at: k1)) 
+                                            / ((self xPointAt: k) - 
+                                                (self xPointAt: kn))).
+                    ].
+            ].
+
+\end{verbatim}
+{\bf resetCoefficients}
+\begin{verbatim}
+    coefficients := nil.
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    | answer size |
+    coefficients isNil
+        ifTrue: [ self computeCoefficients].
+    size := coefficients size.
+    answer := coefficients at: size.
+    (size - 1) to: 1 by: -1
+        do: [ :n | answer := answer * ( aNumber - (self xPointAt:  
+                                         n)) + ( coefficients at: n)].
+    ^answer
+
+\end{verbatim}
+

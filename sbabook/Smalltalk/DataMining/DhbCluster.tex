@@ -1,0 +1,47 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbCluster}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  accumulator previousSampleSize }\cr\noalign{\vskip 1ex}}$$
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf accumulate:} {\tt aVector}
+\begin{verbatim}
+    accumulator accumulate: aVector.
+\end{verbatim}
+{\bf centerOn:} {\tt aVector}
+\begin{verbatim}
+    self subclassResponsibility
+\end{verbatim}
+{\bf changes}
+\begin{verbatim}
+    ^ (self sampleSize - previousSampleSize) abs
+\end{verbatim}
+{\bf distanceTo:} {\tt aVector}
+\begin{verbatim}
+    ^ self subclassResponsibility
+\end{verbatim}
+{\bf initialize}
+\begin{verbatim}
+    previousSampleSize := 0.
+    ^ self
+\end{verbatim}
+{\bf isInsignificantIn:} {\tt aClusterFinder}
+\begin{verbatim}
+    ^ self sampleSize <= aClusterFinder minimumClusterSize
+\end{verbatim}
+{\bf isUndefined}
+\begin{verbatim}
+    ^ self subclassResponsibility
+\end{verbatim}
+{\bf reset}
+\begin{verbatim}
+    previousSampleSize := self sampleSize.
+    self collectAccumulatorResults.
+    accumulator reset
+\end{verbatim}
+{\bf sampleSize}
+\begin{verbatim}
+    ^ accumulator count
+\end{verbatim}
+

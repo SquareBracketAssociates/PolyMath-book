@@ -1,0 +1,132 @@
+%\ifx\sbabook\relax\else
+%\documentclass[twoside]{book}
+%\input{DhbDefinitions}
+%\begin{document}
+%\fi
+
+
+\chapter*{About this version}
+We would like to thank Didier Besset for his great book and for his gift of the source and implementation to the community. 
+
+This is an abridged version of Didier's book, without the Java implementation and reference; our goal is to make the book slimmer and easier to read.
+The implementation presented in this book is part of the Polymath library.
+Both versions of the book are now maintained under open-source terms and are available at the following URLs:
+
+\begin{itemize}
+\item Abridged version (this book)\\
+  \url{https://github.com/SquareBracketAssociates/NumericalMethods}
+\item Archive of the original book, with code in both Java and Smalltalk\\
+  \url{https://github.com/SquareBracketAssociates/ArchiveOONumericalMethods}
+\item PolyMath library
+  \url{https://github.com/PolyMathOrg/PolyMath}
+\end{itemize}
+
+Both this and the full version are maintained by St\'ephane Ducasse and Serge Stinckwich.
+Remember that we are all Charlie.
+
+\bigskip
+\relboxr{1}{7 December 2016}
+
+\chapter*{Preface}
+
+\begin{flushright} {\textsl Si je savais une chose
+utile \`{a} ma nation qui f\^{u}t ruineuse \`{a} une autre,\\je ne
+la proposerais pas \`{a} mon prince,\\parce que je suis homme
+avant d'\^etre Fran\c cais,\\parce que je suis n\'ecessairement
+homme,\\et que je ne suis Fran\c cais que par hasard.}\footnote{If I
+knew some trade useful to my country, but which would ruin
+another, I would not disclose it to my ruler, because I am a man
+before being French, because I belong to mankind while I am French
+only by a twist of fate.}\\ Charles de Montesquieu
+\end{flushright}
+
+
+When I first encountered object-oriented programming I immediately became highly
+enthusiastic about it, mainly because of my mathematical inclination.
+After all I learned to use computers as a high-energy physicist.
+In mathematics, a new, high order concept is always based on previously defined,
+simpler, concepts.
+Once a property is demonstrated for a given concept it can be applied to any new
+concept sharing the same premises as the original one.
+In object-oriented language, this is called reuse and inheritance.
+Thus, numerical algorithms using mathematical concepts that can be mapped
+directly into objects.
+
+This book is intended to be read by object-oriented programmers
+who need to implement numerical methods in their applications. The
+algorithms exposed here are mostly fundamental numerical
+algorithms with a few advanced ones. The purpose of the book is to
+show that implementing these algorithms in an object-oriented
+language is feasible and quite easily feasible. We expect readers
+to be able to implement their own favorite numerical algorithm
+after seeing the examples discussed in this book.
+
+The scope of the book is limited. It is not a Bible about
+numerical algorithms. Such Bible-like books already exist and are
+quoted throughout the chapters. Instead I wanted to illustrate mapping between mathematical concepts and computer objects.
+I have limited the book to algorithms, which I have implemented and used
+in real applications over twelve years of object-oriented programming.
+Thus, the reader can be certain that the algorithms have been
+tested in the field.
+
+Because the book's intent is to show numerical methods to object-
+oriented programmers, the code presented here is described in depth.
+Each algorithm is presented with the same organization.
+First the necessary equations are introduced with short
+explanations. This book is not one about mathematics so
+explanations are kept to a minimum. Then the general
+object-oriented architecture of the algorithm is presented.
+Finally, this book is intented to be a practical one, the code
+implementation is exposed. First, I describe how to use it, for readers who
+are just interested in using the code directly and then I discss and present the
+code implementation.
+
+As far as possible each algorithm is presented with examples
+of use. I did not want to build contrived examples and instead have
+used examples personally encountered in my professional life. Some
+people may think that some examples are coming from esoteric
+domains. This is not so. Each example has been selected for its
+generality. The reader should study each example regardless of the
+field of application and concentrate on the universal aspects of
+it.
+
+\rubrique{Acknowledgements}%
+The author wishes to express his
+thanks to the many people with whom he had interactions about the
+object-oriented approach --- Smalltalk and Java in particular ---
+on the various electronic forums. One special person is Kent Beck
+whose controversial statements raised hell and started spirited
+discussions. I also thank Kent for showing me tricks about the
+Refactoring Browser and {\textsl eXtreme Programming}. I also would
+like to thank Eric Clayberg for pulling me out of a ditch more
+than once and for making such fantastic Smalltalk tools.
+
+A special mention goes to Prof. Donald Knuth for being an
+inspiration for me and many other programmers with his series of
+books {\textsl The Art of Computer Programming}, and for making this
+wonderful typesetting program \TeX. This present book was typeset
+with \TeX{} and \LaTeX.
+
+Furthermore, I would like to give credit to a few people without
+whom this present book would never have been published. First,
+Joseph Pelrine who persuaded me that what I was doing was worth
+sharing with the rest of the object-oriented community.
+
+The author expresses his most sincere thanks to the reviewers who
+toiled on the early manuscripts of this book. Without their
+open-mindedness this book would never had made it to a publisher.
+
+Special thanks go to David N. Smith for triggering interesting
+thoughts about random number generators and to Dr. William Leo for
+checking the equations.
+
+Finally my immense gratitude is due to Dr. St\'ephane Ducasse of the
+University of Bern who checked the orthodoxy of the Smalltalk code
+and who did a terrific job of rendering the early manuscript not
+only readable but entertaining.
+
+\bigskip
+\relboxr{1}{Genolier, 11 April 2000}
+
+
+%\ifx\sbabook\relax\else\end{document}\fi

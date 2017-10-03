@@ -1,0 +1,16 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf Number}\cr
+{\sl Subclass of }&{\tt Magnitude}\cr\noalign{\vskip 1ex}
+}$$
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf beta:} {\tt aNumber}
+\begin{verbatim}
+    ^ (self logBeta: aNumber) exp
+\end{verbatim}
+{\bf logBeta:} {\tt aNumber}
+\begin{verbatim}
+    ^ self logGamma + aNumber logGamma - ( self + aNumber) logGamma
+\end{verbatim}
+

@@ -1,0 +1,118 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbWeibullDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  alpha beta norm }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Weibull distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | average xMin xMax accMin accMax |
+    aHistogram minimum < 0
+        ifTrue: [ ^nil].
+    average := aHistogram average.
+    xMin := ( aHistogram minimum + average) / 2.
+    accMin := ( aHistogram countsUpTo: xMin) / aHistogram totalCount.
+    xMax := ( aHistogram maximum + average) / 2.
+    accMax := ( aHistogram countsUpTo: xMax) / aHistogram totalCount.
+    ^[self solve: xMin acc: accMin upper: xMax acc: accMax]
+            when: ExAll do: [ :signal | signal exitWith: nil]
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^self error: 'Illegal creation message for this class'
+
+\end{verbatim}
+{\bf shape:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    ^super new initialize: aNumber1 scale: aNumber2
+
+\end{verbatim}
+{\bf solve:} {\tt lowX} {\bf acc:} {\tt lowAcc} {\bf upper:} {\tt highX} {\bf acc:} {\tt highAcc}
+\begin{verbatim}
+    | lowLnAcc highLnAcc deltaLnAcc lowLnX highLnX |
+    lowLnAcc := (1 - lowAcc) ln negated ln.
+    highLnAcc := (1 - highAcc) ln negated ln.
+    deltaLnAcc := highLnAcc - lowLnAcc.
+    lowLnX := lowX ln.
+    highLnX := highX ln.
+    ^self shape: deltaLnAcc / (highLnX - lowLnX)
+        scale: ((highLnAcc * lowLnX - (lowLnAcc * highLnX)) / 
+                                                       deltaLnAcc) exp
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^self privateAcceptanceBetween: aNumber1 and: aNumber2
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^(1 / alpha) gamma * beta / alpha
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    alpha := alpha + ( aVector at: 1).
+    beta := beta + ( aVector at: 2).
+    self computeNorm.
+
+\end{verbatim}
+{\bf computeNorm}
+\begin{verbatim}
+    norm := alpha/ ( beta raisedTo: alpha).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^aNumber > 0
+        ifTrue: [ 1 - ( ( ( aNumber / beta) raisedTo: alpha) negated 
+                                                                 exp)]
+        ifFalse:[ 0]
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber1} {\bf scale:} {\tt aNumber2}
+\begin{verbatim}
+    ( aNumber1 > 0 and: [ aNumber2 > 0])
+        ifFalse: [ self error: 'Illegal distribution parameters'].
+    alpha := aNumber1.
+    beta := aNumber2.
+    self computeNorm.
+    ^self
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: alpha with: beta
+
+\end{verbatim}
+{\bf privateInverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^( (1 - aNumber) ln negated raisedTo: ( 1 / alpha)) * beta
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^( ( aNumber / beta) raisedTo: alpha) negated exp * ( aNumber 
+                                        raisedTo: ( alpha - 1)) * norm
+
+\end{verbatim}
+{\bf variance}
+\begin{verbatim}
+    ^( beta squared / alpha) * ( (2 / alpha) gamma * 2 - ( (1 / alpha 
+                                             ) gamma squared / alpha))
+
+\end{verbatim}
+

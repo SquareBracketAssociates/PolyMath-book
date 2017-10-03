@@ -1,0 +1,112 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbExponentialDistribution}\cr
+{\sl Subclass of }&{\tt DhbProbabilityDensity}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  beta }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf distributionName}
+\begin{verbatim}
+    ^'Exponential distribution'
+
+\end{verbatim}
+{\bf fromHistogram:} {\tt aHistogram}
+\begin{verbatim}
+    | mu |
+    aHistogram minimum < 0
+        ifTrue: [ ^nil].
+    mu := aHistogram average.
+    ^mu > 0 ifTrue: [ self scale: aHistogram average]
+            ifFalse:[ nil]
+
+\end{verbatim}
+{\bf new}
+\begin{verbatim}
+    ^super new initialize: 1
+
+\end{verbatim}
+{\bf scale:} {\tt aNumber}
+\begin{verbatim}
+    ^super new initialize: aNumber
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf acceptanceBetween:} {\tt aNumber1} {\bf and:} {\tt aNumber2}
+\begin{verbatim}
+    ^self privateAcceptanceBetween: aNumber1 and: aNumber2
+
+\end{verbatim}
+{\bf average}
+\begin{verbatim}
+    ^beta
+
+\end{verbatim}
+{\bf changeParametersBy:} {\tt aVector}
+\begin{verbatim}
+    beta := beta + ( aVector at: 1).
+
+\end{verbatim}
+{\bf distributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^[1 - ( ( aNumber / beta negated) exp)]
+            when: ExAll do: [ :signal | signal exitWith: 0]
+
+\end{verbatim}
+{\bf initialize:} {\tt aNumber}
+\begin{verbatim}
+    aNumber > 0
+        ifFalse: [ self error: 'Illegal distribution parameters'].
+    beta := aNumber.
+    ^self
+
+\end{verbatim}
+{\bf kurtosis}
+\begin{verbatim}
+    ^6
+
+\end{verbatim}
+{\bf parameters}
+\begin{verbatim}
+    ^Array with: beta
+
+\end{verbatim}
+{\bf privateInverseDistributionValue:} {\tt aNumber}
+\begin{verbatim}
+    ^(1 - aNumber) ln negated * beta
+
+\end{verbatim}
+{\bf random}
+\begin{verbatim}
+    ^DhbMitchellMooreGenerator new floatValue ln * beta negated
+
+\end{verbatim}
+{\bf skewness}
+\begin{verbatim}
+    ^2
+
+\end{verbatim}
+{\bf standardDeviation}
+\begin{verbatim}
+    ^beta
+
+\end{verbatim}
+{\bf value:} {\tt aNumber}
+\begin{verbatim}
+    ^[ ( aNumber / beta) negated exp / beta]
+            when: ExAll do: [ :signal | signal exitWith: 0]
+
+\end{verbatim}
+{\bf valueAndGradient:} {\tt aNumber}
+\begin{verbatim}
+    | dp |
+    dp := self value: aNumber.
+    ^Array with: dp
+           with: ( DhbVector with: ( aNumber / beta - 1) * dp / beta)
+
+\end{verbatim}
+

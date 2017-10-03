@@ -1,0 +1,87 @@
+$$\halign{ #\hfil&\quad#\hfil\cr {\sl Class}& {\Large\bf DhbDecimalFloatingNumber}\cr
+{\sl Subclass of }&{\tt Object}\cr\noalign{\vskip 1ex}
+
+{\sl Instance variable names:}&\parbox[t]{4 in}{\tt  mantissa exponent }\cr\noalign{\vskip 1ex}
+{\sl Class variable names:}&\parbox[t]{4 in}{\tt  Digits }\cr\noalign{\vskip 1ex}}$$
+
+
+Class methods
+{\parskip 1ex\par\noindent}
+{\bf defaultDigits}
+\begin{verbatim}
+    ^15
+
+\end{verbatim}
+{\bf defaultDigits:} {\tt anInteger}
+\begin{verbatim}
+    Digits := anInteger.
+
+\end{verbatim}
+{\bf digits}
+\begin{verbatim}
+    Digits isNil
+        ifTrue: [ Digits := self defaultDigits].
+    ^Digits
+
+\end{verbatim}
+{\bf new:} {\tt aNumber}
+\begin{verbatim}
+    ^self new normalize: aNumber
+
+\end{verbatim}
+{\bf resetDigits}
+\begin{verbatim}
+    Digits := nil.
+
+\end{verbatim}
+
+
+
+Instance methods
+{\parskip 1ex\par\noindent}
+{\bf *} {\tt aNumber}
+\begin{verbatim}
+    ^self class new: ( self value * aNumber value)
+
+\end{verbatim}
+{\bf +} {\tt aNumber}
+\begin{verbatim}
+    ^self class new: ( self value + aNumber value)
+
+\end{verbatim}
+{\bf -} {\tt aNumber}
+\begin{verbatim}
+    ^self class new: ( self value - aNumber value)
+
+\end{verbatim}
+{\bf /} {\tt aNumber}
+\begin{verbatim}
+    ^self class new: ( self value / aNumber value)
+
+\end{verbatim}
+{\bf normalize:} {\tt aNumber}
+\begin{verbatim}
+    exponent := (self class digits - (aNumber log: 10)) floor.
+    mantissa := ( aNumber * ( 10 raisedToInteger: exponent)) 
+                                                            truncated.
+    ^self
+
+\end{verbatim}
+{\bf printOn:} {\tt aStream}
+\begin{verbatim}
+    mantissa printOn: aStream.
+    aStream nextPutAll: 'xE'.
+    exponent negated printOn: aStream.
+
+\end{verbatim}
+{\bf sqrt}
+\begin{verbatim}
+    ^self class new:  self value sqrt
+
+\end{verbatim}
+{\bf value}
+\begin{verbatim}
+    ^mantissa / ( 10 raisedToInteger: exponent)
+
+\end{verbatim}
+
