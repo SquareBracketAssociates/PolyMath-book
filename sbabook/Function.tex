@@ -93,14 +93,14 @@ defined as:
 f\left( x \right)={1 \over x},
 \end{equation}
 can be implemented in Smalltalk as:
-\begin{equation}
-\hbox{\texttt f := [:x | 1 / x]}.
-\end{equation}
+\begin{displaycode}{Smalltalk}
+f := [:x | 1 / x].
+\end{displaycode}
 Evaluation of a block closure is supplied by the method value:.
 For example, to compute the inverse of 3, one writes:
-\begin{equation}
-\hbox{\texttt f value: 3}.
-\end{equation}
+\begin{displaycode}{Smalltalk}
+f value: 3.
+\end{displaycode}
 
 If the function is more complex a block closure may not be the
 best solution to implement a function. Instead a class can be
@@ -289,10 +289,10 @@ Being a special case of a function a polynomial must of course implement the beh
 functions as discussed in section \ref{sec:stFunction}.
 Here is a code example on how to use the class {\texttt PMPolynomial}.
 \begin{listing}{Smalltalk}
-
+{How to use PMPolynomial}
 | polynomial |
- polynomial := PMPolynomial coefficients: #(2 -3 1).
- polynomial value: 1.
+polynomial := PMPolynomial coefficients: #(2 -3 1).
+polynomial value: 1.
 \end{listing}
 The code above creates an instance of the class {\texttt
 PMPolynomial} by giving the coefficient of the polynomial. In
@@ -302,13 +302,13 @@ computes the value of the polynomial at $x=1$.
 The next example shows how to manipulate polynomials in symbolic
 form.
 \begin{listing}{Smalltalk}
-
- | pol1 pol2 polynomial polD polI |
- pol1:= PMPolynomial coefficients: #(2 -3 1).
- pol2:= PMPolynomial coefficients: #(-3 7 2 1).
- polynomial := pol1 * pol2.
- polD := polynomial derivative.
- polI := polynomial integral.
+{ }
+| pol1 pol2 polynomial polD polI |
+pol1:= PMPolynomial coefficients: #(2 -3 1).
+pol2:= PMPolynomial coefficients: #(-3 7 2 1).
+polynomial := pol1 * pol2.
+polD := polynomial derivative.
+polI := polynomial integral.
 \end{listing}
 The first line creates the  polynomial of example
 \ref{eq:polynomialExample}. The second line creates the polynomial
@@ -395,7 +395,7 @@ complex coefficients.}
 
 \begin{listing}[label=lst:polynomial]{Smalltalk}
 {Smalltalk implementation of the polynomial class}
-\input{Smalltalk/FunctionEvaluation/DhbPolynomial}
+\input{Smalltalk/FunctionEvaluation/DhbPolynomial.tex}
 \end{listing}
 
 Listing \ref{ls:polynomialNumber} shows the listing of the methods
@@ -525,25 +525,22 @@ with the box {\textbf ErfApproximation} grayed.} The error function is
 implemented as a single method for the class Number. Thus,
 computing the centile of our preceding example is simply coded as:
 \begin{listing}{Smalltalk}
-
- | weight average stDev centile |
- weight := 2.85.
- average := 3.39.
- stDev := 0.44.
- centile := ( ( weight - average) / stDev) erf * 100.
+| weight average stDev centile |
+weight := 2.85.
+average := 3.39.
+stDev := 0.44.
+centile := ( ( weight - average) / stDev) erf * 100.
 \end{listing}
 If you want to compute the probability for a measurement to lay
 within 3 standard deviations from its mean, you need to evaluate
 the following expression using equation \ref{eq:normaccept}:
 \begin{listing}{Smalltalk}
-
- 3 errorFunction * 2 - 1
+3 errorFunction * 2 - 1.
 \end{listing}
 If one needs to use the error function as a function, one must use
 it inside a block closure. In this case one defines a function
 object as follows:
 \begin{listing}{Smalltalk}
-
 | errorFunction |
 errorFunction := [ :x | x errorFunction ].
 \end{lsiting}
@@ -696,14 +693,12 @@ function is implemented as a single method of the class {\texttt
 Number}. Thus, computing the gamma function of 2.5 is simply coded
 as:
 \begin{listing}{Smalltalk}
-
- 2.5 gamma
+2.5 gamma
 \end{listing}
 To obtain the logarithm of the gamma function, you need to
 evaluate the following expression:
 \begin{listing}{Smalltalk}
-
- 2.5 logGamma
+2.5 logGamma
 \end{listing}
 
 Listing \ref{ls:gammafunc} shows the Smalltalk implementation of the gamma
@@ -762,14 +757,12 @@ gamma function is implemented as a single method of the class {\texttt
 Number}. Thus, computing the beta function of 2.5 and 5.5 is
 simply coded as:
 \begin{listing}{Smalltalk}
-
 2.5 beta: 5.5
 \end{listing}
 
 Computing the logarithm of the beta function of
 2.5 and 5.5 is simply coded as:
 \begin{listing}{Smalltalk}
-
 2.5 logBeta: 5.5
 \end{listing}
 Listing \ref{ls:betafunc} shows the
