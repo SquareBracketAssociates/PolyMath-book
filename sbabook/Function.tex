@@ -318,10 +318,9 @@ the polynomial created in the third line.
 Listing \ref{ls:polynomial} shows the Smalltalk implementation of
 the class \code{PMPolynomial}.
 
-A beginner may have been tempted to make \code{PMPolynomial} a
-subclass of \code{Array} to spare the need for an instance
-variable. This is of course quite wrong. An array is a subclass of
-\code{Collection}.
+A beginner may have been tempted to make \code{PMPolynomial} a subclass of \code{Array} to spare the need for an instance variable.
+This is of course quite wrong.
+An array is a subclass of \code{Collection}.
 Most methods implemented or inherited by \code{Array} have nothing to do with the behavior of a polynomial as a mathematical entity.
 
 Thus, a good choice is to make the class \code{PMPolynomial} a
@@ -573,14 +572,19 @@ PMPolynomial >> value: aNumber
     ^coefficients inject: 0 into: [ :sum :each | sum * aNumber + each]
 \end{displaycode}
 
-Listing \ref{ls:polynomialNumber} shows the listing of the methods
+Listing \ref{lst:polynomialNumber} shows the listing of the methods
 used by the class Number as part of the double dispatching of the
 arithmetic operations on polynomials.
 
 \begin{listing}[label=lst:polynomialNumber]{Smalltalk}
-{Method of class Number related to polynomials}
-\input{Smalltalk/FunctionEvaluation/Number(DhbFunctionEvaluation)}
+{Methods of class Number related to polynomials}
+Number >> beta: aNumber
+    ^ (self logBeta: aNumber) exp
 \end{listing}
+\begin{displaycode}{Smalltalk}
+Number >> logBeta: aNumber
+    ^ self logGamma + aNumber logGamma - ( self + aNumber) logGamma
+\end{displaycode}
 
 \section{Error function}
 \label{sec:errorFunction}
@@ -643,8 +647,8 @@ a_2 =&-0.356563782
 \end{array}\right.
 \end{equation}
 The error on this formula is better than $7.5\times10^{-8}$ for
-negitive $x$. To compute the value for positive values, one uses
-the fact that:
+negative $x$.
+To compute the value for positive values, one uses the fact that:
 \begin{mainEquation}
 \label{eq:erfneg} \erf\left(x\right)=1-\erf\left(-x\right).
 \end{mainEquation}
@@ -718,7 +722,7 @@ object as follows:
 \begin{listing}{Smalltalk}
 | errorFunction |
 errorFunction := [ :x | x errorFunction ].
-\end{lsiting}
+\end{listing}
 Listing \ref{ls:errorFunction} shows the Smalltalk implementation
 of the error function.
 
