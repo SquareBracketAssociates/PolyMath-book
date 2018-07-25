@@ -536,13 +536,13 @@ numerical computations. These parameters correspond to the
 instance variables of the object responsible to compute them. They
 are the following:
 \begin{description}
-\item[{\texttt radix}] the radix of the floating-point representation, that is $r$.
-\item[{\texttt machinePrecision}] the largest positive number which, when added to 1 yields 1.
-\item[{\texttt negativeMachinePrecision}] the largest positive number which, when subtracted from 1 yields 1.
-\item[{\texttt smallestNumber}] the smallest positive number different from 0.
-\item[{\texttt largestNumber}] the largest positive number which can be represented in the machine.
-\item[{\texttt defaultNumericalPrecision}] the relative precision, which can be expected for a general numerical computation.
-\item[{\texttt smallNumber}] a number, which can be added to some value without noticeably changing the result of the computation.
+\item[\code{radix}] the radix of the floating-point representation, that is $r$.
+\item[\code{machinePrecision}] the largest positive number which, when added to 1 yields 1.
+\item[\code{negativeMachinePrecision}] the largest positive number which, when subtracted from 1 yields 1.
+\item[\code{smallestNumber}] the smallest positive number different from 0.
+\item[\code{largestNumber}] the largest positive number which can be represented in the machine.
+\item[\code{defaultNumericalPrecision}] the relative precision, which can be expected for a general numerical computation.
+\item[\code{smallNumber}] a number, which can be added to some value without noticeably changing the result of the computation.
 \end{description}
 Computing the radix $r$ is done in two steps. First one computes a
 number equivalent of the machine precision (\cf next paragraph)
@@ -578,7 +578,7 @@ Similarly, the largest number is computed by repeatedly
 multiplying the value $f$ until an overflow occurs. The last value
 obtained before an overflow occurs is the largest number.
 
-The variable {\texttt defaultNumericalPrecision} contains an estimate
+The variable \code{defaultNumericalPrecision} contains an estimate
 of the precision expected for a general numerical computation. For
 example, one should consider that two numbers $a$ and $b$ are
 equal if the relative difference between them is less than the
@@ -586,7 +586,7 @@ default numerical machine precision. This value of the default
 numerical machine precision has been defined as the square root of
 the machine precision.
 
-The variable {\texttt smallNumber} contains a value, which can be
+The variable \code{smallNumber} contains a value, which can be
 added to some number without noticeably changing the result of the
 computation. In general an expression of the type $0 \over 0$ is
 undefined. In some particular case, however, one can define a
@@ -610,10 +610,9 @@ is used while all parameters may not be needed at a given time.
 Methods in charge of computing the parameters are all prefixed
 with the word compute.
 
-Listing below shows the class {\texttt
-PMFloatingPointMachine} responsible of computing the parameters
-of the floating-point representation. This class is implemented as
-a singleton class because the parameters need to be computed once
+Listing below shows the class \code{PMFloatingPointMachine} responsible of computing the parameters
+of the floating-point representation.
+This class is implemented as a singleton class because the parameters need to be computed once
 only. For that reason no code optimization was made and priority
 is given to readability.
 
@@ -753,24 +752,25 @@ PMFloatingPointMachine >> radix
     ^radix
 \end{displaycode}
 
-\noindent The method {\texttt showParameters} can be used to print the
+\noindent The method \code{showParameters} can be used to print the
 values of the parameters onto the Transcript window.
 
 \begin{displaycode}{Smalltalk}
 PMFloatingPointMachine >> showParameters
-    Transcript cr; cr;
-            nextPutAll: 'Floating-point machine parameters'; cr;
-            nextPutAll: '---------------------------------';cr;
-            nextPutAll: 'Radix: '.
-    self radix printOn: Transcript.
-    Transcript cr; nextPutAll: 'Machine precision: '.
-    self machinePrecision printOn: Transcript.
-    Transcript cr; nextPutAll: 'Negative machine precision: '.
-    self negativeMachinePrecision printOn: Transcript.
-    Transcript cr; nextPutAll: 'Smallest number: '.
-    self smallestNumber printOn: Transcript.
-    Transcript cr; nextPutAll: 'Largest number: '.
-    self largestNumber printOn: Transcript.         
+  Transcript cr; cr;
+    nextPutAll: 'Floating-point machine parameters'; cr;
+    nextPutAll: '---------------------------------';cr;
+    nextPutAll: 'Radix: '.
+  self radix printOn: Transcript.
+  Transcript cr; nextPutAll: 'Machine precision: '.
+  self machinePrecision printOn: Transcript.
+  Transcript cr; nextPutAll: 'Negative machine precision: '.
+  self negativeMachinePrecision printOn: Transcript.
+  Transcript cr; nextPutAll: 'Smallest number: '.
+  self smallestNumber printOn: Transcript.
+  Transcript cr; nextPutAll: 'Largest number: '.
+  self largestNumber printOn: Transcript.
+  Transcript flush
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
@@ -799,8 +799,7 @@ not giving enough emphasis about floating-point numbers.
 
 \begin{quote}
 So, how should you check the equality of two floating-point
-numbers? \linebreak\noindent\hfil The practical answer is: {\textsl
-thou shalt not!}
+numbers? The practical answer is: {\textsl thou shalt not!}
 \end{quote}
 
 \noindent As you will see, the algorithms in this book only
@@ -822,18 +821,26 @@ fraction on equation \ref{eq:relerror} is less than
 $\epsilon_{\max}$, than the two numbers can be considered as being
 equal. For lack of information on how the numbers $a$ and $b$ have
 been obtained, one uses for $\epsilon_{\max}$ the default
-numerical precision defined in section \ref{sec:findprecision}. If
-one can determine the precision of each number, then the method
-{\texttt relativelyEqual} can be used.
+numerical precision defined in section \ref{sec:findprecision}.
+If one can determine the precision of each number, then the method \code{relativelyEqual} can be used.
 
 In Smalltalk this means adding a new method to the class Number as
-shown in Listing \ref{ls:fltcompare}.
+shown in Listing \ref{lst:fltcompare}.
 
-\begin{listing}
-Comparison of floating point numbers in Smalltalk
-\label{ls:fltcompare}
-\input{Smalltalk/NumericalPrecision/Number(DhbNumericalPrecision)}
+\begin{listing}[label=lst:fltcompare]{Smalltalk}
+{Comparison of floating point numbers in Smalltalk}
+Number >> equalsTo: aNumber
+   ^self relativelyEqualsTo: aNumber upTo:
+         PMFloatingPointMachine new defaultNumericalPrecision
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+Number >> relativelyEqualsTo: aNumber upTo: aSmallNumber
+   | norm |
+   norm := self abs max: aNumber abs.
+   ^norm <= PMFloatingPointMachine new defaultNumericalPrecision
+    or: [ (self - aNumber) abs < ( aSmallNumber * norm)]
+\end{displaycode}
 
 \section{Speed consideration (to be revisited)}
 \label{sec:speed} Some people may think that implementing
@@ -929,10 +936,11 @@ attempting to store a particularly long integer. Thus, it is
 always a good idea to use floating\footnote{In most available
 Smalltalk versions the class Float corresponds to floating numbers
 with double precision. VisualWorks makes the difference between
-{\texttt Float} and {\texttt Double}} numbers instead of fractions unless
+\code{Float} and \code{Double}} numbers instead of fractions unless
 absolute accuracy is your primary goal. My experience has been
 that using floating numbers speeds up the computation by at least
-an order of magnitude. In the case of complex computations such as
+an order of magnitude.
+In the case of complex computations such as
 matrix inversion or least square fit this can become prohibitive.
 
 \section{Conventions}
@@ -962,17 +970,14 @@ on design patterns \cite{GoF}.
 Figure \ref{fig:classDiagram} shows a typical class diagram. A
 rectangular box with 2 or 3 parts represents a class. The top part
 contains the name of the class in bold face. If the class is an
-abstract class the name in shown in italic bold face. In figure
-\ref{fig:classDiagram} the classes {\texttt RelatedClass}, {\texttt
-MySubClass1} and {\texttt MySubclass2} are concrete classes; {\texttt
-MyAbstractClass} is an abstract class. The second part of the
-class box contains a list of the public instance methods. The name
-of an abstract method is written in italic, for example {\texttt
-abstractMethod3} in the class {\texttt MyAbstractClass} of figure
-\ref{fig:classDiagram}. The third part of the class box, if any,
-contains the list of all instance variables. If the class does not
+abstract class the name in shown in italic bold face.
+In figure \ref{fig:classDiagram} the classes \code{RelatedClass}, \code{MySubClass1} and \code{MySubclass2} are concrete classes; \code{MyAbstractClass} is an abstract class.
+The second part of the class box contains a list of the public instance methods.
+The name of an abstract method is written in italic, for example \code{abstractMethod3} in the class \code{MyAbstractClass} of figure \ref{fig:classDiagram}.
+The third part of the class box, if any, contains the list of all instance variables.
+If the class does not
 have any instance variable the class box only consists of 2 parts,
-for example the class {\texttt MySubClass1} of figure
+for example the class \code{MySubClass1} of figure
 \ref{fig:classDiagram}.
 \begin{figure}
 \centering\includegraphics[width=11cm]{Figures/TypicalClassDiagram}
@@ -984,14 +989,12 @@ there are several subclasses the line branches at the triangle, as
 this is the case in figure \ref{fig:classDiagram}. A horizontal
 line beginning with a diamond (UML aggregation symbol) indicates
 the class of an instance variable. For example, Figure
-\ref{fig:classDiagram} indicates that the instance variable {\texttt
-instanceVariable1} of the class {\texttt MyAbstractClass} must be an
-instance of the class {\texttt RelatedClass}. The diamond is black is
+\ref{fig:classDiagram} indicates that the instance variable \code{instanceVariable1} of the class \code{MyAbstractClass} must be an
+instance of the class \code{RelatedClass}. The diamond is black is
 the instance variable is a collection of instances of the class. A
 class within a rectangle with rounded corner represents a class
 already discussed in an earlier chapter; the reference to the
-chapter is written below the class name. Class {\texttt
-ClassInOtherChapter} in figure \ref{fig:classDiagram} is such a
+chapter is written below the class name. Class \code{ClassInOtherChapter} in figure \ref{fig:classDiagram} is such a
 class. To save space, we have used the
 Smalltalk method names. It is quite easy to identify methods
 needing parameters when one uses Smalltalk method names: a
@@ -1022,24 +1025,21 @@ to change can be stored in the code. This is acceptable as long as
 this is done at a unique place. In this book most constants are
 defined in class methods.
 
-By default a Smalltalk method returns {\texttt self}. For
+By default a Smalltalk method returns \code{self}. For
 initialization methods, however, we write this return explicitly
-({\texttt \^\/self}) to ease reading. This adheres to the intention
+(\code{^self}) to ease reading. This adheres to the intention
 revealing patterns of Kent Beck \cite{Beck}.
 
-In \cite{StDesPat} it is recommended to use the method name {\texttt
-default} to implement a singleton class. In this book this
+In \cite{StDesPat} it is recommended to use the method name \code{default} to implement a singleton class. In this book this
 convention is not followed. In Smalltalk, however, the normal
-instance creation method is {\texttt new}. Introducing a method {\texttt
-default} for singleton classes has the effect of departing from
-this more ancient convention. In fact, requiring the use of {\texttt
-default} amounts to reveal to the client the details of
+instance creation method is \code{new}. Introducing a method \code{default} for singleton classes has the effect of departing from
+this more ancient convention. In fact, requiring the use of \code{default} amounts to reveal to the client the details of
 implementation used by the class. This is in clear contradiction
 with the principle of hiding the implementation to the external
 world.
 Thus, singleton classes in all code presented in this book
-are obtained by sending the method {\texttt new} to the class.
-A method named {\texttt default} is reserved for the very semantic of
+are obtained by sending the method \code{new} to the class.
+A method named \code{default} is reserved for the very semantic of
 the word default: the instance returned by these methods is an
 instance initialized with some default contents, well specified.
 Whether or not the instance is a singleton is not the problem of
@@ -1061,7 +1061,7 @@ the dependent class is always located below. Chapters where the
 classes are discussed are drawn as grayed rectangles with rounded
 corners. Hopefully the reader will not be scared by the complexity
 of the figure. Actually, the figure should be more complex as the
-classes {\texttt Vector} and {\texttt Matrix} are used by most objects
+classes \code{Vector} and \code{Matrix} are used by most objects
 located in chapters \ref{ch:linearalgebra} and following. To
 preserve the readability of figure \ref{fig:roadmap} the
 dependency connections for these two classes have been left out.
