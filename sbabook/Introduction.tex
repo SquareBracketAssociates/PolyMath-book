@@ -610,24 +610,182 @@ is used while all parameters may not be needed at a given time.
 Methods in charge of computing the parameters are all prefixed
 with the word compute.
 
-Listing \ref{ls:floatmachine} shows the class {\texttt
-DhbFloatingPointMachine} responsible of computing the parameters
+Listing below shows the class {\texttt
+PMFloatingPointMachine} responsible of computing the parameters
 of the floating-point representation. This class is implemented as
 a singleton class because the parameters need to be computed once
 only. For that reason no code optimization was made and priority
 is given to readability.
 
+\begin{displaycode}{Smalltalk}
+Object subclass: #PMFloatingPointMachine
+  instanceVariableNames: 'defaultNumericalPrecision radix machinePrecision negativeMachinePrecision smallestNumber largestNumber smallNumber largestExponentArgument'
+  classVariableNames: 'UniqueInstance'
+  package: 'Math-Core'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine class >> new
+   UniqueInstance = nil
+        ifTrue: [ UniqueInstance := super new].
+   ^ UniqueInstance
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachineMachine >> reset
+   UniqueInstance := nil
+\end{displaycode}
+
 \noindent The computation of the smallest and largest numbers uses
 exceptions to detect the underflow and the overflow.
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> computeLargestNumber
+    | zero one floatingRadix fullMantissaNumber |
+    zero := 0 asFloat.
+    one := 1 asFloat.
+    floatingRadix := self radix asFloat.
+    fullMantissaNumber := one - ( floatingRadix * self negativeMachinePrecision).
+    largestNumber := fullMantissaNumber.
+    [ [ fullMantissaNumber := fullMantissaNumber * floatingRadix.
+        largestNumber := fullMantissaNumber.
+        true] whileTrue: [ ].
+        ] when: ExAll do: [ :signal | signal exitWith: nil].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> computeMachinePrecision
+    | one zero a b inverseRadix tmp x |
+    one := 1 asFloat.
+    zero := 0 asFloat.
+    inverseRadix := one / self radix asFloat.
+    machinePrecision := one.
+    [ tmp := one + machinePrecision.
+      tmp - one = zero]
+        whileFalse:[  machinePrecision := machinePrecision * inverseRadix].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> computeNegativeMachinePrecision
+    | one zero floatingRadix inverseRadix tmp |
+    one := 1 asFloat.
+    zero := 0 asFloat.
+    floatingRadix := self radix asFloat.
+    inverseRadix := one / floatingRadix.
+    negativeMachinePrecision := one.
+    [ tmp := one - negativeMachinePrecision.
+      tmp - one = zero]
+        whileFalse: [ negativeMachinePrecision := 
+                             negativeMachinePrecision * inverseRadix].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >>computeRadix
+   | one zero a b tmp1 tmp2 |
+   one := 1 asFloat.
+   zero := 0 asFloat.
+   a := one.
+   [ a := a + a.
+      tmp1 := a + one.
+      tmp2 := tmp1 - a.
+      tmp2 - one = zero] whileTrue: [].
+    b := one.
+    [ b := b + b.
+      tmp1 := a + b.
+      radix := ( tmp1 - a) truncated.
+      radix = 0 ] whileTrue: [].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> computeSmallestNumber
+    | zero one floatingRadix inverseRadix fullMantissaNumber |
+    zero := 0 asFloat.
+    one := 1 asFloat.
+    floatingRadix := self radix asFloat.
+    inverseRadix := one / floatingRadix.
+    fullMantissaNumber := one - ( floatingRadix * self negativeMachinePrecision).
+    smallestNumber := fullMantissaNumber.
+    [ [ fullMantissaNumber := fullMantissaNumber * inverseRadix.
+        smallestNumber := fullMantissaNumber.
+        true] whileTrue: [ ].
+        ] when: ExAll do: [ :signal | signal exitWith: nil ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> defaultNumericalPrecision
+    defaultNumericalPrecision isNil
+        ifTrue: [ defaultNumericalPrecision := self machinePrecision sqrt ].
+    ^defaultNumericalPrecision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> largestExponentArgument
+    largestExponentArgument isNil
+        ifTrue: [ largestExponentArgument := self largestNumber ln].
+    ^largestExponentArgument
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >>largestNumber
+    largestNumber isNil
+        ifTrue: [ self computeLargestNumber ].
+    ^largestNumber
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> machinePrecision
+    machinePrecision isNil
+        ifTrue: [ self computeMachinePrecision ].
+    ^machinePrecision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> negativeMachinePrecision
+    negativeMachinePrecision isNil
+        ifTrue: [ self computeNegativeMachinePrecision ].
+    ^negativeMachinePrecision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> radix
+    radix isNil
+        ifTrue: [ self computeRadix ].
+    ^radix
+\end{displaycode}
 
 \noindent The method {\texttt showParameters} can be used to print the
 values of the parameters onto the Transcript window.
 
-\begin{listing} Smalltalk code to find the machine precision
-  \label{ls:floatmachine}
-  \input{Smalltalk/NumericalPrecision/DhbFloatingPointMachine}
-\end{listing}
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> showParameters
+    Transcript cr; cr;
+            nextPutAll: 'Floating-point machine parameters'; cr;
+            nextPutAll: '---------------------------------';cr;
+            nextPutAll: 'Radix: '.
+    self radix printOn: Transcript.
+    Transcript cr; nextPutAll: 'Machine precision: '.
+    self machinePrecision printOn: Transcript.
+    Transcript cr; nextPutAll: 'Negative machine precision: '.
+    self negativeMachinePrecision printOn: Transcript.
+    Transcript cr; nextPutAll: 'Smallest number: '.
+    self smallestNumber printOn: Transcript.
+    Transcript cr; nextPutAll: 'Largest number: '.
+    self largestNumber printOn: Transcript.         
+\end{displaycode}
 
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> smallestNumber
+    smallestNumber isNil
+        ifTrue: [ self computeSmallestNumber ].
+    ^smallestNumber
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFloatingPointMachine >> smallNumber
+    smallNumber isNil
+        ifTrue: [ smallNumber := self smallestNumber sqrt ].
+    ^smallNumber
+\end{displaycode}
 
 \section{Comparing floating point numbers}
 It is very surprising to see how frequently questions about the
