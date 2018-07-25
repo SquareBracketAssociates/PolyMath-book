@@ -55,7 +55,7 @@ described in this chapter.
 Here we have used special notations to indicate that the functions
 are implemented as library functions. The functions are
 represented by oval and arrows shows which class is used to
-implement a function for the class {\texttt Number}.
+implement a function for the class \code{Number}.
 
 \section{Function concept}
 \label{sec:function}
@@ -84,7 +84,7 @@ concepts about functions, namely derivatives and integrals. We
 shall concentrate mostly on implementation issues.
 
 \marginpar{Figure \ref{fig:functions} with
-the box {\textbf AbstractFunction} grayed.} A function in Smalltalk
+the box \code{AbstractFunction} grayed.} A function in Smalltalk
 can be readily implemented with a block closure. Block closures in
 Smalltalk are treated like objects; thus, they can be manipulated
 as any other objects. For example the one variable function
@@ -108,12 +108,12 @@ created with some instance variables to hold any constants and/or
 partial results. In order to be able to use functions
 indifferently implemented as block closures or as classes, one
 uses polymorphism. Each class implementing a function must
-implement a method value:. Thus, any object evaluating a function
-can send the same message selector, namely value:, to the variable
+implement a method \code{value:}.
+Thus, any object evaluating a function can send the same message selector, namely \code{value:}, to the variable
 holding the function.
 
 To evaluate a multi-variable function, the argument of the method
-value: is an Array or a vector (\cf section
+\code{value:} is an Array or a vector (\cf section
 \ref{sec:linearalgebra}). Thus, in Smalltalk multi-variable
 functions can follow the same polymorphism as for one-variable
 functions.
@@ -263,14 +263,14 @@ first element of the array containing the coefficients is the
 coefficient of the constant term, the second element the
 coefficient of the linear term ($x$), and so on.
 
-The method {\texttt value} evaluates the polynomial at the supplied
+The method \code{value} evaluates the polynomial at the supplied
 argument. This methods implements equation \ref{eq:horner}.
 
-The methods {\texttt derivative} and {\texttt integral} return each a new
-instance of a polynomial. The method {\texttt integral:} must have an
+The methods \code{derivative} and \code{integral} return each a new
+instance of a polynomial. The method \code{integral:} must have an
 argument specifying the value of the integral of the polynomial at
-0. A convenience {\texttt integral} method without a<rgument is
-equivalent to call the method {\texttt integral} with argument 0.
+0. A convenience \code{integral} method without a<rgument is
+equivalent to call the method \code{integral} with argument 0.
 
 The implementation of polynomial arithmetic is rarely used in
 numerical computation though. It is, however, a nice example to
@@ -287,20 +287,18 @@ type of the two arguments.
 with the box {\textbf Polynomial} grayed.}
 Being a special case of a function a polynomial must of course implement the behavior of
 functions as discussed in section \ref{sec:stFunction}.
-Here is a code example on how to use the class {\texttt PMPolynomial}.
+Here is a code example on how to use the class \code{PMPolynomial}.
 \begin{listing}{Smalltalk}
 {How to use PMPolynomial}
 | polynomial |
 polynomial := PMPolynomial coefficients: #(2 -3 1).
 polynomial value: 1.
 \end{listing}
-The code above creates an instance of the class {\texttt
-PMPolynomial} by giving the coefficient of the polynomial. In
+The code above creates an instance of the class \code{PMPolynomial} by giving the coefficient of the polynomial. In
 this example the polynomial $x^2-3x+2$. The final line of the code
 computes the value of the polynomial at $x=1$.
 
-The next example shows how to manipulate polynomials in symbolic
-form.
+The next example shows how to manipulate polynomials in symbolic form.
 \begin{listing}{Smalltalk}
 { }
 | pol1 pol2 polynomial polD polI |
@@ -320,28 +318,27 @@ the polynomial created in the third line.
 Listing \ref{ls:polynomial} shows the Smalltalk implementation of
 the class {\texttt PMPolynomial}.
 
-A beginner may have been tempted to make {\texttt PMPolynomial} a
-subclass of {\texttt Array} to spare the need for an instance
+A beginner may have been tempted to make \code{PMPolynomial} a
+subclass of \code{Array} to spare the need for an instance
 variable. This is of course quite wrong. An array is a subclass of
-{\texttt Collection}. Most methods implemented or inherited by {\texttt
-Array} have nothing to do with the behavior of a polynomial as a
-mathematical entity.
+\code{Collection}.
+Most methods implemented or inherited by \code{Array} have nothing to do with the behavior of a polynomial as a mathematical entity.
 
-Thus, a good choice is to make the class {\texttt PMPolynomial} a
+Thus, a good choice is to make the class \code{PMPolynomial} a
 subclass of Object. It has a single instance variable, an Array
 containing the coefficients of the polynomial.
 
-It is always a good idea to implement a method {\texttt printOn:} for
+It is always a good idea to implement a method \code{printOn:} for
 each class. This method is used by many system utilities to
 display an object in readable form, in particular the debugger and
 the inspectors. The standard method defined for all objects simply
 displays the name of the class. Thus, it is hard to decide if two
 different variables are pointing to the same object. Implementing
-a method {\texttt printOn:} allows displaying parameters particular to
+a method \code{printOn:} allows displaying parameters particular to
 each instance so that the instances can easily be identified. It
-may also be used in quick print on the {\texttt Transcript} and may
+may also be used in quick print on the \code{Transcript} and may
 save you the use on an inspector while debugging. Implementing a
-method {\texttt printOn:} for each class that you create is a good
+method \code{printOn:} for each class that you create is a good
 general practice, which can make your life as a Smalltalker much
 easier.
 
@@ -355,10 +352,9 @@ mathematician that is. In fact, an experienced Smalltalker seldom
 uses indices explicitly as Smalltalk provides powerful iterator
 methods.
 
-The method {\texttt value:} uses the Smalltalk iteration method {\texttt
-inject:into:} (\cf section \ref{sec:injectinto}). Using this
+The method \code{value:} uses the Smalltalk iteration method \code{inject:into:} (\cf section \ref{sec:injectinto}). Using this
 method requires storing the coefficients in reverse order because
-the first element fed into the method {\texttt inject:into:}
+the first element fed into the method \code{inject:into:}
 corresponds to the coefficient of the largest power of $x$. It
 would certainly be quite inefficient to reverse the order of the
 coefficients at each evaluation. Since this requirement also
@@ -366,17 +362,16 @@ simplifies the computation of the coefficients of the derivative
 and of the integral, reversing of the coefficients is done in the
 creation method to make things transparent.
 
-The methods {\texttt derivative} and {\texttt integral} return a new
-instance of the class {\texttt PMPolynomial}. They do not modify the
+The methods \code{derivative} and \code{integral} return a new
+instance of the class \code{PMPolynomial}. They do not modify the
 object receiving the message. This is also true for all operations
-between polynomials. The methods {\texttt derivative} and {\texttt
-integral} use the method {\texttt collect:} returning a collection of
+between polynomials. The methods \code{derivative} and \code{integral} use the method \code{collect:} returning a collection of
 the values returned by the supplied block closure at each argument
 (\cf section \ref{sec:collect}).
 
-The method {\texttt at:} allows one to retrieve a given coefficient.
+The method \code{at:} allows one to retrieve a given coefficient.
 To ease readability of the multiplication and division methods,
-the method {\texttt at:} has been defined to allow for indices
+the method \code{at:} has been defined to allow for indices
 starting at 0. In addition this method returns zero for any index
 larger than the polynomial's degree. This allows being lax with
 the index range. In particular, equation \ref{eq:polMult} can be
