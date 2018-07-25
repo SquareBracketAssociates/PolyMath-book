@@ -316,7 +316,7 @@ two polynomials, respectively the derivative and the integral of
 the polynomial created in the third line.
 
 Listing \ref{ls:polynomial} shows the Smalltalk implementation of
-the class {\texttt PMPolynomial}.
+the class \code{PMPolynomial}.
 
 A beginner may have been tempted to make \code{PMPolynomial} a
 subclass of \code{Array} to spare the need for an instance
@@ -390,15 +390,195 @@ complex coefficients.}
 
 \begin{listing}[label=lst:polynomial]{Smalltalk}
 {Smalltalk implementation of the polynomial class}
-\input{Smalltalk/FunctionEvaluation/DhbPolynomial.tex}
+Object subclass: #PMPolynomial
+   instanceVariableNames: 'coefficients'
+   classVariableNames: ''
+   package: 'Math-Polynomials'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> * aNumberOrPolynomial
+   ^aNumberOrPolynomial timesPolynomial: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> + aNumberOrPolynomial
+    ^aNumberOrPolynomial addPolynomial: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> - aNumberOrPolynomial
+    ^aNumberOrPolynomial subtractToPolynomial: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> / aNumberOrPolynomial
+    ^aNumberOrPolynomial dividingPolynomial: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> addNumber: aNumber
+    | newCoefficients |
+    newCoefficients := coefficients reverse.
+    newCoefficients at: 1 put: newCoefficients first + aNumber.
+    ^self class new: newCoefficients
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> addPolynomial: aPolynomial
+    ^self class new: ( ( 0 to: (self degree max: aPolynomial degree)) 
+                collect: [ :n | ( aPolynomial at: n) + ( self at: n) ])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> at: anInteger
+    ^anInteger < coefficients size
+        ifTrue: [ coefficients at: ( coefficients size - anInteger) ]
+        ifFalse: [ 0 ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> coefficients
+    ^coefficients deepCopy
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> degree 
+    ^coefficients size - 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> derivative
+    | n |
+    n := coefficients size.
+    ^self class new: ( ( coefficients
+         collect: [ :each | n := n - 1. each * n]) reverse copyFrom: 2 to: coefficients size)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> dividingPolynomial: aPolynomial
+    ^ (self dividingPolynomialWithRemainder: aPolynomial) first
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> dividingPolynomialWithRemainder: aPolynomial
+    | remainderCoefficients quotientCoefficients n m norm 
+                                                      quotientDegree |
+    n := self degree.
+    m := aPolynomial degree.
+    quotientDegree := m - n.
+    quotientDegree < 0
+        ifTrue: [ ^Array with: ( self class new: #(0)) with: 
+                                                         aPolynomial].
+    quotientCoefficients := Array new: quotientDegree + 1.
+    remainderCoefficients := ( 0 to: m) collect: [ :k | aPolynomial 
+                                                               at: k].
+    norm := 1 / coefficients first.
+    quotientDegree to: 0 by: -1
+        do: [ :k | | x |
+              x := ( remainderCoefficients at: n + k + 1) * norm.
+              quotientCoefficients at: (quotientDegree + 1 - k) put: 
+                                                                    x.
+              (n + k - 1) to: k by: -1
+                do: [ :j | 
+                remainderCoefficients at: j + 1 put: 
+                            ( ( remainderCoefficients at: j + 1) - ( 
+                                                x * (self at: j - k)))
+                ].
+            ].
+    ^ Array with: ( self class new: quotientCoefficients reverse)
+           with: ( self class new: ( remainderCoefficients copyFrom: 1 to: n))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> initialize: anArray
+    coefficients := anArray.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> integral
+    ^ self integral: 0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> integral: aValue
+    | n |
+    n := coefficients size + 1.
+    ^ self class new: ( ( coefficients collect: [ :each | n := n - 1. 
+                                  each / n]) copyWith: aValue) reverse
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> printOn: aStream
+    | n firstNonZeroCoefficientPrinted |
+    n := 0.
+    firstNonZeroCoefficientPrinted := false.
+    coefficients reverse do:
+        [ :each |
+          each = 0
+            ifFalse:[ firstNonZeroCoefficientPrinted
+                            ifTrue: [ aStream space.
+                                         each < 0
+                                            ifFalse:[ aStream 
+                                                         nextPut: $+].
+                                         aStream space.
+                                        ]
+                            ifFalse:[ firstNonZeroCoefficientPrinted 
+                                                             := true].
+                          ( each = 1 and: [ n > 0])
+                            ifFalse:[ each printOn: aStream].
+                          n > 0
+                            ifTrue: [ aStream nextPutAll: ' X'.
+                                         n > 1
+                                            ifTrue: [ aStream 
+                                                          nextPut: $^.
+                                                         n printOn: 
+                                                              aStream.
+                                                        ].
+                                        ].
+                        ].
+         n := n + 1.
+        ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> subtractToPolynomial: aPolynomial
+    ^self class new: ( ( 0 to: (self degree max: aPolynomial degree)) 
+                collect: [ :n | ( aPolynomial at: n) - ( self at: n)])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> timesNumber: aNumber
+    ^self class new: ( coefficients reverse collect: [ :each | each * aNumber])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+Polynomial >> timesPolynomial: aPolynomial
+    | productCoefficients degree|
+    degree := aPolynomial degree + self degree.
+    productCoefficients := (degree to: 0 by: -1)
+            collect:[ :n | | sum |
+                      sum := 0.
+                      0 to: (degree - n)
+                        do: [ :k | sum := (self at: k) * (aPolynomial 
+                                        at: (degree - n - k)) + sum].
+                      sum
+                    ].
+    ^self class new: productCoefficients
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> value: aNumber
+    ^coefficients inject: 0 into: [ :sum :each | sum * aNumber + each]
+\end{displaycode}
 
 Listing \ref{ls:polynomialNumber} shows the listing of the methods
 used by the class Number as part of the double dispatching of the
 arithmetic operations on polynomials.
 
 \begin{listing}[label=lst:polynomialNumber]{Smalltalk}
-{Method of class {\texttt Number} related to polynomials}
+{Method of class Number related to polynomials}
 \input{Smalltalk/FunctionEvaluation/Number(DhbFunctionEvaluation)}
 \end{listing}
 
@@ -544,13 +724,13 @@ of the error function.
 
 In Smalltalk we are allowed to extend existing classes. Thus, the
 public method to evaluate the error function is implemented as a
-method of the base class {\texttt Number}. This method uses the class,
-{\texttt DhbErfApproximation}, used to store the constants of equation
+method of the base class \code{Number}. This method uses the class,
+\code{PMErfApproximation}, used to store the constants of equation
 \ref{eq:erfconst} and evaluate the formula of equations
 \ref{eq:erf} and \ref{eq:erfpol}. In our case, there is no need to
-create a separate instance of the class {\texttt DhbErfApproximation}
+create a separate instance of the class \code{PMErfApproximation}
 at each time since all instances would actually be exactly
-identical. Thus, the class {\texttt DhbErfApproximation} is a
+identical. Thus, the class \code{PMErfApproximation} is a
 singleton class. A singleton class is a class, which can only
 create a single instance \cite{GoF}. Once the first instance is
 created, it is kept in a class instance variable. Any subsequent
