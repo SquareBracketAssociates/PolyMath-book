@@ -1044,7 +1044,8 @@ following relation:
 B\left(x,y\right)={\Gamma\left(x\right)\Gamma\left(y\right)\over\Gamma\left(x+y\right)}
 \end{equation}
 Thus, computation of the beta function is directly obtained from
-the gamma function. As evaluating the gamma function might
+the gamma function.
+As evaluating the gamma function might
 overflow the floating-point exponent (\cf discussion at the end of
 section \ref{sec:gammafunc}), it is best to evaluate the above
 formula using the logarithm of the gamma function.
@@ -1053,23 +1054,32 @@ formula using the logarithm of the gamma function.
 \marginpar{Figure \ref{fig:functions} with the box {\textbf
 LanczosFormula} grayed.} Like the error and gamma functions, the
 gamma function is implemented as a single method of the class {\texttt
-Number}. Thus, computing the beta function of 2.5 and 5.5 is
-simply coded as:
-\begin{listing}{Smalltalk}
+  Number}.
+Thus, computing the beta function of 2.5 and 5.5 is simply coded as:
+\begin{displaycode}{Smalltalk}
 2.5 beta: 5.5
-\end{listing}
+\end{displaycode}
 
 Computing the logarithm of the beta function of
 2.5 and 5.5 is simply coded as:
-\begin{listing}{Smalltalk}
+\begin{displaycode}{Smalltalk}
 2.5 logBeta: 5.5
-\end{listing}
-Listing \ref{ls:betafunc} shows the
-implementation of the beta function in Smalltalk.
+\end{displaycode}
+Listing \ref{lst:betafunc} shows the implementation of the beta function in Smalltalk.
 
-\begin{listing}[label=ls:betafun]{Smalltalk}
-{Smalltalk implementation of the beta function}
-\input{Smalltalk/FunctionEvaluation/Number(DhbBetaFunction).tex}
+\begin{listing}[label=lst:betafunc]{Smalltalk}
+  {Smalltalk implementation of the beta function}
+Number >> beta: aNumber
+   "Computes the beta function of the receiver and aNumber"
+
+   ^ (self logBeta: aNumber) exp
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+Number >> logBeta: aNumber
+   "Computes the logarithm of the beta function of the receiver and aNumber"
+
+   ^ self logGamma + aNumber logGamma - (self + aNumber) logGamma
+\end{displaycode}
 
 %\ifx\wholebook\relax\else\end{document}\fi
