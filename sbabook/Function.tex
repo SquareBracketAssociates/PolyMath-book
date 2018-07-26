@@ -703,27 +703,28 @@ require special attention.
 with the box {\textbf ErfApproximation} grayed.} The error function is
 implemented as a single method for the class Number. Thus,
 computing the centile of our preceding example is simply coded as:
-\begin{listing}{Smalltalk}
+\begin{displaycode}{Smalltalk}
 | weight average stDev centile |
 weight := 2.85.
 average := 3.39.
 stDev := 0.44.
-centile := ( ( weight - average) / stDev) erf * 100.
-\end{listing}
+centile := ((weight - average) / stDev) erf * 100.
+\end{displaycode}
 If you want to compute the probability for a measurement to lay
 within 3 standard deviations from its mean, you need to evaluate
 the following expression using equation \ref{eq:normaccept}:
-\begin{listing}{Smalltalk}
+\begin{displaycode}{Smalltalk}
 3 errorFunction * 2 - 1.
-\end{listing}
+\end{displaycode}
 If one needs to use the error function as a function, one must use
 it inside a block closure. In this case one defines a function
 object as follows:
-\begin{listing}{Smalltalk}
+\begin{displaycode}{Smalltalk}
 | errorFunction |
-errorFunction := [ :x | x errorFunction ].
-\end{listing}
-Listing \ref{ls:errorFunction} shows the Smalltalk implementation
+errorFunction := [:x | x errorFunction].
+\end{displaycode}
+
+Listing \ref{lst:errorFunction} shows the Smalltalk implementation
 of the error function.
 
 In Smalltalk we are allowed to extend existing classes. Thus, the
@@ -748,12 +749,55 @@ definition of the class. So, the use of a singleton class is
 preferable. A more detailed discussion of this topic can be found
 in \cite{StDesPat}.
 
-\begin{listing}
-Smalltalk implementation of the Error function
-\label{ls:errorFunction}
-\input{Smalltalk/FunctionEvaluation/Number(DhbErrorFunction).tex}
-\input{Smalltalk/FunctionEvaluation/DhbErfApproximation}
+\begin{listing}[label=lst:errorFunction]{Smalltalk}
+{Smalltalk implementation of the Error function}
+Number >> errorFunction
+    ^PMErfApproximation new value: self
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+Object subclass: #PMErfApproximation
+   instanceVariableNames: 'constant series norm'
+   classVariableNames: 'UniqueInstance'
+   package: 'Math-Core-Distribution'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMErfApproximation class >> new
+    UniqueInstance isNil
+        ifTrue: [UniqueInstance := super new initialize].
+    ^UniqueInstance
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMErfApproximation >> initialize
+    constant := 0.2316419.
+    norm := 1 / (Float pi * 2) sqrt.
+    series := PMPolynomial coefficients: #( 0.31938153 -0.356563782 
+                               1.781477937 -1.821255978 1.330274429). 
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMErfApproximation >> normal: aNumber
+   "Computes the value of the Normal distribution for aNumber"
+
+   ^ [ (aNumber squared * -0.5) exp * norm ]
+     on: Error
+     do: [ :signal | signal return: 0 ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMErfApproximation >> value: aNumber
+    | t |
+    aNumber = 0
+        ifTrue: [ ^0.5].
+    aNumber > 0
+        ifTrue: [ ^1- ( self value: aNumber negated)].
+    aNumber < -20
+        ifTrue: [ ^0].
+    t := 1 / (1 - (constant * aNumber)).
+    ^(series value: t) * t * (self normal: aNumber)
+\end{displaycode}
 
 \section{Gamma function}
 The gamma function is used in many mathematical functions. In this
