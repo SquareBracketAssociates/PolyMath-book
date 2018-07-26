@@ -25,7 +25,7 @@
 %\def\st#1{^{\mathop{\rm #1}}}
 \def\note#1{\begin{quote}{\textbf Note:} #1\end{quote}}
 \def\braket#1{\left\langle #1\right\rangle}
-\def\order#1{\let\o=#1{\cal O}\ifx\o 1$\left(n\right)$\else$\left(n^{#1}\right)$\fi}
+\def\order#1{\let\o=#1$\mathcal{O}$\ifx\o 1$\left(n\right)$\else$\left(n^{#1}\right)$\fi}
 %\newtheorem{privListing}{Listing}[chapter]
 %\newenvironment{listing}{\vskip 3ex\hrule\vskip 1ex\begin{privListing}}{\end{privListing}\hrule\vskip 1ex}
 \newtheorem{privExample}{Code example}[chapter]
