@@ -83,9 +83,8 @@ We shall assume that the reader is familiar with elementary
 concepts about functions, namely derivatives and integrals. We
 shall concentrate mostly on implementation issues.
 
-\marginpar{Figure \ref{fig:functions} with
-the box \code{AbstractFunction} grayed.} A function in Smalltalk
-can be readily implemented with a block closure. Block closures in
+%\marginpar{Figure \ref{fig:functions} with the box \code{AbstractFunction} grayed.}
+A function in Smalltalk can be readily implemented with a block closure. Block closures in
 Smalltalk are treated like objects; thus, they can be manipulated
 as any other objects. For example the one variable function
 defined as:
@@ -174,10 +173,10 @@ of each term\footnote{This is actually the first program I ever
 wrote in my first computer programming class. Back in 1969, the
 language in fashion was ALGOL.}. The following formula shows the
 resulting expression:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:horner}
 \left(x\right)=a_0+x\left\{a_1+x\left[a_2+x\left(a_3+\cdots\right)\right]\right\}
-\end{mainEquation}
+\end{equation}
 Evaluating the above expression now requires only multiplications.
 The resulting algorithm is quite straightforward to implement.
 Expression \ref{eq:horner} is called Horner's rule because it was
@@ -283,8 +282,7 @@ polynomials or between a number and a polynomial. In short, double
 dispatching allows one to identify the correct method based on the
 type of the two arguments.
 
-\marginpar{Figure \ref{fig:functions}
-with the box {\textbf Polynomial} grayed.}
+%\marginpar{Figure \ref{fig:functions} with the box {\textbf Polynomial} grayed.}
 Being a special case of a function a polynomial must of course implement the behavior of
 functions as discussed in section \ref{sec:stFunction}.
 Here is a code example on how to use the class \code{PMPolynomial}.
@@ -630,11 +628,11 @@ The result of the error function lies between 0 and 1.
 One could carry out the integral numerically, but there exists
 several good approximations. The following formula is taken from
 \cite{AbrSteg}.
-\begin{mainEquation}
+\begin{equation}
 \label{eq:erf} \erf\left(x\right)={1 \over \sqrt{2\pi}}e^{-{x^2
 \over 2 }}\sum_{i=1}^5 a_i r\left(x\right)^i\mbox{\quad for $x\ge
 0$}.
-\end{mainEquation}
+\end{equation}
 where
 \begin{equation}
 \label{eq:erfpol}r\left(x\right)={1 \over {1-0.2316419x}}.
@@ -649,9 +647,9 @@ a_2 =&-0.356563782
 The error on this formula is better than $7.5\times10^{-8}$ for
 negative $x$.
 To compute the value for positive values, one uses the fact that:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:erfneg} \erf\left(x\right)=1-\erf\left(-x\right).
-\end{mainEquation}
+\end{equation}
 When dealing with a general Gaussian distribution with average
 $\mu$ and standard deviation $\sigma$ it is convenient to define a
 generalized error function as:
@@ -663,9 +661,9 @@ generalized error function as:
 A simple change of variable in the integral shows that the
 generalized error function can be obtained from the error function
 as:
-\begin{mainEquation}
+\begin{equation}
 \erf\left(x;\mu,\sigma\right)=\erf\left({x-\mu\over\sigma}\right).
-\end{mainEquation}
+\end{equation}
 Thus, one can compute the probability of finding a measurement $x$
 within the interval $\left[\mu - t \cdot \sigma,\mu + t \cdot
 \sigma\right] $ when the measurements are distributed according to
@@ -699,9 +697,9 @@ According to current practice, this second pregnancy does not
 require special attention.
 
 \subsection{Error function --- Smalltalk implementation}
-\label{sec:sterrorfunction} \marginpar{Figure \ref{fig:functions}
-with the box {\textbf ErfApproximation} grayed.} The error function is
-implemented as a single method for the class Number. Thus,
+\label{sec:sterrorfunction}
+%\marginpar{Figure \ref{fig:functions} with the box {\textbf ErfApproximation} grayed.}
+The error function is implemented as a single method for the class \code{Number}. Thus,
 computing the centile of our preceding example is simply coded as:
 \begin{displaycode}{Smalltalk}
 | weight average stDev centile |
@@ -836,11 +834,11 @@ integers and the factorial can be derived:
 \end{equation}
 The most precise approximation for the Gamma function is given by
 a formula discovered by Lanczos \cite{Press}:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:lanczos} \Gamma\left(x\right)\approx e^{\left(x+{5\over
 2}\right)}\left(x+{5\over 2}\right){\sqrt{2\pi}\over x
 }\left(c_0+\sum_{n=1}^6{c_n \over x + n}+\epsilon\right)
-\end{mainEquation}
+\end{equation}
 where
 \begin{equation}
 \label{eq:lanczosconst}\left\{ \begin{array}{lrl}c_0
@@ -910,10 +908,9 @@ For similar reasons the leading factors of Lanczos formula are
 evaluated using logarithms in both implementations.
 
 \subsection{Gamma function --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:functions} with the box {\textbf
-LanczosFormula} grayed.} Like the error function, the gamma
-function is implemented as a single method of the class {\texttt
-Number}. Thus, computing the gamma function of 2.5 is simply coded
+%\marginpar{Figure \ref{fig:functions} with the box {\textbf LanczosFormula} grayed.}
+Like the error function, the gamma function is implemented as a single method of the class \code{Number}.
+Thus, computing the gamma function of 2.5 is simply coded
 as:
 \begin{displaycode}{Smalltalk}
 2.5 gamma
@@ -928,7 +925,7 @@ Listing \ref{lst:gammafunc} shows the Smalltalk implementation of the gamma
 function.
 
 Here, the gamma function is implemented with two methods: one for
-the class {\texttt Integer} and one for the class {\texttt Float}.
+the class \code{Integer} and one for the class \code{Float}.
 Otherwise, the scheme to define the gamma function is similar to
 that of the error function. Please refer to section
 \ref{sec:sterrorfunction} for detailed explanations.
@@ -937,13 +934,12 @@ Since the method factorial is already defined for integers in the
 base classes, the gamma function has been defined using equation
 \ref{eq:gammafact} for integers. An error is generated if one
 attempts to compute the gamma function for non-positive integers.
-The class {\texttt Number} delegates the computation of Lanczos'
+The class \code{Number} delegates the computation of Lanczos'
 formula to a singleton class. This is used by the non-integer
-subclasses of {\texttt Number}: {\texttt Float} and {\texttt Fraction}.
+subclasses of \code{Number}: \code{Float} and \code{Fraction}.
 
 The execution time to compute the gamma function for floating
 argument given in Table \ref{tb:speed} in section \ref{sec:speed}.
-
 
 \begin{listing}[label=lst:gammafunc]{Smalltalk}
 {Smalltalk implementation of the gamma function}
@@ -1051,10 +1047,9 @@ section \ref{sec:gammafunc}), it is best to evaluate the above
 formula using the logarithm of the gamma function.
 
 \subsection{Beta function --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:functions} with the box {\textbf
-LanczosFormula} grayed.} Like the error and gamma functions, the
-gamma function is implemented as a single method of the class {\texttt
-  Number}.
+%\marginpar{Figure \ref{fig:functions} with the box {\textbf LanczosFormula} grayed.}
+Like the error and gamma functions, the
+gamma function is implemented as a single method of the class \code{Number}.
 Thus, computing the beta function of 2.5 and 5.5 is simply coded as:
 \begin{displaycode}{Smalltalk}
 2.5 beta: 5.5

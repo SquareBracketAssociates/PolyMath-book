@@ -640,16 +640,16 @@ exceptions to detect the underflow and the overflow.
 
 \begin{displaycode}{Smalltalk}
 PMFloatingPointMachine >> computeLargestNumber
-    | zero one floatingRadix fullMantissaNumber |
-    zero := 0 asFloat.
-    one := 1 asFloat.
-    floatingRadix := self radix asFloat.
-    fullMantissaNumber := one - ( floatingRadix * self negativeMachinePrecision).
-    largestNumber := fullMantissaNumber.
-    [ [ fullMantissaNumber := fullMantissaNumber * floatingRadix.
-        largestNumber := fullMantissaNumber.
-        true] whileTrue: [ ].
-        ] when: ExAll do: [ :signal | signal exitWith: nil].
+	| one floatingRadix fullMantissaNumber |
+	one := 1.0.
+	floatingRadix := self radix asFloat.
+	fullMantissaNumber := one - ( floatingRadix * self negativeMachinePrecision).
+	largestNumber := fullMantissaNumber.
+	[ [ fullMantissaNumber := fullMantissaNumber * floatingRadix.
+	    fullMantissaNumber isInfinite ifTrue: [^nil].
+	    largestNumber := fullMantissaNumber.
+		true] whileTrue: [ ].
+		] on: Error do: [ :signal | signal return: nil].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
@@ -798,11 +798,11 @@ finite  numerical representation. Somehow the computer courses are
 not giving enough emphasis about floating-point numbers.
 
 \begin{quote}
-So, how should you check the equality of two floating-point
-numbers? The practical answer is: {\textsl thou shalt not!}
+{\textsl So, how should you check the equality of two floating-point
+numbers? The practical answer is: thou shalt not!}
 \end{quote}
 
-\noindent As you will see, the algorithms in this book only
+As you will see, the algorithms in this book only
 compare numbers, but never check for equality. If you cannot
 escape the need for a test of equality, however, the best solution
 is to create methods to do this. Since the floating-point
