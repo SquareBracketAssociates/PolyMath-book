@@ -232,20 +232,19 @@ P_2\left(x\right)={\left(x-x_1\right)\left(x-x_2\right)\over
 
 The computation of the polynomial occurs in the order of $\mathcal{O}(n^2)$ since it involves a double iteration.
 One can save the evaluation of a few products by rewriting equation \ref{eq:lagrange} as:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:lagrangesimp}
 P_n\left(x\right)=\prod_{i=0}^n\left(x-x_i\right)\sum_{i=0}^n{y_i
 \over\left(x-x_i\right)\prod_{j\neq i}\left(x_i-x_j\right)}.
-\end{mainEquation}
+\end{equation}
 Of course, equation \ref{eq:lagrangesimp} cannot be evaluated at
 the points defining the interpolation. This is easily solved by
 returning the defining values as soon as one of the first products
 becomes zero during the evaluation.
 
 \subsection{Lagrange interpolation --- Smalltalk implementation}
-\label{sec:slagrange}\marginpar{Figure \ref{cls:interpolation}
-with the box {\textbf LagrangeInterpolator} grayed.} The object
-responsible to implement Lagrange interpolation is defined
+%\label{sec:slagrange}\marginpar{Figure \ref{cls:interpolation} with the box {\textbf LagrangeInterpolator} grayed.}
+The object responsible to implement Lagrange interpolation is defined
 uniquely by the sample points over which the interpolation is
 performed. In addition it should behave as a function. In other
 words it should implement the behavior of a one-variable function
@@ -418,10 +417,10 @@ stored.
 If one writes the Lagrange interpolation polynomial using a
 generalized Horner expansion, one obtains the Newton's
 interpolation formula given by \cite{Knuth2}:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:newtonhorn}P_n\left(x\right)=\alpha_0+\left(x-x_0\right)\cdot
 \left[\alpha_1+\left(x-x_1\right)\cdot\left[\cdots\left[\alpha_{n-1}+\alpha_n\cdot\left(x-x_1\right)\right]\right]\right]
-\end{mainEquation}
+\end{equation}
 The coefficients $\alpha_i$ are obtained by evaluating divided
 differences as follows:
 \begin{equation}
@@ -447,9 +446,8 @@ Newton's algorithm is more efficient than direct Lagrange
 interpolation.
 
 \subsection{Newton interpolation --- Smalltalk implementation}
-\marginpar{Figure \ref{cls:interpolation} with the box {\textbf
-NewtonInterpolator} grayed.} The object implementing Newton's
-interpolation algorithm is best implemented as a subclass of the
+%\marginpar{Figure \ref{cls:interpolation} with the box {\textbf NewtonInterpolator} grayed.}
+The object implementing Newton's interpolation algorithm is best implemented as a subclass of the
 class \code{PMLagrangeInterpolator} because all methods used to
 handle the sample points can be reused. This also allows us to
 keep the interface identical. It has an additional instance
@@ -521,12 +519,12 @@ polynomials of degree $i$ defined by the sets of values
 $x_j,\ldots,x_{j+i}$ and the corresponding function's values
 $y_j,\ldots,y_{j+i}$. From equation \ref{eq:lagrange} one can
 derive the following recurrence formula \cite{Press}:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:neville}
 P^i_j\left(x\right)={\left(x-x_{i+j}\right)P^{i-1}_j\left(x\right)
 +\left(x_j-x\right)P^{i-1}_{j+1}\left(x\right)\over x_j-x_{i+j}}
 \mbox{\quad for $j<i$}.
-\end{mainEquation}
+\end{equation}
 The initial values $P^0_j\left(x\right)$ are simply $y_j$. The
 value of the final Lagrange's polynomial is $P^n_0\left(x\right)$.
 
@@ -567,9 +565,8 @@ best performed using Neville's algorithm. For a large number of
 points, it becomes significantly slower.
 
 \subsection{ Neville interpolation --- Smalltalk  implementation}
-\marginpar{Figure \ref{cls:interpolation} with the box {\textbf
-NevilleInterpolator} grayed.} The object implementing Neville's
-interpolation's algorithm is best implemented as a subclass of the
+%\marginpar{Figure \ref{cls:interpolation} with the box {\textbf NevilleInterpolator} grayed.}
+The object implementing Neville's interpolation's algorithm is best implemented as a subclass of the
 class \code{LagrangeInterpolator} since the methods used to handle
 the sample points can be reused. This also allows us to keep the
 interface identical.
@@ -786,9 +783,8 @@ of that algorithm can be reused.
 
 \subsection{Bulirsch-Stoer interpolation --- Smalltalk implementation}
 
-\marginpar{Figure \ref{cls:interpolation} with the box {\textbf
-BulirschStoerInterpolator} grayed.} The object implementing
-Bulirsch-Stoer interpolation's algorithm is best implemented as a
+%\marginpar{Figure \ref{cls:interpolation} with the box {\textbf BulirschStoerInterpolator} grayed.}
+The object implementing Bulirsch-Stoer interpolation's algorithm is best implemented as a
 subclass of the class \code{PMNevilleInterpolator} since the
 methods used to manage the computation of the finite differences
 can be reused. The public interface is identical.
@@ -863,11 +859,11 @@ To derive the expression for the cubic spline, one first assumes
 that the second derivatives of the splines, $y^{\prime\prime}_i$,
 are known at each point. Then one writes the cubic spline between
 $x_{i-1}$ and $x_i$ in the following symmetric form:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:splinedef} P_i\left(x\right)=y_{i-1}A_i\left(x\right) +
 y_i B_i\left(x\right) + y^{\prime\prime}_{i-1}C_i\left(x\right) +
 y^{\prime\prime}_i D_i\left(x\right),
-\end{mainEquation}
+\end{equation}
 where
 \begin{equation}
 \label{eq:splinelin}  \left\{
@@ -962,9 +958,8 @@ involves one operation. Thus, resorting to a general algorithm for
 solving a system of linear equations is not necessary.
 
 \subsection{Cubic spline interpolation --- Smalltalk  implementation}
-\marginpar{Figure \ref{cls:interpolation} with the box {\textbf
-SplineInterpolator} grayed.} In both languages the object
-implementing cubic spline interpolation is a subclass of the
+%\marginpar{Figure \ref{cls:interpolation} with the box {\textbf SplineInterpolator} grayed.}
+In both languages the object implementing cubic spline interpolation is a subclass of the
 Newton interpolator. The reader might be surprised by this choice
 since, mathematically speaking, these two objects do not have
 anything in common.
