@@ -649,7 +649,7 @@ PMFloatingPointMachine >> computeLargestNumber
 	    fullMantissaNumber isInfinite ifTrue: [^nil].
 	    largestNumber := fullMantissaNumber.
 		true] whileTrue: [ ].
-		] on: Error do: [ :signal | signal return: nil].
+		] on: Error do: [ :signal | signal return: nil]
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}

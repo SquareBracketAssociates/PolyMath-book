@@ -123,20 +123,17 @@ x_{pos}-x_{neg}\right|$ since the zero
 of the function is always inside the interval defined by
 $x_{pos}$ and $x_{neg}$.
 
-\subsection{Bisection algorithm --- General  implementation}
+\subsection{Bisection algorithm --- Smalltalk  implementation}
 
-The class of the object implementing the bisection algorithm is a
-subclass of the abstract class \code{FunctionalIterator}.
-The class \code{BisectionZeroFinder} needs the following additional instance variables.
-\begin{description}
-  \item[\texttt positiveX]$x_{pos}$ and
-  \item [\texttt negativeX]$x_{neg}$
-\end{description}
-The bisection algorithm proper is implemented only within the
-method \code{evaluateIteration}.
+The class of the object implementing the bisection algorithm is a subclass of the abstract class \code{PMFunctionalIterator}.
+The class \code{PMBisectionZeroFinder} needs the following additional instance variables:
+\begin{itemize}
+  \item \code{positiveX} $x_{pos}$ and
+  \item \code{negativeX} $x_{neg}$
+\end{itemize}
+The bisection algorithm proper is implemented only within the method \code{evaluateIteration}.
 Other necessary methods have already been implemented in the iterative process class.
 
-\subsection{Bisection algorithm --- Smalltalk  implementation}
 Finding the zero of a function is performed by creating an
 instance of the class \code{PMBisectionZeroFinder} and giving the
 function as the argument of the creation method as explained in
@@ -155,7 +152,7 @@ The third line defines the initial values, $x_{pos}$ and $x_{neg}$.
 The fourth line performs the algorithm and stores the result if the algorithm has converged.
 The last two lines check for convergence and take corrective action if the algorithm did not converge.
 
-Listing \ref{ls:bisection} shows the implementation of the bisection zero finding algorithm in Smalltalk.
+Listing \ref{lst:bisection} shows the implementation of the bisection zero finding algorithm in Smalltalk.
 
 The class \code{PMBisectionZeroFinder} is a subclass of the class \code{PMFunctionalIterator}. As one can see only a few methods need to be implemented.
 Most of them pertain to the definition of the initial interval.
@@ -166,9 +163,72 @@ An error is generated in each method if the function's value does not have the p
 The convenience methods to find random starting values are respectively \code{findPositiveXFrom:range:} and \code{findNegativeXFrom:range:}.
 The method \code{computeInitialValues} does not compute the initial values. Instead it makes sure that $x_{pos}$ and $x_{neg}$ have been properly defined.
 
-\begin{listing} Smalltalk implementation of the bisection algorithm \label{ls:bisection}
-\input{Smalltalk/IterativeAlgorithms/DhbBisectionZeroFinder}
+\begin{listing}[label=lst:bisection]{Smalltalk}
+{Smalltalk implementation of the bisection algorithm}
+PMFunctionalIterator subclass: #PMBisectionZeroFinder
+   instanceVariableNames: 'positiveX negativeX'
+   classVariableNames: ''
+   package: 'Math-DHB-Numerical-Math-FunctionIterator'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMBisectionZeroFinder >> computeInitialValues
+    positiveX isNil
+        ifTrue: [ self error: 'No positive value supplied'].
+    negativeX isNil
+        ifTrue: [ self error: 'No negative value supplied'].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMBisectionZeroFinder >> evaluateIteration
+    result := ( positiveX + negativeX) * 0.5.
+    ( functionBlock value: result) > 0
+        ifTrue: [ positiveX := result]
+        ifFalse:[ negativeX := result].
+    ^self relativePrecision: ( positiveX - negativeX) abs
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMBisectionZeroFinder >> findNegativeXFrom: aNumber1 range: aNumber2
+    | n |
+    n := 0.
+    [ negativeX := Number random * aNumber2 + aNumber1.
+      ( functionBlock value: negativeX) < 0
+        ] whileFalse: [ n := n + 0.1.
+                        n > maximumIterations
+                            ifTrue: [ self error: 'Unable to find a 
+                                            negative function value'].
+                      ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMBisectionZeroFinder >> findPositiveXFrom: aNumber1 range: aNumber2
+    | n |
+    n := 0.
+    [ positiveX := Number random * aNumber2 + aNumber1.
+      ( functionBlock value: positiveX) > 0
+        ] whileFalse: [ n := n + 1.
+                        n > maximumIterations
+                            ifTrue: [ self error: 'Unable to find a 
+                                            positive function value'].
+                      ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMBisectionZeroFinder >> setNegativeX: aNumber
+    ( functionBlock value: aNumber) < 0
+        ifFalse:[ self error: 'Function is not negative at x = ', 
+                                                 aNumber printString].
+    negativeX := aNumber.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMBisectionZeroFinder >> setPositiveX: aNumber
+    ( functionBlock value: aNumber) > 0
+        ifFalse:[ self error: 'Function is not positive at x = ', 
+                                                 aNumber printString].
+    positiveX := aNumber
+\end{displaycode}
 
 \section{Finding the zero of a function --- Newton's method}
 \label{sec:newton}
@@ -234,9 +294,9 @@ finds the solution of equation \ref{eq:centile90}.
 
 \begin{displaycode}{Smalltalk}
 | zeroFinder result |
-zeroFinder:= DhbNewtonZeroFinder
+zeroFinder:= PMNewtonZeroFinder
             function: [ :x | x errorFunction - 0.9]
-            derivative: [ :x | DhbErfApproximation new normal: x].
+            derivative: [ :x | PMErfApproximation new normal: x].
 zeroFinder initialValue: 1.
 result := zeroFinder evaluate.
 zeroFinder hasConverged
@@ -259,11 +319,11 @@ a block closure by the method \code{defaultDerivativeBlock}. The
 supplied block closure implements the formula of equation
 \ref{eq:derivative}.
 
-\begin{mainEquation}
+\begin{equation}
 \label{eq:derivative} {df\left(x\right)\over dx}=\lim_{\epsilon\to
 0}{f\left(x+\epsilon\right)-f\left(x-\epsilon\right)\over
 2\epsilon}.
-\end{mainEquation}
+\end{equation}
 
 If a derivative is supplied, it is compared to the result of the
 derivative supplied by default. This may save a lot of trouble if
@@ -275,9 +335,10 @@ is changed with a random walk algorithm. If no value can be found
 such that the derivative is non-zero an error is generated.
 
 If the function is changed, the supplied derivative must be
-suppressed. Thus, the method \code{setFunction:} must also force a
-redefinition of the derivative. A method allows defining the
-initial value. A creation method defining the function and
+suppressed.
+Thus, the method \code{setFunction:} must also force a
+redefinition of the derivative.
+A method allows defining the initial value. A creation method defining the function and
 derivative is also supplied for convenience.
 
 Like for the bisection, the algorithm itself is coded within the
