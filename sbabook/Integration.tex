@@ -270,11 +270,70 @@ for a new computation with the same function.
 Note that the initialization of the iterations (method \code{computeInitialValues}, \cf section \ref{sec:siteration}) also corresponds to the first iteration of the algorithm.
 The method \code{highOrderSum} computes the sum of the right-hand side of equation \ref{eq:trapeze}.
 
-\begin{listing} Smalltalk implementation of trapeze integration
-\label{ls:trapeze}
-\input{Smalltalk/IterativeAlgorithms/DhbTrapezeIntegrator}
+\begin{listing}[label=lst:trapeze]{Smalltalk}
+{Smalltalk implementation of trapeze integration}
+PMFunctionalIterator subclass: #PMTrapezeIntegrator
+   instanceVariableNames: 'from to sum step'
+   classVariableNames: ''
+   package: 'Math-DHB-Numerical'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator class >> defaultMaximumIterations
+    ^13
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator class >> new
+    ^self error: 'Method new:from:to: must be used'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator class >> new: aBlock from: aNumber1 to: aNumber2
+    ^super new initialize: aBlock from: aNumber1 to: aNumber2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator >> computeInitialValues
+    step := to - from.
+    sum := ((functionBlock value: from) + (functionBlock value: to)) * step /2.
+    result := sum.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator >> evaluateIteration
+    | oldResult |
+    oldResult := result.
+    result := self higherOrderSum.
+    ^ self relativePrecision: ( result - oldResult) abs
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator >> from: aNumber1 to: aNumber2
+    from := aNumber1.
+    to := aNumber2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator >> higherOrderSum
+    | x newSum |
+    x := step / 2 + from.
+    newSum := 0.
+    [ x < to ]
+        whileTrue: [ newSum := ( functionBlock value: x) + newSum.
+                     x := x + step.
+                   ].
+    sum := ( step * newSum + sum) / 2.
+    step := step / 2.
+    ^ sum
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMTrapezeIntegrator >> initialize: aBlock from: aNumber1 to: aNumber2
+    functionBlock := aBlock.
+    self from: aNumber1 to: aNumber2.
+    ^ self
+\end{displaycode}
 
 \section{Simpson integration algorithm}
 %\marginpar{Figure \ref{fig:integclass} with the box {\textbf SimpsonIntegrator} grayed.}
