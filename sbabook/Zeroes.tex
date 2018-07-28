@@ -235,10 +235,10 @@ PMBisectionZeroFinder >> setPositiveX: aNumber
 %\marginpar{Figure \ref{cl:zeroFinding} with the box {\bf NewtonZeroFinder} grayed.}
 Isaac Newton has designed an algorithm working by successive approximations\cite{Bass}.
 Given a value $x_0$ chosen in the vicinity of the desired zero, the following series:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:newtonZero}
   x_{n+1}=x_n-{f\left(x_n\right)\over f^{\prime}\left(x_n\right)},
-\end{mainEquation}
+\end{equation}
 where $f^{\prime}\left(x\right)$ is the first derivative of $f\left(x\right)$, converges toward a zero of the function.
 This algorithm is sometimes called Newton-Ralphson\cite{Press}.
 
@@ -286,7 +286,7 @@ additional instance variable is needed to store the function's
 derivative.
 
 \subsection{Newton's method --- Smalltalk implementation}
-\label{sec:snewton} Listing \ref{ls:newtonZero} shows the complete
+\label{sec:snewton} Listing \ref{lst:newtonZero} shows the complete
 implementation in Smalltalk. The class \code{PMNewtonZeroFinder}
 is a subclass of the class \code{PMFunctionalIterator} described
 in section \ref{sec:siterrel}. For example the following code
@@ -344,9 +344,13 @@ derivative is also supplied for convenience.
 Like for the bisection, the algorithm itself is coded within the
 method \code{evaluateIteration}. Other methods needed by the
 algorithm have been already implemented in the superclasses.
-\begin{listing} Smalltalk implementation of Newton's zero-finding method \label{ls:newtonZero}
-\input{Smalltalk/IterativeAlgorithms/DhbNewtonZeroFinder}
+
+\begin{listing}[label=lst:newtonZero]{Smalltalk}
+{Smalltalk implementation of Newton's zero-finding method}
+
 \end{listing}
+
+%\input{Smalltalk/IterativeAlgorithms/DhbNewtonZeroFinder}
 
 \section{Example of zero-finding --- Roots of polynomials}
 \label{sec:polroots} The zeroes of a polynomial function are
@@ -395,14 +399,15 @@ degree of the deflated polynomial becomes zero.
 \subsection{Roots of polynomials --- Smalltalk implementation}
 Roots of a polynomial can be obtained as an \code{OrderedCollection}. For example, the following code sample retrieves the roots of the polynomial $x^3-2x^2-13x-10$:
 \begin{displaycode}{Smalltalk}
-PMPolynomial coefficients: \#(-10 -13 -2 1)) roots
+(PMPolynomial coefficients: #(-10 -13 -2 1)) roots.
 \end{displaycode}
-The methods needed to get the roots are shown in Listing
-\ref{ls:polroots}.
 
-The deflation algorithm is implemented in the method \code{deflateAt:} using the iterator method \code{collect:} (\cf section
-\ref{sec:collect}). An instance variable is keeping track of the
-remainder of the division within the block closure used by the
+returns:  \code{an OrderedCollection(-0.9999999999999998 -2.0 5.0)}\\
+
+The methods needed to get the roots are shown in Listing \ref{lst:polroots}.
+
+The deflation algorithm is implemented in the method \code{deflateAt:} using the iterator method \code{collect:} (\cf section \ref{sec:collect}).
+An instance variable is keeping track of the remainder of the division within the block closure used by the
 method \code{collect:}.
 
 The roots are kept in an \code{OrderedCollection} object
@@ -414,9 +419,44 @@ in the zero finding algorithm. A method root uses the default
 numerical machine precision as discussed in section
 \ref{sec:findprecision}.
 
-\begin{listing} Smalltalk implementation of finding the roots of a polynomial \label{ls:polroots}
-\input{Smalltalk/IterativeAlgorithms/DhbPolynomial(DhbIterativeAlgorithms)}
+\begin{listing}[label=lst:polroots]{Smalltalk}
+{Smalltalk implementation of finding the roots of a polynomial}
+PMPolynomial >> deflatedAt: aNumber
+    | remainder next newCoefficients|
+    remainder := 0.
+    newCoefficients := coefficients collect:
+                        [ :each |
+                          next := remainder. 
+                          remainder := remainder * aNumber + each.
+                          next].
+    ^self class new: ( newCoefficients copyFrom: 2 to: 
+                                         newCoefficients size) reverse
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> roots
+    ^self roots: PMFloatingPointMachine new 
+                                             defaultNumericalPrecision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMPolynomial >> roots: aNumber
+    | pol roots x rootFinder |
+    rootFinder := PMNewtonZeroFinder new.
+    rootFinder desiredPrecision: aNumber.
+    pol := self class new: ( coefficients reverse collect: [ :each | 
+                                                       each asFloat]).
+    roots := OrderedCollection new: self degree.
+    [ rootFinder setFunction: pol; setDerivative: pol derivative.
+      x := rootFinder evaluate.
+      rootFinder hasConverged
+        ] whileTrue: [ roots add: x. 
+                       pol := pol deflatedAt: x. 
+                       pol degree > 0
+                         ifFalse: [ ^roots].
+                     ].
+    ^roots
+\end{displaycode}
 
 \section{Which method to choose}
 There are other zero-finding techniques: {\textit regula falsi}, Brent
