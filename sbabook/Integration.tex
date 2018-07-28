@@ -1,16 +1,15 @@
-\ifx\wholebook\relax\else
-\documentclass[twoside]{book}
-\usepackage[active]{srcltx}
-\usepackage[LY1]{fontenc}
-\input{DhbDefinitions}
-\begin{document}
-\fi
+%\ifx\wholebook\relax\else
+%\documentclass[twoside]{book}
+%\usepackage[active]{srcltx}
+%\usepackage[LY1]{fontenc}
+%\input{DhbDefinitions}
+%\begin{document}
+%\fi
 
 \chapter{Integration of functions}
 \label{ch:integration}
 \begin{flushright}
-{\sl Les petits ruisseaux font les grandes
-rivi\`{e}res}\footnote{Small streams build great rivers.}\\ French
+{\textsl Les petits ruisseaux font les grandes rivi\`{e}res}\footnote{Small streams build great rivers.}\\ French
 proverb
 %If quote is changed, introduction must be changed
 \end{flushright}
@@ -59,8 +58,7 @@ In this chapter we introduce 3 integration algorithms. Figure
 \ref{fig:integclass} shows the corresponding class diagram.
 \begin{figure}
 \centering\includegraphics[width=10cm]{Figures/IntegrationClassDiagram}
-\caption{Class diagram of integration
-classes}\label{fig:integclass}
+\caption{Class diagram of integration classes}\label{fig:integclass}
 \end{figure}
 The first one, trapeze integration, is only introduced for the
 sake of defining a common framework for the next two algorithms:
@@ -90,10 +88,8 @@ expressed by the Euler-Maclaurin formula shown hereafter
 \end{equation}
 where the numbers $B_{2n}$ are the Bernouilli numbers.
 
-The next observation is that, if the interval of integration is
-small enough, the series in the second term of equation
-\ref{eq:eulerMacLaurin} would yield a contribution negligible
-compared to that of the first term. Thus, we can write:
+The next observation is that, if the interval of integration is small enough, the series in the second term of equation \ref{eq:eulerMacLaurin} would yield a contribution negligible compared to that of the first term.
+Thus, we can write:
 \begin{equation}
 \label{eq:approxEML}
   \int_a^b f\left(x\right)dx\approx{b-a\over
@@ -148,11 +144,11 @@ To compute the next estimation, it suffices to compute the value
 of the function at the even values of the partition because the
 odd values were already computed before. One can derive the
 following recurrence relation:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:trapeze} I^{\left(n+1\right)}={I^{\left(n\right)}\over
 2}+ \epsilon^{\left(n\right)}
 \sum_{i=1}^{2^n-1}f\left(x_{2i-1}^{\left(n\right)}\right),
-\end{mainEquation}
+\end{equation}
 with the initial condition:
 \begin{equation}
 I^{\left(0\right)}={b-a \over
@@ -211,23 +207,22 @@ the algorithm. This remark is valid for all algorithms exposed in
 this chapter.
 
 \subsection{Trapeze integration --- General implementation}
-\marginpar{Figure \ref{fig:integclass} with the box {\bf
-TrapezeIntegrator} grayed.}The class implementing trapeze
-integration is a subclass of the functional iterator discussed in
+%\marginpar{Figure \ref{fig:integclass} with the box {\bf PMTrapezeIntegrator} grayed.}
+The class implementing trapeze integration is a subclass of the functional iterator discussed in
 section \ref{sec:iterrel}. Two instance variables are needed to
 define the integration interval. Additional instance variables
 must keep track of the partition of the interval and of the
 successive estimations. Consequently, the class has the following
 instance variables.
-\begin{description}
-\item[\tt from] contains the lower limit of the integration's interval,
+\begin{itemize}
+\item \code{from} contains the lower limit of the integration's interval,
  \ie\ $a$.
-\item[\tt to] contains the lower limit of the integration's interval,
+\item \code{to} contains the lower limit of the integration's interval,
  \ie\ $b$.
-\item[\tt step] contains the size of the interval's partition,
+\item \code{step} contains the size of the interval's partition,
  \ie\ $\epsilon^{\left(n\right)}$.
-\item[\tt sum] contains the intermediate sums, \ie\ $I^{\left(n\right)}$.
-\end{description}
+\item \code{sum} contains the intermediate sums, \ie\ $I^{\left(n\right)}$.
+\end{itemize}
 
 Although trapeze integration is not a practical algorithm, we give
 an example of coding for both language implementations. The reason
@@ -247,41 +242,33 @@ iterations needed for a desired precision. She can also verify how
 accurate is the estimated precision.
 
 \subsection{Trapeze integration --- Smalltalk implementation}
-\label{sec:strapeze} Listing \ref{ls:trapeze} shows the Smalltalk
-implementation of the trapeze integration method. In Smalltalk the
-code for the computation of the integral defining the natural
+\label{sec:strapeze}
+Listing \ref{lst:trapeze} shows the Smalltalk implementation of the trapeze integration method. In Smalltalk the code for the computation of the integral defining the natural
 logarithm is as follows:
-\begin{codeExample}
-\begin{verbatim}
-
-\end{verbatim}
-{\tt | integrator ln2 ln3 |}\\ {\tt integrator :=
-DhbTrapezeIntegrator function: [ :x | 1.0 / x ] from: 1 to: 2.}\\
-{\tt ln2 := integrator evaluate.}\\ {\tt integrator from: 1 to:
-3.}\\ {\tt ln3 := integrator evaluate.}\\
-\end{codeExample}
-The line after the declaration creates a new instance of the class
-{\tt DhbTrapezeIntegrator} for the inverse function. The limits of
-the integration interval are set from 1 to 2 at creation time. The
+\begin{displaycode}{Smalltalk}
+| integrator ln2 ln3 |
+integrator := PMTrapezeIntegrator function: [ :x | 1.0 / x ] from: 1 to: 2.}
+ln2 := integrator evaluate.
+integrator from: 1 to: 3.
+ln3 := integrator evaluate.
+\end{displaycode}
+The line after the declaration creates a new instance of the class \code{PMTrapezeIntegrator} for the inverse function. The limits of the integration interval are set from 1 to 2 at creation time. The
 third line retrieves the value of the integral. The fourth line
 changes the integration interval and the last line retrieves the
 value of the integral over the new integration interval.
 
-The class {\tt DhbTrapezeIntegrator} is a subclass of the class
-{\tt AbstractFunctionIterator} defined in section
-\ref{sec:siterrel}. The default creation class method {\tt new}
+The class \code{PMTrapezeIntegrator} is a subclass of the class
+\code{PMAbstractFunctionIterator} defined in section
+\ref{sec:siterrel}. The default creation class method \code{new}
 has been overloaded to prevent creating an object without
 initialized instance variables. The proper creation class method
 defines the function and the integration interval.
 
-The method {\tt from:to:} allows changing the integration interval
+The method \code{from:to:} allows changing the integration interval
 for a new computation with the same function.
 
-Note that the initialization of the iterations (method {\tt
-computeInitialValues}, \cf section \ref{sec:siteration}) also
-corresponds to the first iteration of the algorithm. The method
-{\tt highOrderSum} computes the sum of the right-hand side of
-equation \ref{eq:trapeze}.
+Note that the initialization of the iterations (method \code{computeInitialValues}, \cf section \ref{sec:siteration}) also corresponds to the first iteration of the algorithm.
+The method \code{highOrderSum} computes the sum of the right-hand side of equation \ref{eq:trapeze}.
 
 \begin{listing} Smalltalk implementation of trapeze integration
 \label{ls:trapeze}
@@ -290,10 +277,9 @@ equation \ref{eq:trapeze}.
 
 
 \section{Simpson integration algorithm}
-\marginpar{Figure \ref{fig:integclass} with the box {\bf
-SimpsonIntegrator} grayed.}Simpson integration algorithm consists
-in replacing the function to integrate by a second order Lagrange
-interpolation polynomial\cite{Bass} (\cf section
+%\marginpar{Figure \ref{fig:integclass} with the box {\textbf SimpsonIntegrator} grayed.}
+
+Simpson integration algorithm consists in replacing the function to integrate by a second order Lagrange interpolation polynomial\cite{Bass} (\cf section
 \ref{sec:lagrange}). One can then carry the integral analytically.
 Let $f\left(x\right)$ be the function to integrate. For a given
 interval of integration, $\left[a,b\right]$, the function is
@@ -328,12 +314,12 @@ Equation \ref{eq:simpsum} uses the notations introduced in section
 side of equation \ref{eq:simpsum} can be computed from the
 quantities $I^{\left(n\right)}$ defined in equation
 \ref{eq:trapezesum}. Thus, we have:
-\begin{mainEquation}
+\begin{equation}
   \int_a^b
 P_2\left(x\right)dx={1 \over
 3}\left[4I^{\left(n\right)}-I^{\left(n-1\right)}\right]
 \mbox{\quad for $n>1$}
-\end{mainEquation}
+\end{equation}
 This can be checked by verifying that $I^{\left(n-1\right)}$ is
 equal to the first sum of equation \ref{eq:simpsum} times  and
 that $I^{\left(n\right)}$  is equal to the addition of the two
@@ -354,9 +340,8 @@ first iteration.
 
 \subsection{Simpson integration --- General implementation}
 The class implementing Simpson algorithm is a subclass of the
-class implementing trapeze integration. The method {\tt
-evaluateIteration} is the only method needing change. The number
-of iterations is checked to prevent returning after the first
+class implementing trapeze integration. The method \code{evaluateIteration} is the only method needing change.
+The number of iterations is checked to prevent returning after the first
 iteration.
 
 The public interface is the same as that of the superclass.
@@ -364,21 +349,20 @@ Thus, all the examples shown in sections \ref{sec:strapeze} can be used for Simp
 algorithm by just changing the name of the class.
 
 \subsection{Simpson integration --- Smalltalk implementation}
-\label{sec:sSimpson} Listing \ref{ls:simpson} shows the complete
+\label{sec:sSimpson} Listing \ref{lst:simpson} shows the complete
 implementation in Smalltalk.
 
-The class {\tt DhbSimpsonIntegrator} is a subclass of the class
-{\tt DhbTrapezeIntegrator} defined in section \ref{sec:strapeze}.
+The class \code{PMSimpsonIntegrator} is a subclass of the class
+\code{PMTrapezeIntegrator} defined in section \ref{sec:strapeze}.
 
 \begin{listing} Smalltalk implementation of the Simpson integration algorithm \label{ls:simpson}
 \input{Smalltalk/IterativeAlgorithms/DhbSimpsonIntegrator}
 \end{listing}
 
-
 \section{Romberg integration algorithm}
-\label{sec:romberg}\marginpar{Figure \ref{fig:integclass} with the
-box {\bf RombergIntegrator} grayed.} If one goes back to equation
-\ref{eq:eulerMacLaurin} one notices that the second term is of the
+\label{sec:romberg}
+%\marginpar{Figure \ref{fig:integclass} with the box {\textbf RombergIntegrator} grayed.}
+If one goes back to equation \ref{eq:eulerMacLaurin} one notices that the second term is of the
 order of the square of the integration interval. Romberg's
 algorithm uses this fact to postulate that $I^{\left(n\right)}$ is
 a smooth function of the square of the size of interval's
@@ -403,7 +387,7 @@ iteration.
 Thus, Romberg's algorithm requires at least $k$ iterations. The
 good news is that this algorithm converges very quickly and, in
 general, only a few iterations are needed after the five initial
-ones. A polynomial of $4^{\mathop{\rm th}}$ degree --- that is
+ones. A polynomial of $4^{\mathop{\textrm{th}}}$ degree --- that is
 $k=5$ --- is generally sufficient \cite{Press}.
 
 Extrapolation is performed using Neville's algorithm (\cf section
@@ -416,7 +400,7 @@ If $k=2$, the interpolation polynomial is given by:
 \begin{equation}
 P_1\left(x\right)=y_1+{x-x_1 \over x_2-x_1}\left(y_2-y_1\right).
 \end{equation}
-At the $n^{\mathop{\rm th}}$ iteration we have:
+At the $n^{\mathop{\textrm{th}}}$ iteration we have:
 $y_1=I^{\left(n-1\right)}$, $y_2=I^{\left(n\right)}$ and
 $x_2=x_1/4$. Thus, the interpolated value at 0 is:
 \begin{equation}
@@ -446,13 +430,13 @@ next point into 0.5.}.
 \subsection{Romberg integration --- General implementation}
 The class implementing Romberg's algorithm needs the following
 additional instance variables:
-\begin{description}
-\item[\tt order]the order of the interpolation, \ie\ $k$,\\
-\item[\tt interpolator ]an instance of Neville's interpolation class,\\
-\item[\tt points]an {\tt OrderedCollection} containing the most recent sum estimates,
+\begin{itemize}
+\item \code{order} the order of the interpolation, \ie\ $k$,\\
+\item \code{interpolaton} an instance of Neville's interpolation class,\\
+\item \code{points} an \code{OrderedCollection} containing the most recent sum estimates,
 \ie\ $I^{\left(n-k\right)},\ldots,I^{\left(n\right)}$.\\
-\end{description}
-The method {\tt evaluateIteration} (c.f. section
+\end{itemize}
+The method \code{evaluateIteration} (c.f. section
 \ref{sec:iteration}) contains the entire algorithm. At each
 iteration the collection of point receives a new point with an
 abscissa equal to the quarter of that of the last point and an
@@ -469,22 +453,17 @@ and the error estimate is returned as the precision for the other.
 
 \subsection{Romberg integration --- Smalltalk implementation}
 \label{sec:sromberg} Listing \ref{ls:romberg} shows the Smalltalk
-implementation of Romberg's algorithm. The class {\tt
-DhbRombergIntegrator} is a subclass of the class {\tt
-DhbTrapezeIntegrator} defined in section \ref{sec:strapeze}.
+implementation of Romberg's algorithm. The class \code {PMRombergIntegrator} is a subclass of the class \code{PMTrapezeIntegrator} defined in section \ref{sec:strapeze}.
 
-The class method {\tt defaultOrder} defines the default order to
+The class method \code{defaultOrder} defines the default order to
 5. This method is used in the method initialize so that each newly
 created instance is created with the default interpolation order.
-The method {\tt order:} allows changing the default order if
+The method \code{order:} allows changing the default order if
 needed.
 
-The sample points defining the interpolation are stored in an {\tt
-OrderedCollection}. This collection is created in the method {\tt
-computeInitialValues}. Since the number of points will never
+The sample points defining the interpolation are stored in an \code{OrderedCollection}. This collection is created in the method \code{computeInitialValues}. Since the number of points will never
 exceed the order of the interpolation the maximum size is preset
-when the collection is created. The method {\tt
-computeInitialValues} also creates the object in charge of
+when the collection is created. The method \code{computeInitialValues} also creates the object in charge of
 performing the interpolation and it stores the first point in the
 collection of sample points.
 \begin{listing} Smalltalk implementation of Romberg integration \label{ls:romberg}
@@ -575,22 +554,22 @@ Section \ref{sec:sintcompar} give some sample code the reader can use to
 investigate the various integration algorithms.
 The results of the code execution are shown in table \ref{tb:intcompar}.
 The columns of this table are:
-\begin{description}
-\item[$\epsilon_{\mathop{\rm max}}$]the desired precision,\\
-\item[$n$]the number of required iterations; let us recall that the
+\begin{itemize}
+\item $\epsilon_{\mathop{\textrm{max}}}$ the desired precision,\\
+\item $n$ the number of required iterations; let us recall that the
 corresponding number of function's evaluations is $2^{n+1}$,\\
-\item[$\tilde{\epsilon}$]the estimated precision of the result,\\
-\item[$\epsilon$]the effective precision of the result, that is the absolute value
+\item $\tilde{\epsilon}$ the estimated precision of the result,\\
+\item $\epsilon$ the effective precision of the result, that is the absolute value
 of the difference between the result of the integration algorithm and the true result.\\
-\end{description}
+\end{itemize}
 
 \begin{table}[h]
   \centering
   \caption{Comparison between integration algorithms}\label{tb:intcompar}
 \vspace{1 ex}
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|} \hline
-  &\multicolumn{3}{c|}{\bf Trapeze algorithm} &\multicolumn{3}{c|}{\bf Simpson algorithm}&\multicolumn{3}{c|}{\bf Romberg algorithm}  \\ \hline
-  $\epsilon_{\mathop{\rm max}}$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$
+  &\multicolumn{3}{c|}{\textbf{Trapeze algorithm}} &\multicolumn{3}{c|}{\textbf{Simpson algorithm}}&\multicolumn{3}{c|}{\textbf{Romberg algorithm}}  \\ \hline
+  $\epsilon_{\mathop{\textrm{max}}}$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$
   \\ \hline
 $10^{-5}$&8&$4.1\cdot 10^{-6}$&$9.5\cdot 10^{-7}$&4&$9.9\cdot
 10^{-6}$&$4.7\cdot 10^{-7}$&4&$1.7\cdot 10^{-9}$&$1.4\cdot
@@ -618,4 +597,4 @@ discussed in section \ref{sec:stFunction}.
 \input{StIntegrationScript}
 \end{listing}
 
-\ifx\wholebook\relax\else\end{document}\fi
+%\ifx\wholebook\relax\else\end{document}\fi
