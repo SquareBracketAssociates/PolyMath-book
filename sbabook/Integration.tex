@@ -68,12 +68,12 @@ however, some instances where Simpson's algorithm can be faster if
 high accuracy is not required.
 
 \section{General framework --- Trapeze integration method}
-\label{sec:trapeze} Let us state it at the beginning. One should
-not use the trapeze integration algorithm in practice. The
-interest of this algorithm is to define a general framework for
-numerical integration. All subclasses of the class responsible for
-implementing the trapeze integration algorithm will reuse most the
-mechanisms described in this section.
+\label{sec:trapeze}
+Let us state it at the beginning.
+One should not use the trapeze integration algorithm in practice.
+The interest of this algorithm is to define a general framework for
+numerical integration.
+All subclasses of the class responsible for implementing the trapeze integration algorithm will reuse most the mechanisms described in this section.
 
 The trapeze numerical integration method takes its origin in the
 series expansion of an integral. This series expansion is
@@ -256,10 +256,11 @@ value of the integral over the new integration interval.
 
 The class \code{PMTrapezeIntegrator} is a subclass of the class
 \code{PMAbstractFunctionIterator} defined in section
-\ref{sec:siterrel}. The default creation class method \code{new}
-has been overloaded to prevent creating an object without
-initialized instance variables. The proper creation class method
-defines the function and the integration interval.
+\ref{sec:siterrel}.
+
+In order to create an instance you need to use class method \code{function:from:to:} to define the fucntion and the integration interval.
+
+%The default creation class method \code{new} has been overloaded to prevent creating an object without initialized instance variables. The proper creation class method defines the function and the integration interval.
 
 The method \code{from:to:} allows changing the integration interval
 for a new computation with the same function.
@@ -281,12 +282,7 @@ PMTrapezeIntegrator class >> defaultMaximumIterations
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMTrapezeIntegrator class >> new
-    ^self error: 'Method new:from:to: must be used'
-\end{displaycode}
-
-\begin{displaycode}{Smalltalk}
-PMTrapezeIntegrator class >> new: aBlock from: aNumber1 to: aNumber2
+PMTrapezeIntegrator class >> function: aBlock from: aNumber1 to: aNumber2
     ^super new initialize: aBlock from: aNumber1 to: aNumber2
 \end{displaycode}
 
