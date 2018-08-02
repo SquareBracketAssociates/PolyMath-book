@@ -544,13 +544,240 @@ multiple dispatching are explained in sections
 not familiar with multiple dispatching should trace down a few
 examples between simple matrices using the debugger.
 
-
 \begin{listing}[label=lst:matrix]{Smalltalk}
 {Matrix classes}
-%\input{Smalltalk/LinearAlgebra/DhbMatrix}
+Object subclass: #PMMatrix
+   instanceVariableNames: 'rows lupDecomposition'
+   classVariableNames: ''
+   package: 'Math-Matrix'
 \end{listing}
 
-Listing \ref{lsr:symmatrix} shows the implementation of the class
+\begin{displaycode}{Smalltalk}
+PMMatrix >> class >> new: anInteger
+    ^ self new initialize: anInteger
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> rows: anArrayOrVector
+    ^ self new initializeRows: anArrayOrVector
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> * aNumberOrMatrixOrVector
+    ^ aNumberOrMatrixOrVector productWithMatrix: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> + aMatrix
+    ^ aMatrix addWithRegularMatrix: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> - aMatrix
+    ^ aMatrix subtractWithRegularMatrix: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> accumulate: aMatrix
+    | n |
+    n := 0.
+    self rowsCollect: [ :each | n := n + 1. each accumulate: ( 
+                                                    aMatrix rowAt: n)]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> accumulateNegated: aMatrix
+    | n |
+    n := 0.
+    self rowsCollect: [ :each | n := n + 1. each accumulateNegated: ( 
+                                                    aMatrix rowAt: n)]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> addWithMatrix: aMatrix class: aMatrixClass
+    | n |
+    n := 0.
+    ^ aMatrixClass rows: ( self rowsCollect: [ :each | n := n + 1. 
+                                          each + ( aMatrix rowAt: n)])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> addWithRegularMatrix: aMatrix
+    ^ aMatrix addWithMatrix: self class: aMatrix class
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> addWithSymmetricMatrix: aMatrix
+    ^ aMatrix addWithMatrix: self class: self class
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> asSymmetricMatrix
+    ^PMbSymmetricMatrix rows: rows
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> columnAt: anInteger
+    ^ rows collect: [ :each | each at: anInteger]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> columnsCollect: aBlock
+    | n |
+    n := 0.
+    ^rows last collect: [ :each | n := n + 1. aBlock value: ( self 
+                                                         columnAt: n)]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> columnsDo: aBlock
+    | n |
+    n := 0.
+    ^ rows last do: [ :each | n := n + 1. aBlock value: ( self 
+                                                         columnAt: n)]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> initialize: anInteger
+    rows := ( 1 to: anInteger) asVector collect: [ :each | PMVector 
+                                                      new: anInteger].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> initializeRows: anArrayOrVector
+    rows := anArrayOrVector asVector collect: [ :each | each 
+                                                            asVector].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> isSquare
+    ^ rows size = rows last size
+\end{verbatim}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> isSymmetric
+    ^ false
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> lupDecomposition
+    lupDecomposition isNil
+        ifTrue: [ lupDecomposition := PMLUPDecomposition equations: 
+                                                                rows].
+    ^ lupDecomposition
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> negate
+    rows do: [ :each |each negate].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> numberOfColumns
+    ^ rows last size
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> numberOfRows
+    ^ rows size
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> printOn: aStream
+    | first |
+    first := true.
+    rows do: 
+        [ :each |
+          first ifTrue: [ first := false]
+                 ifFalse:[ aStream cr].
+          each printOn: aStream.
+        ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> productWithMatrix: aMatrix
+    ^ self productWithMatrixFinal: aMatrix
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> productWithMatrixFinal: aMatrix
+    ^ self class rows: ( aMatrix rowsCollect: [ :row | self 
+                                 columnsCollect: [ :col | row * col]])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> productWithSymmetricMatrix: aSymmetricMatrix
+    ^ self class rows: ( self rowsCollect: [ :row | aSymmetricMatrix 
+                                 columnsCollect: [ :col | row * col]])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> productWithTransposeMatrix: aMatrix
+    ^ self class rows: ( self rowsCollect: [ :row | aMatrix 
+                                    rowsCollect: [ :col | row * col]])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> productWithVector: aVector
+    ^ self columnsCollect: [ :each | each * aVector]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> rowAt: anInteger
+    ^ rows at: anInteger
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> rowsCollect: aBlock
+    ^ rows collect: aBlock
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> rowsDo: aBlock
+    ^ rows do: aBlock
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> scaleBy: aNumber
+    rows do: [ :each | each scaleBy: aNumber].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> squared
+    ^ PMSymmetricMatrix rows: ( self columnsCollect: [ :col | self 
+                               columnsCollect: [ :colT | col * colT]])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> subtractWithMatrix: aMatrix class: aMatrixClass
+    | n |
+    n := 0.
+    ^ aMatrixClass rows: ( self rowsCollect: [ :each | n := n + 1. 
+                                          each - ( aMatrix rowAt: n)])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> subtractWithRegularMatrix: aMatrix
+    ^ aMatrix subtractWithMatrix: self class: aMatrix class
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> subtractWithSymmetricMatrix: aMatrix
+    ^ aMatrix subtractWithMatrix: self class: self class
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> transpose
+    ^ self class rows: ( self columnsCollect: [ :each | each])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> transposeProductWithMatrix: aMatrix
+    ^ self class rows: ( self columnsCollect: [ :row | aMatrix 
+                                 columnsCollect: [ :col | row * col]])
+\end{displaycode}
+
+Listing \ref{lst:symmatrix} shows the implementation of the class
 \code{PMSymmetricMatrix} representing symmetric matrices. A few
 algorithms are implemented differently for symmetric matrices.
 
@@ -762,10 +989,9 @@ once. In the case of LUP decomposition, obtaining the solution for
 each vector requires more operations than those needed by backward
 substitution.
 
-\subsection{Linear equations --- General implementation}
-\marginpar{Figure \ref{fig:linearalgebraclasses} with the box {\textbf
-LinearEquations} grayed.} Although using matrix and vector
-notation greatly simplifies the discussion of Gaussian
+\subsection{Linear equations --- Smalltalk implementation}
+%\marginpar{Figure \ref{fig:linearalgebraclasses} with the box \textbf{LinearEquations} grayed.}
+Although using matrix and vector notation greatly simplifies the discussion of Gaussian
 elimination, there is little gain in making an implementation
 using matrices and vectors explicitly.
 
@@ -793,8 +1019,7 @@ vector. If the solution for the specified index has not yet been
 computed, backward substitution is performed and the result is
 stored in the solution array.
 
-\subsection{Linear equation implementation}
-Listing \ref{ls:lineqs} shows the class \code{PMLinearEquationSystem} implementing Gaussian elimination.
+Listing \ref{lst:lineqs} shows the class \code{PMLinearEquationSystem} implementing Gaussian elimination.
 
 To solve the system of equations \ref{eq:lineqex} using Gaussian elimination, one needs to write the following expression:
 \begin{displaycode}{Smalltalk}
@@ -1505,13 +1730,13 @@ methods are supplied to retrieve the results, the eigenvalue and
 the eigenvector.
 
 The method \code{initializeIterations} creates a vector to the
-matrix dimension and sets all its components equal to 1. As the
-algorithm progresses this vector will contain the eigenvector of
-the matrix. Similarly, a vector, which will contain the
-eigenvector of the transposed matrix, is created in the same way.
+matrix dimension and sets all its components equal to $1$.
+As the algorithm progresses this vector will contain the eigenvector of
+the matrix.
+Similarly, a vector, which will contain the eigenvector of the transposed matrix, is created in the same way.
 In principle one should add a part to verify that this vector does
-not correspond to a null eigenvalue of the matrix. This small
-improvement is left as an exercise to the reader.
+not correspond to a null eigenvalue of the matrix.
+This small improvement is left as an exercise to the reader.
 
 The algorithm is implemented within the single method \code{evaluateIteration} as described in section \ref{sec:iteration}.
 The relative precision of the sought eigenvalue is the precision
@@ -1519,16 +1744,15 @@ used to break out of the iterative process.
 
 Since the algorithm determines both the eigenvalue and the
 eigenvector the object in charge of the algorithm keeps both of
-them and must give access to both of them. Two accessor methods
-are supplied to retrieve the results, the eigenvalue and the
+them and must give access to both of them.
+Two accessor methods are supplied to retrieve the results, the eigenvalue and the
 eigenvector.
 
 The largest eigenvalue finder is responsible to create the object
-responsible for finding the next eigenvalue when needed. Thus, the
-eigenvector of the transposed matrix is also computed along with
-the regular eigenvector. The method \code{nextLargestEigenValueFinder} returns a new instance of the class,
-which can be used to compute the next largest eigenvalue, by
-computing a new matrix as described in equation
+responsible for finding the next eigenvalue when needed.
+Thus, the eigenvector of the transposed matrix is also computed along with
+the regular eigenvector.
+The method \code{nextLargestEigenValueFinder} returns a new instance of the class, which can be used to compute the next largest eigenvalue, by computing a new matrix as described in equation
 \ref{eq:eigennext}.
 
 \subsection{Finding the largest eigenvalue implementation}
@@ -1539,9 +1763,9 @@ first two largest eigenvalues of a matrix.
 \begin{displaycode}{Smalltalk}
  | m finder eigenvalue eigenvector nextFinder nextEigenvalue nextEigenvector |
  m := PMMatrix rows: #((84 -79 58 55)
-                        (-79 84 -55 -58)
-                        (58 -55 84 79)
-                        (55 -58 79 84)).
+                       (-79 84 -55 -58)
+                       (58 -55 84 79)
+                       (55 -58 79 84)).
  finder := PMLargestEigenValueFinder matrix: m.
  eigenvalue := finder evaluate.
  eigenvector := finder eigenvector.
@@ -1560,8 +1784,78 @@ retrieved from this new instance exactly as before.
 
 \begin{listing}[label=lst:eigenlarge]{Smalltalk}
 {Implementation of the search for the largest eigenvalue}
-%\input{Smalltalk/LinearAlgebra/DhbLargestEigenValueFinder}
+PMIterativeProcess subclass: #PMLargestEigenValueFinder
+   instanceVariableNames: 'matrix eigenvector transposeEigenvector'
+   classVariableNames: ''
+   package: 'Math-Matrix'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder class >> defaultMaximumIterations
+    ^ 100
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder class >> matrix: aMatrix
+    ^ self new initialize: aMatrix; yourself
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> matrix: aMatrix precision: aNumber
+    ^ self new initialize: aMatrix;
+               desiredPrecision: aNumber;
+               yourself
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> eigenvalue
+    ^ result
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> eigenvector
+    ^ eigenvector * (1 / eigenvector norm)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> evaluateIteration
+    | oldEigenvalue |
+    oldEigenvalue := result.
+    transposeEigenvector := transposeEigenvector * matrix.
+    transposeEigenvector := transposeEigenvector 
+                * (1 / (transposeEigenvector at: 1)).
+    eigenvector := matrix * eigenvector.
+    result := eigenvector at: 1.
+    eigenvector := eigenvector * (1 / result).
+    ^oldEigenvalue isNil 
+        ifTrue: [ 2 * desiredPrecision]
+        ifFalse: [ (result - oldEigenvalue) abs ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> initialize: aMatrix
+    matrix := aMatrix.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> initializeIterations
+    eigenvector := PMVector new: matrix numberOfRows.
+    eigenvector atAllPut: 1.0.
+    transposeEigenvector := PMVector new: eigenvector size.
+    transposeEigenvector atAllPut: 1.0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLargestEigenValueFinder >> nextLargestEigenValueFinder
+    | norm |
+    norm := 1 / (eigenvector * transposeEigenvector).
+    ^self class 
+        new: matrix * ((PMSymmetricMatrix identity: eigenvector 
+                                                                size) 
+                        - (eigenvector * norm tensorProduct: 
+                                                transposeEigenvector))
+        precision: desiredPrecision
+\end{displaycode}
 
 \section{Matrix eigenvalues and eigenvectors of a symmetric matrix}
 \label{sec:eigensym}
@@ -1785,18 +2079,17 @@ discussed in section \ref{sec:outsmart}, the solution of equation
 This expression is used when the computation of $\alpha^2$ causes
 an overflow while evaluating equation \ref{eq:jacobisolinverse}.
 
-\subsection{Jacobi's algorithm --- General implementation}
-%\marginpar{Figure \ref{fig:linearalgebraclasses} with the box \textbf{ JacobiTransformation} grayed.}
+\subsection{Jacobi's algorithm --- Smalltalk implementation}
+%\marginpar{Figure \ref{fig:linearalgebraclasses} with the box \textbf{JacobiTransformation} grayed.}
 Jacobi's algorithm is an iterative algorithm.
-The object implementing Jacobi's algorithm is a instance of the class \code{JacobiTransform}; it is a subclass of the iterative process discussed in section \ref{sec:iteration}.
+The object implementing Jacobi's algorithm is an instance of the class \code{PMJacobiTransform}; it is a subclass of the iterative process discussed in section \ref{sec:iteration}.
 %The instance variables of this class are different in the two language implementations.
 
 When an instance of the class \code{JacobiTransform} is created,
 the matrix whose eigenvalues are sought is copied into the matrix
-$\textbf{M}$. This permits to use the same storage over the duration
-of the algorithm since equations \ref{eq:jacobistepfinal} can be
-evaluated in place. Actually, only the upper half of the
-components needs to be stored since the matrix is a symmetric
+$\textbf{M}$.
+This permits to use the same storage over the duration of the algorithm since equations \ref{eq:jacobistepfinal} can be evaluated in place.
+Actually, only the upper half of the components needs to be stored since the matrix is a symmetric
 matrix.
 
 The method \code{evaluateIteration} finds the largest off-diagonal
@@ -1820,7 +2113,6 @@ sorted eigenvalues plus the transformation matrix $\textbf{O}$
 containing the eigenvectors. Extracting these results is language
 dependent.
 
-\subsection{Jacobi's algorithm implementation}
 Listing \ref{lst:jacobi} shows the implementation of Jacobi's algorithm.
 
 The following code example shows how to use the class to find the
@@ -1861,8 +2153,177 @@ beginning of this section shows how to obtain the eigenvectors
 from the matrix.
 
 \begin{listing}[label=lst:jacobi]{Smalltalk}
-{Implementation of Jacobi's algorithm }
-%\input{Smalltalk/LinearAlgebra/DhbJacobiTransformation}
+{Implementation of Jacobi's algorithm}
+PMIterativeProcess subclass: #PMJacobiTransformation
+   instanceVariableNames: 'lowerRows transform'
+   classVariableNames: ''
+   package: 'Math-Matrix'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation class >> matrix: aSymmetricMatrix
+    ^ super new initialize: aSymmetricMatrix
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation class >> new
+    ^ self error: 'Illegal creation message for this class'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> evaluateIteration
+    | indices |
+    indices := self largestOffDiagonalIndices.
+    self transformAt: (indices at: 1) and: (indices at: 2).
+    ^ precision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> exchangeAt: anInteger
+    | temp n |
+    n := anInteger + 1.
+    temp := result at: n.
+    result at: n put: ( result at: anInteger).
+    result at: anInteger put: temp.
+    transform do:
+        [ :each |
+          temp := each at: n.
+          each at: n put: ( each at: anInteger).
+          each at: anInteger put: temp ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> finalizeIterations
+    | n |
+    n := 0.
+    result := lowerRows collect: 
+                    [ :each | 
+                    n := n + 1.
+                    each at: n ].
+    self sortEigenValues
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> initialize: aSymmetricMatrix
+    | n m |
+    n := aSymmetricMatrix numberOfRows.
+    lowerRows := Array new: n.
+    transform := Array new: n.
+    1 to: n do:
+        [ :k |
+          lowerRows at: k put: ( ( aSymmetricMatrix rowAt: k) 
+                                                   copyFrom: 1 to: k).
+          transform at: k put: ( ( Array new: n) atAllPut: 0; at: k 
+                                                    put: 1; yourself) ].
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> largestOffDiagonalIndices
+    | n m abs |
+    n := 2.
+    m := 1.
+    precision := ( ( lowerRows at: n) at: m) abs.
+    1 to: lowerRows size do:
+        [ :i |
+          1 to: ( i - 1) do:
+            [ :j |
+              abs := ( ( lowerRows at: i) at: j) abs.
+              abs > precision
+                ifTrue: [ n := i.
+                          m := j.
+                          precision := abs ] ] ].
+    ^ Array with: m with: n
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> printOn: aStream
+    | first |
+    first := true.
+    lowerRows do: 
+        [ :each |
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
+          each printOn: aStream ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> sortEigenValues
+    | n bound m |
+    n := lowerRows size.
+    bound := n.
+    [ bound = 0 ]
+        whileFalse: [ m := 0.
+                      1 to: bound - 1 do:
+                        [ :j |
+                          (result at: j) abs > (result at: j + 1) abs
+                            ifFalse: [ self exchangeAt: j.
+                                      m := j ] ].
+                        bound := m ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> transform
+    ^ PMMatrix rows: transform
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMJacobiTransformation >> transformAt: anInteger1 and: anInteger2
+    | d t s c tau apq app aqq arp arq |
+    apq := ( lowerRows at: anInteger2) at: anInteger1.
+    apq = 0
+        ifTrue: [ ^ nil ].
+    app := (lowerRows at: anInteger1) at: anInteger1.
+    aqq := (lowerRows at: anInteger2) at: anInteger2.
+    d := aqq - app.
+    arp := d * 0.5 / apq.
+    t := arp > 0 
+        ifTrue: [ 1 / ( ( arp squared + 1) sqrt + arp)]
+        ifFalse:[ 1 / ( arp - ( arp squared + 1) sqrt)].
+    c := 1 / ( t squared + 1) sqrt.
+    s := t * c.
+    tau := s / ( 1 + c).
+    1 to: (anInteger1 - 1)
+        do: [ :r |
+              arp := (lowerRows at: anInteger1) at: r.
+              arq := (lowerRows at: anInteger2) at: r.
+              (lowerRows at: anInteger1) at: r put: ( arp - ( s * 
+                                                  (tau * arp + arq))).
+              (lowerRows at: anInteger2) at: r put: ( arq + ( s * 
+                                                (arp - (tau * arq)))).
+            ].
+    ( anInteger1 + 1) to: ( anInteger2 - 1)
+        do: [ :r |
+              arp := (lowerRows at: r) at: anInteger1.
+              arq := (lowerRows at: anInteger2) at: r.
+              (lowerRows at: r) at: anInteger1 put: ( arp - ( s * 
+                                                  (tau * arp + arq))).
+              (lowerRows at: anInteger2) at: r put: ( arq + ( s * 
+                                                (arp - (tau * arq)))).
+            ].
+    ( anInteger2 + 1) to: lowerRows size
+        do: [ :r |
+              arp := ( lowerRows at: r) at: anInteger1.
+              arq := ( lowerRows at: r) at: anInteger2.
+              (lowerRows at: r) at: anInteger1 put: ( arp - ( s * 
+                                                  (tau * arp + arq))).
+              (lowerRows at: r) at: anInteger2 put: ( arq + ( s * 
+                                                (arp - (tau * arq)))).
+            ].
+    1 to: lowerRows size
+        do: [ :r |
+              arp := ( transform at: r) at: anInteger1.
+              arq := ( transform at: r) at: anInteger2.
+              (transform at: r) at: anInteger1 put: ( arp - ( s * 
+                                                  (tau * arp + arq))).
+              (transform at: r) at: anInteger2 put: ( arq + ( s * 
+                                                (arp - (tau * arq)))).
+            ].
+    (lowerRows at: anInteger1) at: anInteger1 put: ( app - (t * 
+                                                                apq)).
+    (lowerRows at: anInteger2) at: anInteger2 put: ( aqq + (t * 
+                                                                apq)).
+    (lowerRows at: anInteger2) at: anInteger1 put: 0.
+\end{displaycode}
 
 %\ifx\wholebook\relax\else\end{document}\fi
