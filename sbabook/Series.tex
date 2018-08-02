@@ -1,5 +1,6 @@
 %\ifx\wholebook\relax\else
 %\documentclass[twoside]{book}
+
 %\usepackage[active]{srcltx}
 %\usepackage[LY1]{fontenc}
 %\input{DhbDefinitions}
@@ -265,15 +266,42 @@ fraction is similar to that of the infinite series.
 %\marginpar{Figure \ref{fig:StSeriesClass} with the box {\textbf ContinuedFraction} grayed.}
 Listing \ref{lst:contfractions} shows the implementation of a continued fraction in Smalltalk.
 
-The class \code{PMContinuedFraction} is built as a subclass of the
-class \code{PMInfiniteSeries}. Thus, it uses also the
-\patstyle{Strategy} pattern.
+The class \code{PMContinuedFraction} is built as a subclass of the class \code{PMInfiniteSeries}.
+Thus, it uses also the \patstyle{Strategy} pattern.
 
-The method \code{limitedSmallValue:} implements the prescription of
-Thompson and Barnett.
-\begin{listing} Smalltalk implementation of a continued fraction \label{ls:contfractions}
-\input{Smalltalk/IterativeAlgorithms/DhbContinuedFraction}
+The method \code{limitedSmallValue:} implements the prescription of Thompson and Barnett.
+\begin{listing}[label=lst:contfractions]{Smalltalk}
+{Smalltalk implementation of a continued fraction}
+PMInfiniteSeries subclass: #PMContinuedFraction
+   instanceVariableNames: 'numerator denominator'
+   classVariableNames: ''
+   package: 'Math-Series'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMContinuedFraction >> evaluateIteration
+    | terms delta |
+    terms := termServer termsAt: iterations.
+    denominator := 1 / (self limitedSmallValue: ((terms at: 1) * denominator + (terms at: 2))).
+    numerator := self limitedSmallValue: ((terms at: 1) / numerator + (terms at: 2)).
+    delta := numerator * denominator.
+    result := result * delta.
+    ^ (delta - 1) abs
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMContinuedFraction >> initializeIterations
+    numerator := self limitedSmallValue: termServer initialTerm.
+    denominator := 0.
+    result := numerator
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+limitedSmallValue: aNumber
+    ^aNumber abs < PMFloatingPointMachine new smallNumber
+            ifTrue: [ PMFloatingPointMachine new smallNumber ]
+            ifFalse: [ aNumber ]
+\end{displaycode}
 
 \section{Incomplete Gamma function}
 \label{sec:incGamma} The incomplete gamma function is the integral
@@ -294,9 +322,7 @@ Figure \ref{fig:incGamma} shows the incomplete gamma function
 \caption{The incomplete gamma function and the gamma distribution}\label{fig:incGamma}
 \end{figure}
 
-The gamma distribution is discussed in section
-\ref{sec:gammadist}. The $\chi^2$ confidence level is discussed in
-section \ref{sec:chitest}. General $\chi^2$ fits are discussed in
+The gamma distribution is discussed in section \ref{sec:gammadist}. The $\chi^2$ confidence level is discussed in section \ref{sec:chitest}. General $\chi^2$ fits are discussed in
 section \ref{sec:lsfnonlin}.
 
 \subsection{Mathematical definitions}
@@ -388,7 +414,7 @@ Three classes are needed to implement the incomplete gamma function in Smalltalk
 The class \code{PMIncompleteGamaFunction} is in charge of
 computing the function itself. This is the object, which responds
 to the method \code{value:} to provide a function-like behavior to
-the object. It is shown in Listing \ref{ls:incgamma} and has the
+the object. It is shown in Listing \ref{lst:incgamma} and has the
 following instance variables.
 \begin{itemize}
 \item \code{alpha} contains the function's parameter, \ie\ $\alpha$,
@@ -404,10 +430,68 @@ assigned using lazy initialization.
 Depending on the range of the argument, the class delegates the
 rest of the computing to either a series or a continued fraction.
 In each case, a term server class provides the computation of the
-terms. They are shown in listings \ref{lst:incgammasterm} and \ref{lst:incgammafterm}.
-\begin{listing} Smalltalk implementation of the incomplete gamma function \label{lst:incgamma}
-\input{Smalltalk/IterativeAlgorithms/DhbIncompleteGammaFunction}
+terms.
+They are shown in listings \ref{lst:incgammasterm} and \ref{lst:incgammafterm}.
+
+\begin{listing}[label=lst:incgamma]{Smalltalk}
+{Smalltalk implementation of the incomplete gamma function}
+Object subclass: #PMIncompleteGammaFunction
+   instanceVariableNames: 'alpha alphaLogGamma series fraction'
+   classVariableNames: ''
+   package: 'Math-DistributionGamma'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFunction class >> shape: aNumber
+   ^self new initialize: aNumber
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFunction >> evaluateFraction: aNumber
+    fraction isNil 
+        ifTrue: 
+            [fraction := PMIncompleteGammaFractionTermServer new.
+            fraction setParameter: alpha].
+    fraction setArgument: aNumber.
+    ^(PMContinuedFraction server: fraction)
+        desiredPrecision: PMFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFunction >> evaluateSeries: aNumber
+    series isNil
+        ifTrue: [ series := PMIncompleteGammaSeriesTermServer new.
+                  series setParameter: alpha.
+                ].
+    series setArgument: aNumber.
+    ^ (PMInfiniteSeries server: series)
+        desiredPrecision: PMFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFunction >> initialize: aNumber
+    alpha := aNumber asFloat.
+    alphaLogGamma := alpha logGamma.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFunction >> value: aNumber
+    | x norm |
+    aNumber = 0
+        ifTrue: [ ^0].
+    x := aNumber asFloat.
+    norm := [ ( x ln * alpha - x - alphaLogGamma) exp] when: ExAll 
+                                do: [ :signal | signal exitWith: nil ].
+    norm isNil
+        ifTrue: [ ^1].
+    ^x - 1 < alpha
+        ifTrue: [ ( self evaluateSeries: x) * norm ]
+        ifFalse: [ 1 - ( norm / ( self evaluateFraction: x)) ]
+\end{displaycode}
+
 Listing \ref{lst:incgammasterm} shows the implementation of the
 term server for the series expansion. It needs two instance
 variables: one to store the parameter $\alpha$; one to store the
@@ -416,31 +500,77 @@ sum accumulated in the denominator of equation
 \ref{eq:incgammaserterm} are implemented respectively by the
 methods \code{initialTerm}  (for $n=0$) and \code{termAt:} (for
 $n\ge 1$).
-\begin{listing} Smalltalk implementation of the series term server for the incomplete gamma function \label{lst:incgammasterm}
-\input{Smalltalk/IterativeAlgorithms/DhbIncompleteGammaSeriesTermServer}
+
+\begin{listing}[label=lst:incgammasterm]{Smalltalk}
+{Smalltalk implementation of the series term server for the incomplete gamma function}
+PMSeriesTermServer subclass: #PMIncompleteGammaSeriesTermServer
+   instanceVariableNames: 'alpha sum'
+   classVariableNames: ''
+   package: 'Math-DHB-Numerical'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaSeriesTermServer >> initialTerm
+  lastTerm := 1 / alpha.
+    sum := alpha.
+    ^ lastTerm
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaSeriesTermServer >> setParameter: aNumber
+    alpha := aNumber asFloat
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaSeriesTermServer >> termAt: anInteger
+  sum := sum + 1.
+    lastTerm := lastTerm * x / sum.
+    ^ lastTerm
+\end{displaycode}
+
 Listing \ref{lst:incgammafterm} shows the implementation of the
-term server for the continued fraction. It needs one instance
-variable to store the parameter $\alpha$. Equation
-\ref{eq:incgammafractterm} is implemented by the methods \code{initialTerm}  (for $n=0$) and \code{termsAt:} (for $n\ge 1$).
-\begin{listing} Smalltalk implementation of the fraction term server for the incomplete gamma function \label{lst:incgammafterm}
-\input{Smalltalk/IterativeAlgorithms/DhbIncompleteGammaFractionTermServer}
+term server for the continued fraction.
+It needs one instance variable to store the parameter $\alpha$.
+Equation \ref{eq:incgammafractterm} is implemented by the methods \code{initialTerm}  (for $n=0$) and \code{termsAt:} (for $n\ge 1$).
+
+\begin{listing}[label=lst:incgammafterm]{Smalltalk}
+{Smalltalk implementation of the fraction term server for the incomplete gamma function}
+PMSeriesTermServer subclass: #PMIncompleteGammaFractionTermServer
+   instanceVariableNames: 'alpha'
+   classVariableNames: ''
+   package: 'Math-DHB-Numerical'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFractionTermServer >> initialTerm
+    lastTerm := x - alpha + 1.
+    ^ lastTerm
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFractionTermServer >> setParameter: aNumber
+    alpha := aNumber asFloat
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteGammaFractionTermServer >> termsAt: anInteger
+    lastTerm := lastTerm + 2.
+    ^ Array with: (alpha - anInteger) * anInteger with: lastTerm
+\end{displaycode}
+
 An example of use of the incomplete gamma function can be found in
 section \ref{sec:sgammadist}.
 
-
 \section{Incomplete Beta function}
 \label{sec:incbeta} The incomplete beta function is the integral
-of a beta distribution. It used in statistics to evaluate the
-probability of finding a measurement larger than a given value
+of a beta distribution.
+It used in statistics to evaluate the probability of finding a measurement larger than a given value
 when the measurements are distributed according to a beta
-distribution. It is also used to compute the confidence level of
-the Student distribution ($t$-test) and of the Fisher-Snedecor
-distribution ($F$-test). The beta distribution is discussed in
-section \ref{sec:betadist}. The $t$-test is discussed in section
-\ref{sec:ttest}. The $F$-test is discussed in section
-\ref{sec:Ftest}.
+distribution.
+It is also used to compute the confidence level of the Student distribution ($t$-test) and of the Fisher-Snedecor distribution ($F$-test).
+The beta distribution is discussed in section \ref{sec:betadist}.
+The $t$-test is discussed in section \ref{sec:ttest}.
+The $F$-test is discussed in section \ref{sec:Ftest}.
 
 Figure \ref{fig:incBetaFunction} shows the incomplete beta
 function (solid line) and its corresponding probability density
@@ -532,24 +662,107 @@ Depending on the range of the argument, the class delegates the
 rest of the computing to a continued fraction using the original
 parameters or the reversed parameters if the symmetry relation
 must be used. A term server class allows the computing of the
-terms. Its code is shown in listing \ref{ls:incbetaterm}. The two
+terms. Its code is shown in listing \ref{lst:incbetaterm}. The two
 instance variables - \code{fraction} and \code{inverseFraction} -,
 contain an instance of the term server, one for each permutation
 of the parameters, thus preventing the unnecessary creation of new
 instances of the term server at each evaluation. These instance
 variables are assigned using lazy initialization.
-\begin{listing} Smalltalk implementation of the incomplete beta function
-\label{ls:incbeta}
-\input{Smalltalk/IterativeAlgorithms/DhbIncompleteBetaFunction}
+
+\begin{listing}[label=lst:incbeta]{Smalltalk}
+{Smalltalk implementation of the incomplete beta function}
+Object subclass: #PMIncompleteBetaFunction
+   instanceVariableNames: 'alpha1 alpha2 fraction inverseFraction logNorm'
+   classVariableNames: ''
+   package: 'Math-DistributionBeta'
 \end{listing}
-Listing \ref{ls:incbetaterm} shows the implementation of the term
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFunction class >> shape: aNumber1 shape: aNumber2
+   ^self new initialize: aNumber1 shape: aNumber2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFunction >>evaluateFraction: aNumber
+    fraction isNil 
+        ifTrue: 
+            [ fraction := PMIncompleteBetaFractionTermServer new.
+            fraction setParameter: alpha1 second: alpha2 ].
+    fraction setArgument: aNumber.
+    ^(PMContinuedFraction server: fraction)
+        desiredPrecision: PMFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFunction >> evaluateInverseFraction: aNumber
+    inverseFraction isNil 
+        ifTrue: 
+            [ inverseFraction := PMIncompleteBetaFractionTermServer new.
+            inverseFraction setParameter: alpha2 second: alpha1 ].
+    inverseFraction setArgument: (1 - aNumber).
+    ^(PMContinuedFraction server: inverseFraction)
+        desiredPrecision: PMFloatingPointMachine new defaultNumericalPrecision;
+        evaluate
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFunction >> initialize: aNumber1 shape: aNumber2
+    alpha1 := aNumber1.
+    alpha2 := aNumber2.
+    logNorm := ( alpha1 + alpha2) logGamma - alpha1 logGamma - alpha2 logGamma.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFunction >> value: aNumber
+    | norm |
+    aNumber = 0
+        ifTrue: [ ^ 0 ].
+    aNumber = 1
+        ifTrue: [ ^ 1 ].
+    norm :=  (aNumber ln * alpha1 + ((1 - aNumber) ln * alpha2) + logNorm) exp.
+    ^ (alpha1 + alpha2 + 2) * aNumber < (alpha1 + 1)
+        ifTrue: [ norm / ( ( self evaluateFraction: aNumber) * alpha1)]
+        ifFalse: [ 1 - ( norm / ( ( self evaluateInverseFraction: aNumber) * alpha2)) ]
+\end{displaycode}
+
+Listing \ref{lst:incbetaterm} shows the implementation of the term
 server. It needs two instance variables to store the parameters
 $\alpha_1$ and $\alpha_2$. Equation \ref{eq:incbetaterm} is
 implemented by the methods \code{initialTerm} (for $n=0$) and \code{termsAt:} (for $n\ge 1$).
-\begin{listing} Smalltalk implementation of the term server for the incomplete beta function
-\label{ls:incbetaterm}
-\input{Smalltalk/IterativeAlgorithms/DhbIncompleteBetaFractionTermServer}
+
+\begin{listing}[label=lst:incbetaterm]{Smalltalk}
+{Smalltalk implementation of the term server for the incomplete beta function}
+PMSeriesTermServer subclass: #PMIncompleteBetaFractionTermServer
+   instanceVariableNames: 'alpha1 alpha2'
+   classVariableNames: ''
+   package: 'Math-DHB-Numerical'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFractionTermServer >> initialTerm
+    ^ 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMIncompleteBetaFractionTermServer >> setParameter: aNumber1 second: aNumber2
+    alpha1 := aNumber1.
+    alpha2 := aNumber2
+\end{displaycode}
+
+PMIncompleteBetaFractionTermServer >> termsAt: anInteger
+\begin{displaycode}{Smalltalk}
+    | n n2 |
+    n := anInteger // 2.
+    n2 := 2 * n.
+    ^Array with: ( n2 < anInteger 
+        ifTrue: [ x negated * (alpha1 + n) * (alpha1 + alpha2 + n) 
+                                / ((alpha1 + n2) * (alpha1 + 1 + n2))]
+        ifFalse: [x * n * (alpha2 - n) / ((alpha1 + n2) * (alpha1 - 1 + n2)) ])
+            with: 1
+\end{displaycode}
+
 An example of use of the incomplete beta function can be found in
 sections \ref{sec:Ftest} and \ref{sec:ttest}.
 
