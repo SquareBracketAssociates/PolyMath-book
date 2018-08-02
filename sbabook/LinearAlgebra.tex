@@ -392,8 +392,108 @@ collector.
 
 \begin{listing}[label=ls:vector]{Smalltalk}
 {Vector class in Pharo}
-%\input{Smalltalk/LinearAlgebra/DhbVector}
+Array variableSubclass: #PMVector
+   instanceVariableNames: ''
+   classVariableNames: ''
+   package: 'Math-Core'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> * aNumberOrMatrixOrVector
+    ^aNumberOrMatrixOrVector productWithVector: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> + aVector
+    | answer n |
+    answer := self class new: self size.
+    n := 0.
+    self with: aVector do:
+        [ :a :b | 
+          n := n + 1. 
+          answer at: n put: ( a + b).
+        ].
+    ^answer
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> - aVector
+    | answer n |
+    answer := self class new: self size.
+    n := 0.
+    self with: aVector do:
+        [ :a :b | 
+          n := n + 1. 
+          answer at: n put: ( a - b).
+        ].
+    ^answer
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> accumulate: aVectorOrAnArray
+    1 to: self size do: [ :n | self at: n put: ( ( self at: n) + ( 
+                                            aVectorOrAnArray at: n))].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> accumulateNegated: aVectorOrAnArray
+    1 to: self size do: [ :n | self at: n put: ( ( self at: n) - ( 
+                                            aVectorOrAnArray at: n))].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> asVector
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> dimension
+    ^ self size
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> negate
+    1 to: self size do: [ :n | self at: n put: (self at: n) negated].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> norm
+    ^ (self * self) sqrt
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> normalized
+    ^ (1 / self norm) * self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> productWithMatrix: aMatrix
+    ^ aMatrix rowsCollect: [ :each | each * self ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> productWithVector: aVector
+    | n |
+    n := 0.
+    ^self inject: 0
+            into: [ :sum :each | n := n + 1. (aVector at: n) * each + 
+                                                                  sum ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> scaleBy: aNumber
+    1 to: self size do: [ :n | self at: n put: ( ( self at: n) * 
+                                                            aNumber) ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVector >> tensorProduct: aVector
+    self dimension = aVector dimension
+        ifFalse:[ ^self error: 'Vector dimensions mismatch to build 
+                                                     tensor product'].
+    ^PMSymmetricMatrix rows: ( self collect: [ :a | aVector collect: 
+                                                       [ :b | a * b]])
+\end{displaycode}
 
 \noindent The class \code{PMMatrix} has two instance variables:
 \begin{itemize}
@@ -549,7 +649,7 @@ substitution. The name {\textsl backward} comes from the fact that the
 solution begins by calculating the component with the highest
 index; then it works its way backward on the index calculating
 each components using all components with higher index.
-\begin{mainEquation}
+\begin{equation}
   \left\{
   \begin{array}{lcl}
     x_n & = & {\displaystyle y_n^{\prime} \over\displaystyle t_{nn}},
@@ -559,7 +659,7 @@ each components using all components with higher index.
      $i=n-1,\ldots,1$}.
   \end{array}
   \right.
-\end{mainEquation}
+\end{equation}
 
 \rubrique{Gaussian elimination} Any system as described by
 equation \ref{eq:lineqs} can be transformed into a system based on
@@ -821,11 +921,11 @@ v}\otimes\textbf{w}\over a_{11}}$. This matrix is called the Shur's
 complement of the matrix   with respect to the pivot element
 $a_{11}$. Let us assume that we have found such a decomposition
 for that matrix, that is, that we have:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:lupshur}
   \textbf{A}^{\prime}-{\displaystyle\textbf{v}\otimes\textbf{w}\over\displaystyle
   a_{11}}=\textbf{L}^{\prime}\cdot\textbf{U}^{\prime}.
-\end{mainEquation}
+\end{equation}
 The we have:
 \begin{eqnarray}
 \label{eq:luplast}
@@ -1112,11 +1212,11 @@ form:
 \end{equation}
 where $\textbf{B}$ and $\textbf{D}$ are two symmetric matrices and $\textbf{C}$ is in general not a square matrix.
 Then the inverse can be written as:
-\begin{mainEquation}
+\begin{equation}
 \label{eq:crlinverse}
   \textbf{A}^{-1}=\pmatrix{\textbf{B}^{-1}+\textbf{B}^{-1}\cdot\textbf{C}^{\mathop \textrm{T}}\cdot\textbf{S}^{-1}\cdot\textbf{C}\cdot\textbf{B}^{-1}
   &\textbf{B}^{-1}\cdot\textbf{C}^{\mathop \textrm{T}}\cdot\textbf{S}^{-1}\cr -\textbf{S}^{-1}\cdot\textbf{C}\cdot\textbf{B}^{-1}&\textbf{S}^{-1}\cr},
-\end{mainEquation}
+\end{equation}
 where the matrix $\textbf{S}$ is called the Schur's complement of the
 matrix $\textbf{A}$ with respect to the partition of equation
 \ref{eq:crlsplit}.
@@ -1324,7 +1424,7 @@ absolute value can be found with an iterative process. Let ${\textbf
 u}$ be an arbitrary vector and let $\lambda_{\max}$ be the
 eigenvalue with the largest absolute value. Let us define the
 following series of vectors:
-\begin{mainEquation}
+\begin{equation}
 \left\{
   \begin{array}{lcl}
     \textbf{u}_0 &=& \textbf{u}, \\*[1ex]
@@ -1332,7 +1432,7 @@ following series of vectors:
     u}_{k-1}\mbox{\quad for $k>0$}.
   \end{array}
 \right.
-\end{mainEquation}
+\end{equation}
 It is easy to prove\footnote{Hint: one must write the vector ${\textbf
 u}$ as a linear combination of the eigenvectors of the matrix
 $\textbf{M}$. Such linear combination exists because the eigenvectors
@@ -1621,7 +1721,7 @@ Let us now introduce the quantities $\sigma$ and $\tau$ defined as
   \right.
 \end{equation}
 Then equations \ref{eq:jacobistep} can be rewritten as
-\begin{mainEquation}
+\begin{equation}
 \label{eq:jacobistepfinal}
   \left\{
   \begin{array}{lcl}
@@ -1632,7 +1732,7 @@ Then equations \ref{eq:jacobistep} can be rewritten as
     m^{\left(1\right)}_{il} &=& m_{il}+\sigma\left( m_{ik}-\tau m_{il}\right)\mbox{\quad for $i\ne k,l$}, \\*[2ex]
     m^{\left(1\right)}_{ij} &=& m_{ij}\mbox{\quad for $i\ne k,l$ and $j\ne k,l$}.  \end{array}
   \right.
-\end{mainEquation}
+\end{equation}
 
 Finally, we must prove that the transformation above did not
 increase the absolute values of the remaining off-diagonal
