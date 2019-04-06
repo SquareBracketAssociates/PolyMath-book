@@ -488,7 +488,7 @@ direct Lagrange interpolation or Neville's algorithm. Those
 algorithms should be used instead of Newton's algorithm.} our
 proposed implementation is much simpler.
 
-Listing \ref{ls:newtonint} shows the complete implementation in
+Listing \ref{lst:newtonint} shows the complete implementation in
 Smalltalk. The class \code{NewtonInterpolator} is a subclass of
 class \code{LagrangeInterpolator}. The code examples
 \ref{ex:lagrangeS1} and \ref{ex:lagrangeS2} can directly be
@@ -499,12 +499,56 @@ evaluating polynomials. In this case, however, one must still keep
 track of the index to retrieve the sample point corresponding to
 each coefficient. Thus, one gains very little in compactness.
 
-\begin{listing}
-  Smalltalk implementation of the Newton interpolation
-\label{ls:newtonint}
-\input{Smalltalk/FunctionEvaluation/DhbNewtonInterpolator}
+\begin{listing}[label=lst:newtonint]{Smalltalk}
+{Smalltalk implementation of the Newton interpolation}
+PMLagrangeInterpolator subclass: #PMNewtonInterpolator
+   instanceVariableNames: 'coefficients'
+   classVariableNames: ''
+   package: 'Math-DHB-Numerical-Math-Interpolator'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMNewtonInterpolator >> add: aPoint
+    self resetCoefficients.
+    ^super add: aPoint
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonInterpolator >> computeCoefficients
+    | size k1 kn|
+    size := pointCollection size.
+    coefficients := ( 1 to: size) collect: [ :n | self yPointAt: n].
+    1 to: (size - 1)
+        do: [ :n |
+              size to: ( n + 1)  by: -1
+                do: [ :k |
+                      k1 := k - 1.
+                      kn := k - n.
+                      coefficients at: k put: ( (( coefficients at: 
+                                         k) - ( coefficients at: k1)) 
+                                            / ((self xPointAt: k) - 
+                                                (self xPointAt: kn))).
+                    ].
+            ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonInterpolator >> resetCoefficients
+    coefficients := nil.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonInterpolator >> value: aNumber
+    | answer size |
+    coefficients isNil
+        ifTrue: [ self computeCoefficients].
+    size := coefficients size.
+    answer := coefficients at: size.
+    (size - 1) to: 1 by: -1
+        do: [ :n | answer := answer * ( aNumber - (self xPointAt:  
+                                         n)) + ( coefficients at: n)].
+    ^answer
+\end{displaycode}
 
 \section{Neville interpolation}
 \label{sec:neville} Neville's algorithm uses a successive
