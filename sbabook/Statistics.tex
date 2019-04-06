@@ -1120,21 +1120,21 @@ of the implementation.
 \vspace{1 ex}
 \begin{tabular}{|l | l |} \hline
   Description & \hfil Smalltalk \\ \hline
-  $P\left(x\right)$ & {\tt value:} \\
-  $F\left(x\right)$ & {\tt distributionValue:} \\
-  $F\left(x_1,x_2\right)$ & {\tt acceptanceBetween:and:} \\
-  $F^{-1}\left(x\right)$ & {\tt inverseDistributionValue:} \\
-  $x^{\dag}$ & {\tt random} \\
+  $P\left(x\right)$ & {\texttt value:} \\
+  $F\left(x\right)$ & {\texttt distributionValue:} \\
+  $F\left(x_1,x_2\right)$ & {\texttt acceptanceBetween:and:} \\
+  $F^{-1}\left(x\right)$ & {\texttt inverseDistributionValue:} \\
+  $x^{\dag}$ & {\texttt random} \\
   \hline
-  $\bar{x}$ & {\tt average} \\
-  $\sigma^2$ & {\tt variance} \\
-  $\sigma$ & {\tt standardDeviation} \\
-  skewness & {\tt skewness} \\
-  kurtosis & {\tt kurtosis} \\
+  $\bar{x}$ & {\texttt average} \\
+  $\sigma^2$ & {\texttt variance} \\
+  $\sigma$ & {\texttt standardDeviation} \\
+  skewness & {\texttt skewness} \\
+  kurtosis & {\texttt kurtosis} \\
   \hline
 \end{tabular}
 $\dag$ $x$ represents the random variable itself. In other words,
-the method {\tt random} returns a random value distributed
+the method {\texttt random} returns a random value distributed
 according to the distribution.
 \end{table}
 
@@ -1144,7 +1144,7 @@ to compute one from the other. Subclasses must implement at least
 one of them; otherwise a stack overflow will result.
 
 Methods to compute skewness and kurtosis are supplied, but return
-{\tt nil} in Smalltalk. A very general
+{\texttt nil} in Smalltalk. A very general
 implementation could have used explicit integration. The
 integration interval, however, maybe infinite and a general
 integration strategy cannot easily be supplied. Subclasses are
@@ -1157,12 +1157,12 @@ must be provided to create a function (as defined in section
 \ref{sec:function}) for the distribution function.
 
 Listing \ref{ls:probdistr} shows the implementation of a general
-probability density distribution in Smalltalk. The class {\tt
+probability density distribution in Smalltalk. The class {\texttt
 DhbProbabilityDensity} is an abstract implementation. Concrete
 implementation of probability density distributions are subclass
 of it.
 
-The method {\tt distributionValue:} returning the value of the
+The method {\texttt distributionValue:} returning the value of the
 distribution function must be implemented by the subclass. The
 method to compute the interval acceptance functions is using
 equation \ref{eq:defacceptdiff} .
@@ -1170,21 +1170,21 @@ equation \ref{eq:defacceptdiff} .
 The inverse acceptance function is defined with two methods, one
 public and one private. The public method verifies the range of
 the argument, which must lie between 0 and 1. The private method
-uses the class {\tt DhbNewtonZeroFinder} discussed in section
+uses the class {\texttt DhbNewtonZeroFinder} discussed in section
 \ref{sec:snewton}. The derivative needed by the Newton zero finder
 is the probability density function itself since, by definition,
 it is the derivative of the acceptance function (\cf equation
 \ref{eq:defdistr}).
 
-Finally the class creation method {\tt fromHistogram:} creates a
+Finally the class creation method {\texttt fromHistogram:} creates a
 new instance of a probability distribution with parameters derived
 using a quick approximation from the data accumulated into the
 supplied histogram; the derivation assumes that the accumulated
 data are distributed according to the distribution. This method is
 used to compute suitable starting values for least square or
 maximum likelihood fits (\cf chapter \ref{ch:estimation}). The
-convention is that this methods returns {\tt nil} if the
-parameters cannot be obtained. Thus, returning {\tt nil} is the
+convention is that this methods returns {\texttt nil} if the
+parameters cannot be obtained. Thus, returning {\texttt nil} is the
 default behavior for the superclass since this method is specific
 to each distribution. The estimation of the parameters is usually
 made using the statistical moments of the histogram and comparing
@@ -1195,22 +1195,22 @@ them to the analytical expression of the distribution's parameter.
 \input{Smalltalk/Statistics/DhbProbabilityDensity}
 \end{listing}
 
-The class {\tt DhbProbabilityDensityWithUnknownDistribution} is
+The class {\texttt DhbProbabilityDensityWithUnknownDistribution} is
 the abstract class for probability distribution having neither an
 analytical expression nor a numerical approximation for the
 distribution function.
 
-Therefore, methods computing the acceptance function ({\tt
-distributionValue:}) and interval acceptance ({\tt
+Therefore, methods computing the acceptance function ({\texttt
+distributionValue:}) and interval acceptance ({\texttt
 acceptanceBetween:and:}) are using equations \ref{eq:defdistr} and
-\ref{eq:defacceptint} respectively, using the class {\tt
+\ref{eq:defacceptint} respectively, using the class {\texttt
 DhbRombergIntegrator} discussed in section \ref{sec:sromberg}. The
 lower limit of the integral for the distribution function ---
 $x_{\min}$ of equation \ref{eq:defdistrmin} --- is defined by the
-method {\tt lowestValue}. Since the majority of the probability
+method {\texttt lowestValue}. Since the majority of the probability
 density distributions are defined for non-negative numbers, this
 method returns 0. If the supplied default is not appropriate, the
-method {\tt lowestValue} must be redefined by the subclass.
+method {\texttt lowestValue} must be redefined by the subclass.
 
 \begin{listing} Smalltalk implementation of a probability distribution with unknown
 distribution function\label{ls:probunkdistr}
@@ -1218,10 +1218,10 @@ distribution function\label{ls:probunkdistr}
 \end{listing}
 
 Listing \ref{ls:probdistrfun} shows the implementation of the
-\patstyle{Adapter} for the distribution function. The class {\tt
+\patstyle{Adapter} for the distribution function. The class {\texttt
 DhbProbabilityDistributionFunction} has a single instance variable
 containing the corresponding probability density function. The
-creation method {\tt density:} takes an instance of class {\tt
+creation method {\texttt density:} takes an instance of class {\texttt
 DhbProbabilityDensity} as argument.
 
 \begin{listing} Smalltalk implementation of a probability distribution function
@@ -1270,14 +1270,14 @@ $\sigma$.
 \end{figure}
 
 \subsection{Normal distribution --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\bf
+\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
 NormalDistribution} grayed.} Listing \ref{ls:normdist} shows the
 implementation of the normal distribution in Smalltalk.
 
 The distribution function of the normal distribution can be
 computed with the error function (\cf section
-\ref{sec:errorFunction}). Therefore the class {\tt
-DhbNormalDistribution} is implemented as a subclass of {\tt
+\ref{sec:errorFunction}). Therefore the class {\texttt
+DhbNormalDistribution} is implemented as a subclass of {\texttt
 DhbProbabilityDensity}.
 
 \begin{listing} Smalltalk implementation of the normal distribution \label{ls:normdist}
@@ -1328,14 +1328,14 @@ variable.
 
 \subsection{Gamma distribution --- Smalltalk implementation}
 \label{sec:sgammadist}\marginpar{Figure
-\ref{fig:statisticsclasses} with the box {\bf GammaDistribution}
+\ref{fig:statisticsclasses} with the box {\textbf GammaDistribution}
 grayed.}  Listing \ref{ls:gammadist} shows the implementation of
 the gamma distribution in Smalltalk.
 
 The distribution function of the gamma distribution can be
 computed with the incomplete gamma function (\cf section
-\ref{sec:gammafunc}). Therefore the class {\tt
-DhbGammaDistribution} is implemented as a subclass of {\tt
+\ref{sec:gammafunc}). Therefore the class {\texttt
+DhbGammaDistribution} is implemented as a subclass of {\texttt
 DhbProbabilityDensity}.
 \begin{listing} Smalltalk implementation of the gamma distribution \label{ls:gammadist}
 \input{Smalltalk/Statistics/DhbGammaDistribution}
@@ -1382,7 +1382,7 @@ $F\left(x\right)=1$. A similar equation can be derived for the
 acceptance interval function.
 
 \subsection{Experimental distribution --- General  implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\bf
+\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
 HistogrammedDistribution} grayed.} Adding the responsibility of
 behaving like a probability density function to a histogram is not
 desirable. In a good object oriented design, objects should have
@@ -1401,11 +1401,11 @@ and kurtosis --- are obtained from the histogram itself.
 
 The computation of the distribution and the interval acceptance
 function is delegated to the histogram. The floor operation of
-equation \ref{eq:histdistr} is evaluated by the method {\tt
+equation \ref{eq:histdistr} is evaluated by the method {\texttt
 binIndex} of the histogram.
 
 \begin{quote}
-{\bf Note:} In both implementation, there is no protection against
+{\textbf Note:} In both implementation, there is no protection against
 illegal arguments. Illegal arguments can occur when computing the
 distribution value when the histogram underflow and overflow
 counts are non zero. Below the minimum and above the maximum, no
@@ -1420,18 +1420,16 @@ automatic adjustment of the limits (\cf section
 Listing \ref{ls:histprob} shows the implementation of an
 experimental distribution in Smalltalk.
 
-The class {\tt DhbHistogrammedDistribution} is a subclass of the
-class {\tt DhbProbabilityDensity}. The class creation method {\tt
+The class {\texttt DhbHistogrammedDistribution} is a subclass of the
+class {\texttt DhbProbabilityDensity}. The class creation method {\texttt
 histogram:} takes as argument the histogram over which the
 instance is defined. To prevent creating a instance with undefined
-instance variable, the default class creation method {\tt new}
+instance variable, the default class creation method {\texttt new}
 returns an error.
 
 \begin{listing} Smalltalk implementation of an experimental distribution \label{ls:histprob}
 \input{Smalltalk/Statistics/DhbHistogrammedDistribution}
 \end{listing}
-
-
 
 
 %\ifx\wholebook\relax\else\end{document}\fi
