@@ -171,34 +171,36 @@ The computation of the standard deviation and of the error on the
 average are handled by the superclass (\cf listing
 \ref{ls:genmoments}).
 
-\label{sec:smoments}Listing \ref{ls:fastmoments} shows the
+\label{sec:smoments}Listing \ref{lst:fastmoments} shows the
 Smalltalk implementation. The class {\texttt
-DhbFastStatisticalMoments} is a subclass of class {\texttt
-DhbStatisticalMoments} presented in listing \ref{ls:genmoments} of
+PMFastStatisticalMoments} is a subclass of class {\texttt
+PMStatisticalMoments} presented in listing \ref{lst:genmoments} of
 section \ref{sec:srobustmoment}. The reason for the split into two
 classes will become clear in section \ref{sec:robustmoment}.
 
 The following code shows how to use the class {\texttt
-DhbFastStatisticalMoments} to accumulate measurements of a random
+PMFastStatisticalMoments} to accumulate measurements of a random
 variable and to extract the various distribution parameters
 discussed in section \ref{sec:moments}.
+
 \begin{displaycode}{Smalltalk}
- | accumulator valueStream average stdev skewness kurtosis |
- accumulator := DhbFastStatisticalMoments new.
- [ valueStream atEnd ]
+| accumulator valueStream average stdev skewness kurtosis |
+accumulator := PMFastStatisticalMoments new.
+[ valueStream atEnd ]
         whileFalse: [ accumulator accumulate: valueStream next ].
- average := accumulator average.
- stdev := accumulator standardDeviation.
- skewness := accumulator skewness.
- kurtosis := accumulator kurtosis
+average := accumulator average.
+stdev := accumulator standardDeviation.
+skewness := accumulator skewness.
+kurtosis := accumulator kurtosis
 \end{displaycode}
+
 This example assumes that the measurement of the random variable
 are obtained from a stream. The exact implementation of the stream
 is not shown here.
 
 After the declarative statements, the first executable statement
 creates a new instance of the class {\texttt
-DhbFastStatisticalMoments} with the default dimension. This
+PMFastStatisticalMoments} with the default dimension. This
 default allocates enough storage to accumulate up to the moment of
 $4\th$ order. The next two lines are the accumulation proper using
 a {\texttt whileFalse:} construct and the general behavior of a
@@ -209,9 +211,71 @@ If any of the distribution's parameters --- average, variance,
 skewness or kurtosis --- cannot be computed, the returned value is
 {\texttt nil}.
 
-\begin{listing} Smalltalk fast implementation of statistical moments \label{ls:fastmoments}
-\input{Smalltalk/Statistics/DhbFastStatisticalMoments}
+\begin{listing}[label=lst:fastmoments]{Smalltalk}
+{Smalltalk fast implementation of statistical moments}
+PMStatisticalMoments subclass: #PMFastStatisticalMoments
+   instanceVariableNames: ''
+   classVariableNames: ''
+   package: 'Math-StatisticalMoments'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMFastStatisticalMoments >> accumulate: aNumber
+    | var |
+    var := 1.
+    1 to: moments size
+        do: 
+            [ :n | 
+            moments at: n put: (moments at: n) + var.
+            var := var * aNumber ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFastStatisticalMoments >> average
+    self count = 0 ifTrue: [ ^nil ].
+    ^ (moments at: 2) / self count
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFastStatisticalMoments >> kurtosis
+    | var x1 x2 x3 x4 kFact kConst n m4 xSquared |
+    n := self count.
+    n < 4 ifTrue: [^nil].
+    var := self variance.
+    var = 0 ifTrue: [^nil].
+    x1 := (moments at: 2) / n.
+    x2 := (moments at: 3) / n.
+    x3 := (moments at: 4) / n.
+    x4 := (moments at: 5) / n.
+    xSquared := x1 squared.
+    m4 := x4 - (4 * x1 * x3) + (6 * x2 * xSquared) - (xSquared 
+                                                         squared * 3).
+    kFact := n * (n + 1) / (n - 1) / (n - 2) / (n - 3).
+    kConst := 3 * (n - 1) * (n - 1) / (n - 2) / (n - 3).
+    ^ kFact * (m4 * n / var squared) - kConst
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFastStatisticalMoments >> skewness
+    | x1 x2 x3 n stdev |
+    n := self count.
+    n < 3 ifTrue: [ ^nil ].
+    stdev := self standardDeviation.
+    stdev = 0 ifTrue: [^nil].
+    x1 := (moments at: 2) / n.
+    x2 := (moments at: 3) / n.
+    x3 := (moments at: 4) / n.
+    ^ (x3 - (3 * x1 * x2) + (2 * x1 * x1 * x1)) * n * n 
+        / (stdev squared * stdev * (n - 1) * (n - 2))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFastStatisticalMoments >> variance
+    | n |
+    n := self count.
+    n < 2 ifTrue: [^nil].
+    ^ ((moments at: 3) - ((moments at: 2) squared / n)) / (n - 1)
+\end{displaycode}
 
 \section{Robust implementation of statistical moments}
 \label{sec:robustmoment} The methods used to implement the
@@ -363,7 +427,7 @@ performed using the methods of the superclass.
 \subsection{Robust central moments --- Smalltalk implementation}
 \label{sec:srobustmoment} Listing
 \ref{ls:genmoments} shows the implementation of the robust
-statistical moments. Listing \ref{ls:fixedmoments} shows a
+statistical moments. Listing \ref{lst:fixedmoments} shows a
 specialization to optimize the speed of accumulation for the most
 frequently used case (accumulation up to the $4\th$ order).
 
@@ -383,12 +447,136 @@ centralMoment:} retrieving the central moment of a given order.
 They will return {\texttt nil} if not enough data as been accumulated
 in the moments.
 
-\begin{listing} Smalltalk implementation of accurate statistical moments \label{ls:genmoments}
-\input{Smalltalk/Statistics/DhbStatisticalMoments}
+\begin{listing}[label=lst:genmoments]{Smalltalk}
+{Smalltalk implementation of accurate statistical moments}
+Object subclass: #PMStatisticalMoments
+   instanceVariableNames: 'moments'
+   classVariableNames: ''
+   package: 'Math-StatisticalMoments'
 \end{listing}
 
-The class {\texttt DhbFixedStatisticalMoments} is a specialization of
-the class {\texttt DhbStatisticalMoments} for a fixed number of
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments class >> new
+    ^ self new: 4
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments class >> new: anInteger
+    ^ super new initialize: anInteger + 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> accumulate: aNumber
+    | correction n n1 oldSums pascal nTerm cTerm term |
+    n := moments at: 1.
+    n1 := n + 1.
+    correction := ((moments at: 2) - aNumber) / n1.
+    oldSums := moments copyFrom: 1 to: moments size.
+    moments
+        at: 1 put: n1;
+        at: 2 put: (moments at: 2) - correction.
+    pascal := Array new: moments size.
+    pascal atAllPut: 0.
+    pascal
+        at: 1 put: 1;
+        at: 2 put: 1.
+    nTerm := -1.
+    cTerm := correction.
+    n1 := n / n1.
+    n := n negated.
+    3 to: moments size
+        do: 
+            [:k | 
+            cTerm := cTerm * correction.
+            nTerm := n * nTerm.
+            term := cTerm * (1 + nTerm).
+            k to: 3
+                by: -1
+                do: 
+                    [:l | 
+                    pascal at: l put: (pascal at: l - 1) + (pascal 
+                                                               at: l).
+                    term := (pascal at: l) * (oldSums at: l) + term.
+                    oldSums at: l put: (oldSums at: l) * correction ].
+            pascal at: 2 put: (pascal at: 1) + (pascal at: 2).
+            moments at: k put: term * n1 ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> average
+    self count = 0 ifTrue: [ ^nil ].
+    ^ moments at: 2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> centralMoment: anInteger
+    ^ moments at: anInteger + 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> count
+    ^ moments at: 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> errorOnAverage
+    ^ (self variance / self count) sqrt
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> initialize: anInteger
+    moments := Array new: anInteger.
+    self reset.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> kurtosis
+    | n n1 n23 |
+    n := self count.
+    n < 4 ifTrue: [^nil].
+    n23 := (n - 2) * (n - 3).
+    n1 := n - 1.
+    ^ ((moments at: 5) * n squared * (n + 1) / (self variance squared 
+                                                                * n1) 
+        - (n1 squared * 3)) / n23
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> reset
+    moments atAllPut: 0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> skewness
+    | n v |
+    n := self count.
+    n < 3 ifTrue: [^nil].
+    v := self variance.
+    ^ (moments at: 4) * n squared / ((n - 1) * (n - 2) * (v sqrt * v))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> standardDeviation
+    ^ self variance sqrt
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> unnormalizedVariance
+    ^ (self centralMoment: 2) * self count
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> variance
+    | n |
+    n := self count.
+    n < 2
+        ifTrue: [ ^nil].
+    ^ self unnormalizedVariance / ( n - 1)
+\end{displaycode}
+
+The class {\texttt PMFixedStatisticalMoments} is a specialization of
+the class {\texttt PMStatisticalMoments} for a fixed number of
 central moments going up to the $4\th$ order.
 
 The class creation method {\texttt new:} is barred from usage as the
@@ -397,7 +585,7 @@ consequence the default creation method must be redefined to
 delegate the parametric creation to the method of the superclass.
 
 \begin{listing} Smalltalk implementation of accurate statistical moments with fixed orders \label{ls:fixedmoments}
-\input{Smalltalk/Statistics/DhbFixedStatisticalMoments}
+%\input{Smalltalk/Statistics/DhbFixedStatisticalMoments}
 \end{listing}
 
 \section{Histograms}
@@ -507,12 +695,11 @@ $2.1$ and $5.175$ and the number of bins becomes 41 instead of 50.
 \subsection{Histograms --- Smalltalk implementation}
 \label{sec:shistogram} Listing \ref{ls:histogram} shows the
 implementation of a histogram in Smalltalk. The following code
-shows how to use the class {\texttt DhbHistogram} to accumulate
+shows how to use the class {\texttt PMHistogram} to accumulate
 measurements into a histogram.
 \begin{displaycode}{Smalltalk}
-
  | histogram valueStream |
- histogram := DhbHistogram new.
+ histogram := PMHistogram new.
  [ valueStream atEnd ]
         whileFalse: [ histogram accumulate: valueStream next ].
 \hfil {\texttt<\textsl printing or display of the histogram\texttt >}\hfil
