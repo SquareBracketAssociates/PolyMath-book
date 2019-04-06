@@ -62,7 +62,7 @@ the set of data:
 \label{eq:average}
   \bar{x}=M_1={1\over n}\sum_{i=1}^n x_i.
 \end{equation}
-The central moments of $k^{\mathop{\rm th}}$ order is defined by:
+The central moments of $k^{\mathop{\textrm th}}$ order is defined by:
 \begin{equation}
   m_k={1\over n}\sum_{i=1}^n \left(x_i-\bar{x}\right)^k.
 \end{equation}
@@ -152,18 +152,18 @@ of the distribution. It can be used in all cases where
 distribution parameters are needed.
 
 \subsection{Statistical moments --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\bf
+\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
 FastStatisticalMoments} grayed.} To describe this implementation
-we must anticipated on the next section: the class {\bf
+we must anticipated on the next section: the class {\textbf
 FastStatisticalMoments} implementing statistical moments as
 described in Section \ref{sec:moments} is a subclass of the class
 defined in section \ref{sec:robustmoment}.
 
-Space allocation is handled by the superclass. The class {\tt
+Space allocation is handled by the superclass. The class {\texttt
 FastStatisticalMoments} uses this allocation to store the moments
-(instead of the central moments). The method {\tt accumulate:}
-perform the accumulation of the moments. The methods {\tt
-average}, {\tt variance}, {\tt skewness} and {\tt kurtosis}
+(instead of the central moments). The method {\texttt accumulate:}
+perform the accumulation of the moments. The methods {\texttt
+average}, {\texttt variance}, {\texttt skewness} and {\texttt kurtosis}
 compute the respective quantities using explicit expansion of the
 central moments as a function of the moments.
 
@@ -172,20 +172,17 @@ average are handled by the superclass (\cf listing
 \ref{ls:genmoments}).
 
 \label{sec:smoments}Listing \ref{ls:fastmoments} shows the
-Smalltalk implementation. The class {\tt
-DhbFastStatisticalMoments} is a subclass of class {\tt
+Smalltalk implementation. The class {\texttt
+DhbFastStatisticalMoments} is a subclass of class {\texttt
 DhbStatisticalMoments} presented in listing \ref{ls:genmoments} of
 section \ref{sec:srobustmoment}. The reason for the split into two
 classes will become clear in section \ref{sec:robustmoment}.
 
-The following code shows how to use the class {\tt
+The following code shows how to use the class {\texttt
 DhbFastStatisticalMoments} to accumulate measurements of a random
 variable and to extract the various distribution parameters
 discussed in section \ref{sec:moments}.
-\begin{codeExample}
-\label{ex:smoments}
-\begin{verbatim}
-
+\begin{displaycode}{Smalltalk}
  | accumulator valueStream average stdev skewness kurtosis |
  accumulator := DhbFastStatisticalMoments new.
  [ valueStream atEnd ]
@@ -193,30 +190,28 @@ discussed in section \ref{sec:moments}.
  average := accumulator average.
  stdev := accumulator standardDeviation.
  skewness := accumulator skewness.
- kurtosis := accumulator kurtosis.
-\end{verbatim}
-\end{codeExample}
+ kurtosis := accumulator kurtosis
+\end{displaycode}
 This example assumes that the measurement of the random variable
 are obtained from a stream. The exact implementation of the stream
 is not shown here.
 
 After the declarative statements, the first executable statement
-creates a new instance of the class {\tt
+creates a new instance of the class {\texttt
 DhbFastStatisticalMoments} with the default dimension. This
 default allocates enough storage to accumulate up to the moment of
 $4\th$ order. The next two lines are the accumulation proper using
-a {\tt whileFalse:} construct and the general behavior of a
+a {\texttt whileFalse:} construct and the general behavior of a
 stream. The last four lines extract the main parameters of the
 distribution.
 
 If any of the distribution's parameters --- average, variance,
 skewness or kurtosis --- cannot be computed, the returned value is
-{\tt nil}.
+{\texttt nil}.
 
 \begin{listing} Smalltalk fast implementation of statistical moments \label{ls:fastmoments}
 \input{Smalltalk/Statistics/DhbFastStatisticalMoments}
 \end{listing}
-
 
 \section{Robust implementation of statistical moments}
 \label{sec:robustmoment} The methods used to implement the
@@ -334,9 +329,9 @@ For the central moment of order 4 we have:
 \end{mainEquation}
 
 \subsection{Robust central moments --- General implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\bf
-StatisticalMoments} and {\bf FixedStatisticalMoments} grayed.} The
-class {\tt StatisticalMoments} has a single instance variable {\tt
+\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf
+StatisticalMoments} and {\textbf FixedStatisticalMoments} grayed.} The
+class {\texttt StatisticalMoments} has a single instance variable {\texttt
 moments} used to store the accumulated central moments.
 
 The evaluation of equation \ref{eq:deltamoment} is not as hard as
@@ -346,7 +341,7 @@ triangle). Furthermore, the terms of the sum can be computed
 recursively from those of the previous order so that raising the
 correction $\Delta_{n+1}$ to an integer power is never made
 explicitly. Equation \ref{eq:deltamoment} is implemented in method
-{\tt accumulate}. The reader will notice that the binomial
+{\texttt accumulate}. The reader will notice that the binomial
 coefficients are computed inside the loop computing the sum.
 
 Accumulating the central moments using equation
@@ -356,13 +351,13 @@ is about 2 times slower than with the brute force method exposed
 in section \ref{sec:moments}. The reader must decide between speed
 and accuracy to chose between the two implementations.
 
-The class {\tt FixedStatisticalMoments} is a subclass of class
-{\tt StatisticalMoments} specialized in the accumulation of
+The class {\texttt FixedStatisticalMoments} is a subclass of class
+{\texttt StatisticalMoments} specialized in the accumulation of
 central moments up to order 4. Instead of implementing the general
 equation \ref{eq:deltamoment}, the central moments are accumulated
 using equations \ref{eq:accumvariance}, \ref{eq:accumskewness} and
 \ref{eq:accumkurtosis}. The only instance method redefined by this
-class is the method {\tt accumulate}. All other computations are
+class is the method {\texttt accumulate}. All other computations are
 performed using the methods of the superclass.
 
 \subsection{Robust central moments --- Smalltalk implementation}
@@ -376,27 +371,27 @@ Using the class is identical for all classes of the hierarchy.
 Thus, the code example presented in section \ref{sec:smoments} is
 also valid for these two classes.
 
-The creation method {\tt new:} takes as argument the highest order
+The creation method {\texttt new:} takes as argument the highest order
 of the accumulated moments. The corresponding initialization
-method allocates the required storage. The creation method {\tt
+method allocates the required storage. The creation method {\texttt
 new} corresponds to the most frequent usage: the highest order is
 4.
 
 The methods computing the distribution parameters --- average,
-variance, skewness and kurtosis --- are using the method {\tt
+variance, skewness and kurtosis --- are using the method {\texttt
 centralMoment:} retrieving the central moment of a given order.
-They will return {\tt nil} if not enough data as been accumulated
+They will return {\texttt nil} if not enough data as been accumulated
 in the moments.
 
 \begin{listing} Smalltalk implementation of accurate statistical moments \label{ls:genmoments}
 \input{Smalltalk/Statistics/DhbStatisticalMoments}
 \end{listing}
 
-The class {\tt DhbFixedStatisticalMoments} is a specialization of
-the class {\tt DhbStatisticalMoments} for a fixed number of
+The class {\texttt DhbFixedStatisticalMoments} is a specialization of
+the class {\texttt DhbStatisticalMoments} for a fixed number of
 central moments going up to the $4\th$ order.
 
-The class creation method {\tt new:} is barred from usage as the
+The class creation method {\texttt new:} is barred from usage as the
 class can only be used for a fixed number of moment orders. As a
 consequence the default creation method must be redefined to
 delegate the parametric creation to the method of the superclass.
@@ -461,7 +456,7 @@ that the definition of a bin interval is open ended at the upper
 limit.} or above the maximum of the accumulated values.
 
 \subsection{Histograms --- General implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\bf
+\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
 Histogram} grayed.} Our implementation of histogram also
 accumulates the values into statistical moments. One can in
 principle compute the statistical moments of the measured
@@ -512,113 +507,109 @@ $2.1$ and $5.175$ and the number of bins becomes 41 instead of 50.
 \subsection{Histograms --- Smalltalk implementation}
 \label{sec:shistogram} Listing \ref{ls:histogram} shows the
 implementation of a histogram in Smalltalk. The following code
-shows how to use the class {\tt DhbHistogram} to accumulate
+shows how to use the class {\texttt DhbHistogram} to accumulate
 measurements into a histogram.
-\begin{codeExample}
-\begin{verbatim}
+\begin{displaycode}{Smalltalk}
 
  | histogram valueStream |
  histogram := DhbHistogram new.
  [ valueStream atEnd ]
         whileFalse: [ histogram accumulate: valueStream next ].
-\end{verbatim}
-\hfil {\tt<\textsl printing or display of the histogram\tt >}\hfil
-\end{codeExample}
+\hfil {\texttt<\textsl printing or display of the histogram\texttt >}\hfil
+\end{displaycode}
+
 This example assumes that the measurement of the random variable
 are obtained from a stream. The exact implementation of the stream
 is not shown here.
 
 After the declarative statements, the first executable statement
-creates a new instance of the class {\tt DhbHistogram} with the
+creates a new instance of the class {\texttt DhbHistogram} with the
 default settings: automatic determination of the limits for 50
 desired bins. The next two lines are the accumulation proper using
-a {\tt whileFalse:} construct and the general behavior of a
+a {\texttt whileFalse:} construct and the general behavior of a
 stream. This code is very similar to the code example presented in
 section \ref{sec:smoments}. Extracting the parameters of the
 distribution can also be performed from the histogram.
 
 \noindent The next example shows how to declare a histogram with
 given limits (2 and 7) and a desired number of bins of 50:
-\begin{codeExample}
-\begin{verbatim}
-
+\begin{displaycode}{Smalltalk}
  | histogram valueStream |
  histogram := DhbHistogram new.
  histogram setRangeFrom: 2.0 to: 7.0 bins: 100.
-\end{verbatim}
-\hfil {\tt<\textsl the rest is identical to the previous example\tt
+\hfil {\texttt<\textsl the rest is identical to the previous example\texttt
 >}\hfil
-\end{codeExample}
+\end{displaycode}
 
-\noindent The class {\tt DhbHistogram} has the following instance
+\noindent The class {\texttt DhbHistogram} has the following instance
 variables:
 \begin{description}
-  \item[\tt minimum] the minimum of the accumulated values, that
+  \item[\texttt minimum] the minimum of the accumulated values, that
   is $x_{\min}$,
-  \item[\tt binWidth] the bin width, that is $w$,
-  \item[\tt overflow] a counter to accumulate the overflow of the histogram,
-  \item[\tt underflow] a counter to accumulate the underflow of the histogram,
-  \item[\tt moments] an instance of the class {\tt
+  \item[\texttt binWidth] the bin width, that is $w$,
+  \item[\texttt overflow] a counter to accumulate the overflow of the histogram,
+  \item[\texttt underflow] a counter to accumulate the underflow of the histogram,
+  \item[\texttt moments] an instance of the class {\texttt
   DhbFixedStatisticalMoments} to accumulate statistical moments up
   to the $4\th$ order (\cf section \ref{sec:srobustmoment}) with
   minimal rounding errors.
-  \item[\tt contents] the contents of the histogram, that is an
+  \item[\texttt contents] the contents of the histogram, that is an
   array of integers,
-  \item[\tt freeExtent] a Boolean flag denoting whether the limits
+  \item[\texttt freeExtent] a Boolean flag denoting whether the limits
   of the histogram can be adjusted to include all possible values,
-  \item[\tt cacheSize] the size of the cache allocated to collect
+  \item[\texttt cacheSize] the size of the cache allocated to collect
   values for an automatic determination of the histogram limits,
-  \item[\tt desiredNumberOfBins] the number of bins desired by the
+  \item[\texttt desiredNumberOfBins] the number of bins desired by the
   calling application.
 \end{description}
 
 Since there are many ways to declare a histogram, there is a
-single creation method {\tt new}, which calls in turn a single
-standard initialization method {\tt initialize}. In this mode. the
+single creation method {\texttt new}, which calls in turn a single
+standard initialization method {\texttt initialize}. In this mode. the
 histogram is created with undefined limits --- that is, the first
 accumulated values are cached until a sufficient number is
 available for an automatic determination of the limits --- and a
 default number of bins. The default number of bins is defined by
-the class method {\tt defaultNumberOfBins}.
+the class method {\texttt defaultNumberOfBins}.
 
 \noindent Four methods allow to change the default initialization.
 
-The method {\tt setRangeFrom:to:bins:} allows the definition of
+The method {\texttt setRangeFrom:to:bins:} allows the definition of
 the parameters $x_{\min}$, $x_{\max}$ and $n$, respectively. The
-method {\tt setWidth:from:bins:} allows the definition of the
+method {\texttt setWidth:from:bins:} allows the definition of the
 parameters $w$, $x_{\min}$ and $n$, respectively. In both cases,
 the histogram limits and number of bins are adjusted to reasonable
 values as explained at the end of section \ref{sec:histogram}.
 These methods generate an error if the histogram is not cached, as
 limits cannot be redefined while the histogram is accumulating.
-The method {\tt setDesiredNumberOfBins:} allows to overrule the
-default number of bins. Finally, the method {\tt freeExtent:}
+The method {\texttt setDesiredNumberOfBins:} allows to overrule the
+default number of bins. Finally, the method {\texttt freeExtent:}
 takes a Boolean argument to define whether or not the limits must
 be adjusted when an accumulated value falls outside of the
 histogram limits. This method generates an error if any count has
 been accumulated in the underflow or overflow.
 
-The method {\tt accumulate} is used to accumulate the values. If
+The method {\texttt accumulate} is used to accumulate the values. If
 the histogram is still cached --- that is when values are directly
 accumulated into the cache for later determination of the limits
---- accumulation if delegated to the method {\tt
-accumulateInCache:}. In this mode, the instance variable {\tt
-contents} is an {\tt OrderedCollection} collecting the values.
+--- accumulation if delegated to the method {\texttt
+accumulateInCache:}. In this mode, the instance variable {\texttt
+contents} is an {\texttt OrderedCollection} collecting the values.
 When the size of the collection is reaching the maximum size
 allocated to the cache, limits are computed and the cache is
 flushed. In direct accumulation mode, the bin index corresponding
 to the value is computed. If the index is within the range, the
 value is accumulated. Otherwise it is treated like an overflow or
-an underflow. The method {\tt processOverflows:for:} handles the
+an underflow. The method {\texttt processOverflows:for:} handles the
 case where the accumulated values falls outside of the histogram
 limits. If histogram limits cannot be adjusted it simply counts
 the overflow or the underflow. Otherwise processing is delegated
-to the methods {\tt growsContents:}, {\tt growsPositiveContents}
-and {\tt growsNegativeContents}, which adjust the histogram limits
+to the methods {\texttt growsContents:}, {\texttt growsPositiveContents}
+and {\texttt growsNegativeContents}, which adjust the histogram limits
 according to the accumulated value.
 
 The adjustment of the histogram limits to reasonable values is
-performed by the method {\tt adjustDimensionUpTo:}. This is made
+performed by the method {\texttt adjustDimensionUpTo:}. This is made
 when the limits are determined automatically. This method is also
 used when the limits are specified using one of the initialization
 methods.
@@ -630,9 +621,9 @@ is doing; looking at the code should suffice for a detailed
 understanding. The reader should just note that all methods
 retrieving the parameters of the distribution, as discussed in
 section \ref{sec:smoments}, are implemented by delegating the
-method to the instance variable {\tt moments}.
+method to the instance variable {\texttt moments}.
 
-The iterator method {\tt pointsAndErrorsDo:} is used for maximum
+The iterator method {\texttt pointsAndErrorsDo:} is used for maximum
 likelihood fit of a probability distribution. Smalltalk
 implementation of maximum likelihood fit is discussed in section
 \ref{sec:smlfhist}.
@@ -785,7 +776,7 @@ the polynomial. The following algorithm can be used: {\parskip 0pt
   and truncated to 16 bits ($X_{n+1}=2X_n \mod 2^{16}$),
   \item If bit 15 (least significant bit being 0) of $X_n$ is set,
   set $X_{n+1}$ to the bit wise exclusive OR of $X_{n+1}$ with
-  {\tt 0x1021}.
+  {\texttt 0x1021}.
 \end{enumerate}}
 \noindent Other polynomials are given in \cite{Press}.
 
@@ -795,22 +786,22 @@ implementation of a random bit pattern generator is left as an
 exercise to the reader.
 
 \subsection{Random number generator --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\bf
-CongruentialRandomNumberGenerator} and {\bf
+\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf
+CongruentialRandomNumberGenerator} and {\textbf
 MitchellMooreGenerator} grayed.} Listing \ref{ls:randomcong} shows
 the implementation of a congruential random generator in
 Smalltalk. Listing \ref{ls:randomseq} shows the implementation of
 a additive sequence random generator in Smalltalk. Listing
 \ref{ls:randomuse} shows usage of the generator for standard use.
 
-\noindent The class {\tt DhbCongruentialRandomNumberGenerator} has
+\noindent The class {\texttt DhbCongruentialRandomNumberGenerator} has
 three public methods:
 \begin{description}
-  \item[\tt value] returns the next random number of the series,
+  \item[\texttt value] returns the next random number of the series,
   that is $X_n$, a number between $0$ and $m$,
-  \item[\tt floatValue] returns the next random floating number,
+  \item[\texttt floatValue] returns the next random floating number,
   that is the value $X_n / m$,
-  \item[\tt integerValue:] returns a random integer, whose values
+  \item[\texttt integerValue:] returns a random integer, whose values
   are between 0 and the specified argument.
 \end{description}
 When calling any of the above methods, the next random number of
@@ -818,85 +809,78 @@ the series is obtained using equation \ref{eq:crg}.
 
 There are several ways of using a random number generator. If
 there is no specific requirement the easiest approach is to use
-the instance provided by default creation method ({\tt new})
+the instance provided by default creation method ({\texttt new})
 returning a \patstyle{singleton}. The next example shows how to
 proceed assuming the application uses the values generated by the
 random generator directly:
-\begin{codeExample}
-\label{codex:crgdefault}
-\begin{verbatim}
-
+\begin{displaycode}{Smalltalk}
  | generator x |
  generator := DhbCongruentialRandomNumberGenerator new.
-\end{verbatim}
-\hfil{\tt <\textsl Here is where the generator is used\tt
+\hfil{\texttt <\textsl Here is where the generator is used\texttt
 >}\hfil
-\begin{verbatim}
+
  x := generator value.
-\end{verbatim}
-\end{codeExample}
+\end{displaycode}
+
 If one needs several series which must be separately reproducible,
 one can assign several generators, one for each series. The
 application can use predefined numbers for the seed of each
 series. Here is a complete example assuming that the generated
 numbers must be floating numbers.
-\begin{codeExample}
-\label{codex:crgseeded}
-\begin{verbatim}
+\begin{displaycode}{Smalltalk}
+
  | generators seeds index x |
-\end{verbatim}
- {\tt seeds := <\textsl an array containing the desired seeds\tt >}
-\begin{verbatim}
+
+ {\texttt seeds := <\textsl an array containing the desired seeds\texttt >}
+
  generators := seeds collect:
            [ :each | DhbCongruentialRandomNumberGenerator seed: each].
-\end{verbatim}
-\noindent\hskip 5ex{\tt <\textsl Here is where the various generators
-are used\tt
+
+\noindent\hskip 5ex{\texttt <\textsl Here is where the various generators
+are used\texttt
 >}\hfil \\
-\hskip 5ex{\tt <index \textsl is the index of the desired series\tt
+\hskip 5ex{\texttt <index \textsl is the index of the desired series\texttt
 >}\hfil
-\begin{verbatim}
+
  x := ( generators at: index) floatValue.
-\end{verbatim}
-\end{codeExample}
+\end{displaycode}
 
 In game applications, it is of course not desirable to have a
 reproducible series. In this case, the easiest way is to use the
 time in milliseconds as the seed of the series. This initial value
 is sufficiently hard to reproduce to give the illusion of
-randomness . Furthermore the randomness of the series guarantees
+randomness. Furthermore the randomness of the series guarantees
 that two series generated at almost the same time are quite
 different. Here is how to do it.
-\begin{codeExample}
-\begin{verbatim}
+\begin{displaycode}{Smalltalk}
 
  | generator x |
  generator := DhbCongruentialRandomNumberGenerator
                         seed: Time millisecondClockValue.
-\end{verbatim}
-\hfil{\tt <\textsl Here is where the generator is used\tt
+
+\hfil{\texttt <\textsl Here is where the generator is used\texttt
 >}\hfil
-\begin{verbatim}
+
  x := (generator integerValue: 20) + 1.
-\end{verbatim}
-\end{codeExample}
+\end{displaycode}
+
 In this last example, the generated numbers are integers between 1
 and 20.
 
-\rubrique{Implementation} The class {\tt
+\rubrique{Implementation} The class {\texttt
 DhbCongruentialRandomNumberGenerator} has the following instance
 variables:
 \begin{description}
-  \item[\tt constant] the increment $c$,
-  \item[\tt modulus] the modulus $m$,
-  \item[\tt multiplicator] the multiplier $a$ and
-  \item[\tt seed] the last generated number $X_{n-1}$.
+  \item[\texttt constant] the increment $c$,
+  \item[\texttt modulus] the modulus $m$,
+  \item[\texttt multiplicator] the multiplier $a$ and
+  \item[\texttt seed] the last generated number $X_{n-1}$.
 \end{description}
-There are three instance creation methods. The method {\tt new}
+There are three instance creation methods. The method {\texttt new}
 returns a \patstyle{singleton} instance containing parameters from
-\cite{Knuth2}. The method {\tt seed:} allows one to create an
+\cite{Knuth2}. The method {\texttt seed:} allows one to create an
 instance to generate a series of random number starting at a given
-seed. Finally the method {\tt constant:multiplicator:modulus:}
+seed. Finally the method {\texttt constant:multiplicator:modulus:}
 creates a congruential random number generator based on supplied
 parameters. Readers tempted to use this method are strongly
 advised to read \cite{Knuth2} and the references therein
@@ -922,26 +906,26 @@ reader.
 \input{Smalltalk/Statistics/DhbCongruentialRandomNumberGenerator}
 \end{listing}
 
-\noindent The class {\tt DhbMitchellMooreGenerator} implements a
+\noindent The class {\texttt DhbMitchellMooreGenerator} implements a
 random number generator with additive sequence. It has two public
 methods:
 \begin{description}
-  \item[\tt floatValue] returns the next random floating number,
+  \item[\texttt floatValue] returns the next random floating number,
   that is the value $x_n$,
-  \item[\tt integerValue:] returns a random integer, whose values
+  \item[\texttt integerValue:] returns a random integer, whose values
   are between 0 and the specified argument.
 \end{description}
 When calling any of the above methods, the next random number of
 the series is obtained using equation \ref{eq:addseqrandom}. The
 series of generated numbers are all floating points.
 
-The creation methods {\tt new} and {\tt seed:} are used exactly as
-the corresponding methods of the class {\tt
+The creation methods {\texttt new} and {\texttt seed:} are used exactly as
+the corresponding methods of the class {\texttt
 DhbCongruentialRandomNumberGenerator}. Please refer to the code
 examples \ref{codex:crgdefault} and \ref{codex:crgseeded}. Both
 methods use the congruential random number generator to generate
 the initial series of numbers $x_1,\ldots,x_{55}$. The class
-method {\tt constants:lowIndex:} offers a way to define the
+method {\texttt constants:lowIndex:} offers a way to define the
 numbers $k$ and $l$ as well as the initial series of numbers. The
 reader wishing to use this method should consult the table of {\textsl
 good} indices $k$ and $l$ in \cite{Knuth2}.
@@ -953,8 +937,8 @@ good} indices $k$ and $l$ in \cite{Knuth2}.
 
 For simple simulation, one wishes to generate a random number ---
 floating or integer --- within certain limits. Here are
-convenience methods implemented for the class {\tt Number} and
-{\tt Integer}. These methods frees the user from keeping track of
+convenience methods implemented for the class {\texttt Number} and
+{\texttt Integer}. These methods frees the user from keeping track of
 the instance of the random number generator. For example, the
 following Smalltalk expression
 \begin{quote}
@@ -994,7 +978,7 @@ $\left[x,x+dx\right[$. A probability density function is a special
 case of a one variable function described in section
 \ref{sec:function}.
 
-The moment of $k^{\mathop{\rm th}}$ order for a probability
+The moment of $k^{\mathop{\textrm th}}$ order for a probability
 density function $P\left(x\right)$ is defined by:
 \begin{equation}
 \label{eq:probdensity}
@@ -1009,7 +993,7 @@ distribution as:
 \begin{equation}
   \mu=M_1=\int x P\left(x\right) dx.
 \end{equation}
-Then the central moment of $k^{\mathop{\rm th}}$ order is defined
+Then the central moment of $k^{\mathop{\textrm th}}$ order is defined
 by:
 \begin{equation}
   m_k=\int \left(x-\mu\right)^k P\left(x\right) dx.
@@ -1054,7 +1038,7 @@ Instead of the distribution function,  the name centile is
 sometimes used to refer to the value of the distribution function
 expressed in percent. This kind of terminology is frequently used
 in medical and natural science publications. For example, a value
-$x$ is said to be at the $10^{\mathop{\rm th}}$ centile if
+$x$ is said to be at the $10^{\mathop{\textrm th}}$ centile if
 $F\left(t\right)=1/10$; in other words, there is a ten-percent
 chance of observing a value less than or equal to $t$\footnote{A
 centile can also be quoted for a value relative to a set of
@@ -1124,8 +1108,8 @@ used in this book. Other important distributions are presented in
 appendix \ref{ch:distributions}.
 
 \subsection{Probability distributions --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\bf
-ProbabilityDensity} and {\bf
+\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf
+ProbabilityDensity} and {\textbf
 ProbabilityDensityWithUnknownDistribution} grayed.} Table
 \ref{tb:distrgenimpl} shows the description of the public methods
 of the implementation.
