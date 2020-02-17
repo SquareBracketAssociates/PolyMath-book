@@ -351,7 +351,8 @@ PMFisherSnedecorDistribution >> variance
 
 The computation of the confidence level for the $F$-test is
 implemented in the method {\texttt fConfidenceLevel:} of the class
-{\texttt PMStatisticalMoments}. It calculates the statistics $F$
+{\texttt PMStatisticalMoments}.
+It calculates the statistics $F$
 according to equation \ref{eq:Ftest}, creates an instance of a
 Fisher-Snedecor distribution and passes the value of $F$ to the
 method {\texttt confidenceLevel:} of the distribution. The method {\texttt
@@ -361,10 +362,42 @@ accumulated by the histogram. The argument of the method can be a
 statistical moment or a histogram since the messages sent by the
 method are polymorphic to both classes.
 
-\begin{listing} Smalltalk implementation of the $F$-test \label{ls:Ftest}
-\input{Smalltalk/Estimation/DhbStatisticalMoments(DhbEstimationF)}
-\input{Smalltalk/Estimation/DhbHistogram(DhbEstimationF)}
+\begin{listing}[label=ls:Ftest]{Smalltalk}
+  {Smalltalk implementation of the $F$-test}
+Object subclass: #PMStatisticalMoments
+  instanceVariableNames: 'moments'
+  classVariableNames: ''
+  package: 'Math-StatisticalMoments'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMStatisticalMoments >> fConfidenceLevel: aStatisticalMomentsOrHistogram
+    | fValue |
+    fValue := self variance/ aStatisticalMomentsOrHistogram variance.
+    ^ fValue < 1
+        ifTrue: [ (PMFisherSnedecorDistribution degreeOfFreedom: 
+                                  aStatisticalMomentsOrHistogram count
+                        degreeOfFreedom: self count) 
+                                        confidenceLevel: fValue 
+                                                           reciprocal ]
+        ifFalse: [ (PMFisherSnedecorDistribution degreeOfFreedom: 
+                                                            self count
+                        degreeOfFreedom: 
+                                aStatisticalMomentsOrHistogram count) 
+                                        confidenceLevel: fValue ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+Object subclass: #PMHistogram
+instanceVariableNames: 'minimum binWidth overflow underflow moments contents freeExtent cacheSize desiredNumberOfBins'
+classVariableNames: ''
+package: 'Math-StatisticalMoments'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram >> fConfidenceLevel: aStatisticalMomentsOrHistogram
+    ^ moments fConfidenceLevel: aStatisticalMomentsOrHistogram
+\end{displaycode}
 
 \section{$t$-test and the Student distribution}
 \label{sec:ttest} The $t$-test tries to answer the following
