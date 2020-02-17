@@ -185,8 +185,8 @@ Smalltalk. Listing \ref{ls:Ftest} shows the implementation of the
 $F$-test in Smalltalk. The following code example shows how to
 perform a $F$-test between two sets of experimental measurements.
 
-\begin{displaycode}{Smalltalk}
 \label{exs:Ftest}
+\begin{displaycode}{Smalltalk}
  | mom1 mom2 confidenceLevel |
  mom1 := PMFixedStatisticalMoments new.
 \end{displaycode}
@@ -214,9 +214,140 @@ subclass of {\texttt PMProbabilityDensity} because its distribution
 function can be computed numerically using the incomplete beta
 function (\cf section \ref{sec:incbeta}).
 
-\begin{listing} Smalltalk implementation of the Fisher-Snedecor distribution \label{ls:Fdist}
-\input{Smalltalk/Statistics/DhbFisherSnedecorDistribution}
+\begin{listing}[label=ls:Fdist]{Smalltalk}
+{Smalltalk implementation of the Fisher-Snedecor distribution}
+PMProbabilityDensity subclass: #PMFisherSnedecorDistribution
+  instanceVariableNames: 'dof1 dof2 norm chiSquareDistribution1
+  chiSquareDistribution2 incompleteBetaFunction'
+  classVariableNames: ''
+  package: 'Math-DistributionForHistogram'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution class >> degreeOfFreedom: anInteger1
+degreeOfFreedom: anInteger2
+    ^ super new initialize: anInteger1 and: anInteger2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution class >> distributionName
+    ^ 'Fisher-Snedecor distribution'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution class >> fromHistogram: aHistogram
+    | n1 n2 a |
+    aHistogram minimum < 0 ifTrue: [^nil].
+    n2 := (2 / (1 - (1 / aHistogram average))) rounded.
+    n2 > 0 ifFalse: [^nil].
+    a := (n2 - 2) * (n2 - 4) * aHistogram variance / (n2 squared * 
+                                                                   2).
+    n1 := (0.7 * (n2 - 2) / (1 - a)) rounded.
+    ^n1 > 0 
+        ifTrue: [self degreeOfFreedom: n1 degreeOfFreedom: n2]
+        ifFalse: [nil]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution class >> new
+ ^ self error: 'Illegal creation message for this class'
+\end{displaycode} 
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution class >> test: aStatisticalMoment1 with: aStatisticalMoment2
+    ^ (self class degreeOfFreedom: aStatisticalMoment1 count
+        degreeOfFreedom: aStatisticalMoment2 count) 
+            distributionValue: aStatisticalMoment1 variance 
+                    / aStatisticalMoment2 variance
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> average
+    ^dof2 > 2
+        ifTrue: [ dof2 / ( dof2 - 2) ]
+        ifFalse:[ nil ]
+\end{displaycode}
+      
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> changeParametersBy: aVector
+    dof1 := (dof1 + (aVector at: 1)) max: 1.
+    dof2 := (dof2 + (aVector at: 2)) max: 1.
+    self computeNorm.
+    chiSquareDistribution1 := nil.
+    chiSquareDistribution2 := nil.
+    incompleteBetaFunction := nil
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> computeNorm
+    norm := (dof1 ln * (dof1 / 2)) + (dof2 ln * (dof2 / 2))
+                        - ((dof1 / 2) logBeta: (dof2 / 2))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> confidenceLevel: aNumber
+    aNumber < 0
+        ifTrue: [ self error: 'Confidence level argument must be 
+                                                           positive'].
+    ^((self distributionValue: aNumber) - ( self distributionValue: 
+                                           aNumber reciprocal) ) * 100
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> distributionValue: aNumber
+    ^ 1 - ( self incompleteBetaFunction value: ( dof2 / ( aNumber * 
+                                                        dof1 + dof2)))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> incompleteBetaFunction
+    incompleteBetaFunction isNil 
+        ifTrue: 
+            [incompleteBetaFunction := PMIncompleteBetaFunction 
+                                                       shape: dof2 / 2
+                        shape: dof1 / 2].
+    ^incompleteBetaFunction
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> initialize: anInteger1 and: anInteger2
+    dof1 := anInteger1.
+    dof2 := anInteger2.
+    self computeNorm.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> parameters
+    ^ Array with: dof1 with: dof2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> random
+    chiSquareDistribution1 isNil
+        ifTrue: [ chiSquareDistribution1 := PMChiSquareDistribution 
+                                                degreeOfFreedom: dof1.
+                  chiSquareDistribution2 := PMChiSquareDistribution 
+                                                degreeOfFreedom: dof2.
+                ].
+    ^chiSquareDistribution1 random * dof2 / ( chiSquareDistribution2 
+                                                        random * dof1)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> value: aNumber
+    ^aNumber > 0
+        ifTrue: [ (norm + ( aNumber ln * (dof1 / 2 - 1)) - ( 
+             (aNumber * dof1 + dof2) ln * (( dof1 + dof2) / 2))) exp]
+        ifFalse:[ 0 ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFisherSnedecorDistribution >> variance
+    ^ dof2 > 4 ifTrue: [ dof2 squared * 2 * ( dof1 + dof2 - 2) / ( ( 
+                              dof2 - 2) squared * dof1 * ( dof2 - 4))]
+                   ifFalse:[ nil ]
+\end{displaycode}
 
 The computation of the confidence level for the $F$-test is
 implemented in the method {\texttt fConfidenceLevel:} of the class
