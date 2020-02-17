@@ -94,7 +94,7 @@ used as a probability density function, however.
 \begin{table}[h]
   \centering
   \caption{Properties of the Fisher-Snedecor distribution}\label{tb:Fdist}
-\vspace{1 ex}
+  \vspace{1 ex}
 \begin{tabular}{|l|c|} \hline
   \vbox to 3ex{}Range of random variable & $\left[0,+\infty\right[$\\ *[1ex] \hline
   \vbox to 5ex{}Probability density function & $\displaystyle P\left(x\right)=
@@ -355,10 +355,11 @@ implemented in the method {\texttt fConfidenceLevel:} of the class
 It calculates the statistics $F$
 according to equation \ref{eq:Ftest}, creates an instance of a
 Fisher-Snedecor distribution and passes the value of $F$ to the
-method {\texttt confidenceLevel:} of the distribution. The method {\texttt
-fConfidenceLevel:} is also implemented by the class {\texttt
+method {\texttt confidenceLevel:} of the distribution.
+The method {\texttt fConfidenceLevel:} is also implemented by the class {\texttt
 Histogram} where it is simply delegated to the statistical moments
-accumulated by the histogram. The argument of the method can be a
+accumulated by the histogram.
+The argument of the method can be a
 statistical moment or a histogram since the messages sent by the
 method are polymorphic to both classes.
 
