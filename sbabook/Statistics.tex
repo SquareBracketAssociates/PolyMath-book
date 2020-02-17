@@ -894,10 +894,10 @@ is a random rational number uniformly distributed between 0 and 1,
 1 excluded.
 
 In practice, the modulus, multiplier and increment must be chosen
-quite carefully to achieve a good randomness of the series. Don
-Knuth \cite{Knuth2} gives a series of criteria for choosing the
-parameters of the random number generator. If the parameters are
-correctly chosen, the seed $X_0$ can be assigned to any value.
+quite carefully to achieve a good randomness of the series
+Don Knuth \cite{Knuth2} gives a series of criteria for choosing the
+parameters of the random number generator.
+If the parameters are correctly chosen, the seed $X_0$ can be assigned to any value.
 
 \rubrique{Additive sequence generators} Another class of random
 generators are additive sequence generators \cite{Knuth2}. The
@@ -906,7 +906,8 @@ series of pseudo-random numbers is generated as follows:
   X_n = \left(X_{n-l}+X_{n-k}\right) \mod m,
 \end{equation}
 where $m$ is the modulus as before and $l$ and $k$ are two indices
-such that $l<k$. These indices must be selected carefully.
+such that $l<k$.
+These indices must be selected carefully.
 \cite{Knuth2} contains a table of suitable indices. The initial
 series of numbers $X_1,\ldots,X_k$ can be any integers not all
 even.
