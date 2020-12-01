@@ -630,20 +630,18 @@ HillClimbingOptimizer} grayed.} Listing \ref{ls:optimizerpowell}
 shows the implementation of Powell's algorithm in Smalltalk. The
 following code example shows how to find the maximum of a vector
 function
-\begin{codeExample}
-\label{ex:spowell}
-\begin{verbatim}
 
+\begin{listing}[label=ex:spowell]{Smalltalk}
+{}
  | fBlock educatedGuess hillClimber result |
-\end{verbatim}
+\end{listing}
  {\texttt fBlock :=<\textsl the goal function\texttt >}\hfil\break
  {\texttt educatedGuess :=<\textsl a vector not too far from the optimum\texttt >}
-\begin{verbatim}
+\begin{displaycode}{Smalltalk}
  hillClimber := DhbHillClimbingOptimizer maximizingFunction: fBlock.
  hillClimber initialValue: educatedGuess.
  result := hillClimber evaluate.
-\end{verbatim}
-\end{codeExample}
+\end{displaycode}
 The class {\texttt DhbHillClimbingOptimizer} is a subclass of class
 {\texttt DhbFunctionOptimizer}. It has only one additional instance
 variable, {\texttt unidimensionalFinder}, to hold the one-dimensional
@@ -761,28 +759,26 @@ starting each time from the supplied initial value, unlike hill
 climbing algorithms. Restarting from the initial value is
 necessary to avoid creating a simplex with a zero volume. Such
 mishaps can arise when the initial value is located on an axis of
-symmetry of the goal function. This can happen quite frequently
-with {\textsl educated guesses}.
+symmetry of the goal function.
+This can happen quite frequently with {\textsl educated guesses}.
 
 \subsection{Simplex algorithm --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\bf
+\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
 SimplexOptimizer} grayed.} Listing \ref{ls:optimizersimplex} shows
 the Smalltalk implementation of the simplex algorithm. The
 following code example shows how to invoke the class to find the
 minimum of a vector function.
-\begin{codeExample}
-\begin{verbatim}
 
+\begin{displaycode}{Smalltalk}
  | fBlock educatedGuess simplex result |
-\end{verbatim}
+\end{codedisplay}
  {\texttt fBlock :=<\textsl the goal function\texttt >}\hfil\break
  {\texttt educatedGuess :=<\textsl a vector in the search space\texttt >}
-\begin{verbatim}
+\begin{displaycode}{Smalltalk}
  simplex := DhbSimplexOptimizer minimizingFunction: fBlock.
  simplex initialValue: educatedGuess.
- result := simplex evaluate.
-\end{verbatim}
-\end{codeExample}
+ result := simplex evaluate
+\end{displaycode}
 Except for the line creating the instance of the simplex
 optimizer, this code example is identical to the example of
 Powell's hill climbing algorithm (code example \ref{ex:spowell}).
@@ -1032,8 +1028,8 @@ algorithm simply returns a constant pseudo precision
 becomes exhausted.
 
 \subsection{Genetic algorithm --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:soptimizingclasses} with the boxes {\bf
-GeneticOptimizer}, {\textbf ChromosomeManager} and {\bf
+\marginpar{Figure \ref{fig:soptimizingclasses} with the boxes {\textbf
+GeneticOptimizer}, {\textbf ChromosomeManager} and {\textbf
 VectorChromosomeManager} grayed.} Listing \ref{ls:chromosome}
 shows the code of an abstract chromosome manager in Smalltalk and
 of a concrete implementation for vector chromosomes. The class
@@ -1063,22 +1059,20 @@ Listing \ref{ls:optimizerabsgen} shows how the genetic optimizer
 is implemented in Smalltalk. The following code example shows how
 to use a genetic optimizer to find the maximum of a vector
 function.
-\begin{codeExample}
-\begin{verbatim}
 
+\begin{displaycode}{Smalltalk}
     | fBlock optimizer manager origin range result |
-\end{verbatim}
+\end{displaycode}
  {\texttt fBlock :=<\textsl the goal function\texttt >}\hfil\break
  {\texttt origin :=<\textsl a vector containing the minimum expected value of the component\texttt >}\hfil\break
  {\texttt range :=<\textsl a vector containing the expected range of the component\texttt >}\hfil\break
-\begin{verbatim}
+\begin{displaycode}{Smalltalk}
     optimizer := DhbGeneticOptimizer maximizingFunction: fBlock.
     manager := DhbVectorChromosomeManager new: 100 mutation: 0.1 crossover: 0.1.
     manager origin: origin; range: range.
     optimizer chromosomeManager: manager.
-    result := optimizer evaluate.
-\end{verbatim}
-\end{codeExample}
+    result := optimizer evaluate
+\end{displaycode}
 After establishing the goal function and the search space, an
 instance of the genetic optimizer is created. The next line
 creates an instance of a vector chromosome manager for a
@@ -1170,7 +1164,7 @@ Smalltalk. At this point we shall abstain from
 commenting the code as the reader should have no more need for
 such thing$\ldots$ Hopefully!
 
-\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\bf
+\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
 MultiVariableGeneralOptimizer} grayed.}
 \begin{listing} Smalltalk
 implementation of a general optimizer \label{ls:optimizergeneral}
