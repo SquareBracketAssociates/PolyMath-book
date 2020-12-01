@@ -328,11 +328,11 @@ default numerical precision.
 
 In order to find an optimum along a given direction, one needs to
 construct an object able to transform a vector function into a one
-variable function. The class {\texttt DhbProjectedOneVariableFunction}
-and its subclass {\texttt DhbVectorProjectedFunction} provide this
+variable function. The class {\texttt PMProjectedOneVariableFunction}
+and its subclass {\texttt PMVectorProjectedFunction} provide this
 functionality. They are shown in listing
 \ref{ls:projectedfunctions}. The class {\texttt
-DhbProjectedOneVariableFunction} has the following instance
+PMProjectedOneVariableFunction} has the following instance
 variables:
 \begin{description}
   \item[\texttt function] the goal function $f\left({\textbf x}\right)$;
@@ -351,7 +351,7 @@ of the hill climbing algorithms using alternatively each axes of
 the reference system. This implementation, which uses the method
 {\texttt bumpIndex}, is left as an exercise for the reader.}.
 
-The class {\texttt DhbVectorProjectedFunction} has no additional
+The class {\texttt PMVectorProjectedFunction} has no additional
 variables. Instead it is reusing the instance variable {\texttt index}
 as the direction along which the function is evaluated. For
 clarity, the accessor methods have been renamed {\texttt direction},
@@ -362,10 +362,102 @@ argument vector for the goal function, that is the vector ${\textbf
 x}$. The method {\texttt value:} returns the value of the function
 $g\left(\lambda\right)$ for the supplied argument $\lambda$.
 
-\begin{listing} Smalltalk projected function classes \label{ls:projectedfunctions}
-\input{Smalltalk/Minimization/DhbProjectedOneVariableFunction}
-\input{Smalltalk/Minimization/DhbVectorProjectedFunction}
+\begin{listing}[label=ls:projectedfunctions]{Smalltalk}
+{Smalltalk projected function classes}
+Object subclass: #PMProjectedOneVariableFunction
+   instanceVariableNames: 'index function argument'
+   classVariableNames: ''
+   package: 'Math-Numerical'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction class>>function: aVectorFunction
+    ^ super new initialize: aVectorFunction
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>argumentWith: aNumber
+    ^ argument at: index put: aNumber; yourself
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>bumpIndex
+    index isNil
+        ifTrue: [ index := 1]
+        ifFalse: [ index := index + 1.
+                  index > argument size
+                    ifTrue: [ index := 1].
+                ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>index
+    index isNil
+        ifTrue: [ index := 1].
+    ^ index
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>initialize: aFunction
+    function := aFunction.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>setArgument: anArrayOrVector
+    argument := anArrayOrVector copy
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>setIndex: anInteger
+    index := anInteger
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProjectdOneVariableFunction>>value: aNumber
+    ^ function value: ( self argumentWith: aNumber)
+\end{displaycode}
+
+
+\begin{displaycode}{Smalltalk}
+PMProjectedOneVariableFunction subclass: #PMVectorProjectedFunction
+   instanceVariableNames: ''
+   classVariableNames: ''
+   package: 'Math-Numerical'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVectorProjectedFunction>>argumentWith: aNumber
+    ^ aNumber * self direction + self origin
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVectorProjectedFunction>>direction
+    ^ index
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVectorProjectedFunction>>direction: aVector
+    index := aVector.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVectorProjectedFunction>>origin}
+    ^ argument
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVectorProjectedFunction>>origin: aVector
+    argument := aVector
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMVectorProjectedFunction>>printOn:aStream
+    self origin printOn: aStream.
+    aStream nextPutAll: ' ('.
+    self direction printOn: aStream.
+    aStream nextPut: $).
+\end{displaycode}
 
 \section{Optimizing in one dimension}
 \label{sec:optonedim} To find the optimum of a one-variable
@@ -771,7 +863,7 @@ minimum of a vector function.
 
 \begin{displaycode}{Smalltalk}
  | fBlock educatedGuess simplex result |
-\end{codedisplay}
+\end{displaycode}
  {\texttt fBlock :=<\textsl the goal function\texttt >}\hfil\break
  {\texttt educatedGuess :=<\textsl a vector in the search space\texttt >}
 \begin{displaycode}{Smalltalk}
