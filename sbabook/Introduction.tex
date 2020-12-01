@@ -790,12 +790,12 @@ PMFloatingPointMachine >> smallNumber
 \section{Comparing floating point numbers}
 It is very surprising to see how frequently questions about the
 lack of equality between two floating-point numbers are posted on
-the Smalltalk electronic discussion groups. As we have
-seen in section \ref{sec-rounding} one should always expect the
+the Smalltalk electronic discussion groups.
+As we have seen in section \ref{sec-rounding} one should always expect the
 result of two different computations that should have yielded the
 same number from a mathematical standpoint to be different using a
-finite  numerical representation. Somehow the computer courses are
-not giving enough emphasis about floating-point numbers.
+finite numerical representation.
+Somehow the computer courses are not giving enough emphasis about floating-point numbers.
 
 \begin{quote}
 {\textsl So, how should you check the equality of two floating-point
@@ -803,13 +803,14 @@ numbers? The practical answer is: thou shalt not!}
 \end{quote}
 
 As you will see, the algorithms in this book only
-compare numbers, but never check for equality. If you cannot
+compare numbers, but never check for equality.
+If you cannot
 escape the need for a test of equality, however, the best solution
-is to create methods to do this. Since the floating-point
-representation is keeping a constant relative precision,
-comparison must be made using relative error. Let $a$ and $b$ be
-the two numbers to be compared. One should build the following
-expression:
+is to create methods to do this.
+Since the floating-point representation is keeping a constant relative precision,
+comparison must be made using relative error.
+Let $a$ and $b$ be the two numbers to be compared.
+One should build the following expression:
 \begin{equation}
 \label{eq:relerror}
 \epsilon={\left|a-b\right| \over
