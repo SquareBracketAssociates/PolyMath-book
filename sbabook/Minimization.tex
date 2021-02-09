@@ -262,13 +262,13 @@ uses the optimum bracket finder described in section
 FunctionOptimizer}, {\textbf MinimizingPoint}, {\textbf MaximizingPoint},
 {\textbf ProjectedOneVariableFunction} and {\textbf
 VectorProjectedFunction} grayed.} In Smalltalk we have two classes
-of optimizing points: {\texttt DhbMinimizingPoint} and its subclass
-{\texttt DhbMaximizingPoint}. These classes are shown in listing
-\ref{ls:optimizerCommon}. The class {\texttt DhbFunctionOptimizer} is
+of optimizing points: {\texttt PMMinimizingPoint} and its subclass
+{\texttt PMMaximizingPoint}. These classes are shown in listing
+\ref{ls:optimizerCommon}. The class {\texttt PMFunctionOptimizer} is
 in charge of handling the management of the optimizing points.
 This clas is shown in listing \ref{ls:optimizerAbstract}.
 
-\noindent The class {\texttt DhbMinimizingPoint} has the following
+\noindent The class {\texttt PMMinimizingPoint} has the following
 instance variables:
 \begin{description}
   \item[\texttt position] contains the position at which the function
@@ -279,19 +279,80 @@ instance variables:
 \end{description}
 Accessor methods corresponding to these variables are supplied. As
 we noted in section \ref{sec:goptonedim}, the only method
-redefined by the subclass {\texttt DhbMaximizingPoint} is the method
+redefined by the subclass {\texttt PMMaximizingPoint} is the method
 {\texttt betterThan:} used to decide whether a point is better than
 another.
 
 Optimizing points are created with the convenience method {\texttt
 vector:function:} which evaluates the function supplied as second
 argument at the position supplied as the first argument.
-\begin{listing} Smalltalk classes common to all optimizing classes \label{ls:optimizerCommon}
-\input{Smalltalk/Minimization/DhbMinimizingPoint}
-\input{Smalltalk/Minimization/DhbMaximizingPoint}
+
+\begin{listing}[label=ls:optimizerCommon]{Smalltalk}
+{Smalltalk classes common to all optimizing classes}
+Object subclass: #PMMinimizingPoint
+   instanceVariableNames: 'value position'
+   classVariableNames: ''
+   package: 'Math-Numerical-Math-FunctionIterator'
 \end{listing}
 
-The class {\texttt DhbFunctionOptimizer} is in charge of handling the
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint class>>new: aVector value: aNumber
+   ^ self new vector: aVector; value: aNumber; yourself  
+\end{displaycode}  
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint class>>vector: aVector function: aFunction
+   ^ self new: aVector value: (aFunction value: aVector)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint>>betterThan: anOptimizingPoint
+   ^ value < anOptimizingPoint value
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint>>position
+   ^ position
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint>>printOn: aStream
+   position printOn: aStream.
+   aStream
+      nextPut: $:;
+      space.
+      value printOn: aStream
+\end{displaycode}        
+%$
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint>>value
+   ^ value
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint>>value: aNumber
+   value := aNumber.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint>>vector: aVector
+    position := aVector
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMinimizingPoint subclass: #PMMaximizingPoint
+   instanceVariableNames: ''
+   classVariableNames: ''
+   package: 'Math-Numerical-Math-FunctionIterator'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMaximizingPoint>>betterThan: anOptimizingPoint
+   ^ value > anOptimizingPoint value
+\end{displaycode}
+ 
+The class {\texttt PMFunctionOptimizer} is in charge of handling the
 optimizing points. it has the following instance variables:
 \begin{description}
   \item[\texttt optimizingPointClass] is the class of the optimizing
@@ -319,7 +380,7 @@ optimizer supplied as argument.
 This method is used to create optimizers used in intermediate steps.
 
 Because finding an optimum cannot be determined numerically with
-high precision \cite{Press} the class {\texttt DhbFunctionOptimizer}
+high precision \cite{Press} the class {\texttt PMFunctionOptimizer}
 redefines the method {\texttt defaultPrecision} to be 100 times the
 default numerical precision.
 \begin{listing} Smalltalk abstract class for all optimizing classes \label{ls:optimizerAbstract}
@@ -498,11 +559,10 @@ $\lambda_4 =\lambda_1 + \omega\left(\lambda_0-\lambda_1\right)$.
 Then the new triplets can be either $\lambda_0$, $\lambda_4$ and
 $\lambda_1$, or $\lambda_4$, $\lambda_1$ and $\lambda_2$.
 
-
 The reader can verify that the interval decreases steadily
 although not as fast as in the case of bisection where the
-interval is halved at each iteration. Since the algorithm is using
-the golden section it is called golden section search.
+interval is halved at each iteration.
+Since the algorithm is using the golden section it is called golden section search.
 
 By construction the golden section search algorithm makes sure
 that the optimum is always located between the points $\lambda_0$
@@ -514,7 +574,7 @@ position of the optimum.
 \marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
 OneVariableFunctionOptimizer} grayed.} Listing
 \ref{ls:optimizerOneDim} shows the class {\texttt
-DhbOneVariableFunctionOptimizer} implementing the search for an
+PMOneVariableFunctionOptimizer} implementing the search for an
 optimum of a one-variable function using the golden section
 search. The following code example shows how to use this class to
 find the maximum of the gamma distribution discussed in section
@@ -522,8 +582,8 @@ find the maximum of the gamma distribution discussed in section
 
 \begin{displaycode}{Smalltalk}
  | distr finder maximum |
- distr := DhbGammaDistribution shape: 2 scale: 5.
- finder := DhbOneVariableFunctionOptimizer maximizingFunction: distr.
+ distr := PMGammaDistribution shape: 2 scale: 5.
+ finder := PMOneVariableFunctionOptimizer maximizingFunction: distr.
  maximum := finder evaluate
 \end{displaycode}
 
@@ -536,7 +596,7 @@ iterations --- that is, performing the search for the maximum ---
 and to retrieve the result. Since no initial value was supplied
 the search begins at a random location.
 
-The class {\texttt DhbOneVariableFunctionOptimizer} is a subclass of
+The class {\texttt PMOneVariableFunctionOptimizer} is a subclass of
 the class {\texttt FunctionOptimizer}. It does not need any additional
 instance variables. The golden section is kept as a class variable
 and is calculated at the first time it is needed.
