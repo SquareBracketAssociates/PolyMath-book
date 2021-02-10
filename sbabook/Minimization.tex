@@ -519,7 +519,7 @@ PMVectorProjectedFunction>>printOn:aStream
     self direction printOn: aStream.
     aStream nextPut: $).
 \end{displaycode}
-
+%$
 \section{Optimizing in one dimension}
 \label{sec:optonedim} To find the optimum of a one-variable
 function, $g\left(\lambda\right)$, whose derivative is unknown,
@@ -581,10 +581,10 @@ find the maximum of the gamma distribution discussed in section
 \ref{sec:gammadist}.
 
 \begin{displaycode}{Smalltalk}
- | distr finder maximum |
- distr := PMGammaDistribution shape: 2 scale: 5.
- finder := PMOneVariableFunctionOptimizer maximizingFunction: distr.
- maximum := finder evaluate
+| distr finder maximum |
+   distr := PMGammaDistribution shape: 2 scale: 5.
+   finder := PMOneVariableFunctionOptimizer maximizingFunction: distr.
+   maximum := finder evaluate
 \end{displaycode}
 
 The first line after the declarations creates a new instance of a
@@ -597,7 +597,7 @@ and to retrieve the result. Since no initial value was supplied
 the search begins at a random location.
 
 The class {\texttt PMOneVariableFunctionOptimizer} is a subclass of
-the class {\texttt FunctionOptimizer}. It does not need any additional
+the class {\texttt PMFunctionOptimizer}. It does not need any additional
 instance variables. The golden section is kept as a class variable
 and is calculated at the first time it is needed.
 
@@ -615,15 +615,97 @@ an initial bracketing interval. The method {\texttt
 computeInitialValues} first checks whether a valid bracketing
 interval has been supplied into the collection of best points. If
 this is not the case, a search for a bracketing interval is
-conducted using the class {\texttt DhbOptimizingBracketFinder}
+conducted using the class {\texttt PMOptimizingBracketFinder}
 described in section \ref{sec:sbracket}. The instance of the
 bracket finder is created with the method {\texttt forOptimizer:} so
 that its strategy and goal function are taken over from the golden
 section optimum finder.
 
-\begin{listing} Smalltalk golden section optimum finder \label{ls:optimizerOneDim}
-\input{Smalltalk/Minimization/DhbOneVariableFunctionOptimizer}
+\begin{listing}[label=ls:optimizerOneDim]{Smalltalk}
+{Smalltalk golden section optimum finder}
+PMFunctionOptimizer subclass: #PMOneVariableFunctionOptimizer
+   instanceVariableNames: ''
+   classVariableNames: 'GoldenSection'
+   package: 'Math-Numerical-Math-FunctionIterator'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer class>>defaultPrecision
+    ^ PMFloatingPointMachine new defaultNumericalPrecision * 10
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer class>>goldenSection
+    GoldenSection isNil ifTrue: [GoldenSection := (3 - 5 sqrt) / 2].
+    ^ GoldenSection
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>computeInitialValues
+    [ bestPoints size  > 3 ] whileTrue: [ bestPoints removeLast ].
+    bestPoints size = 3
+        ifTrue: [ self hasBracketingPoints
+                    ifFalse: [ bestPoints removeLast ].
+                ].
+    bestPoints size < 3
+        ifTrue: [ (PMOptimizingBracketFinder forOptimizer: self) evaluate ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>computePrecision
+    ^ self precisionOf: ((bestPoints at: 2) position - (bestPoints 
+                                                  at: 3) position) abs
+           relativeTo: (bestPoints at: 1) position abs
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>evaluateIteration
+    self addPointAt: self nextXValue.
+    bestPoints removeAtIndex: self indexOfOuterPoint.
+    ^ self computePrecision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>hasBracketingPoints
+    | x1 |
+    x1 := (bestPoints at: 1) position.
+    ^ ((bestPoints at: 2) position - x1) * ((bestPoints at: 3) 
+                                                    position - x1) < 0
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>indexOfOuterPoint
+    | inferior superior x |
+    inferior := false.
+    superior := false.
+    x := bestPoints first position.
+    2 to: 4 do:
+        [ :n |
+          (bestPoints at: n) position < x
+                ifTrue: [ inferior
+                            ifTrue: [ ^ n ].
+                          inferior := true.
+                        ]
+                ifFalse:[ superior
+                            ifTrue: [ ^ n ].
+                          superior := true.
+                        ].
+        ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>nextXValue
+    | d3 d2 x1 |
+    x1 := (bestPoints at: 1) position.
+    d2 := (bestPoints at: 2) position - x1.
+    d3 := (bestPoints at: 3) position - x1.
+    ^ (d3 abs > d2 abs ifTrue: [ d3 ]
+                       ifFalse:[ d2 ]) * self class goldenSection + x1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMOneVariableFunctionOptimizer>>reset
+    [ bestPoints isEmpty ] whileFalse: [ bestPoints removeLast ].
+\end{displaycode}
 
 \section{Bracketing the optimum in one dimension}
 \label{sec:bracket} As we have seen in section \ref{sec:optonedim}
