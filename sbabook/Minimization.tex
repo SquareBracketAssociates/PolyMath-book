@@ -256,15 +256,18 @@ have not been? In this case, the method {\texttt initializeIteration}
 uses the optimum bracket finder described in section
 \ref{sec:bracket}
 
-\subsection{Common optimizing classes --- Smalltalk implementation}
-\label{sec:sgeneralOpt} \marginpar{Figure
-\ref{fig:soptimizingclasses} with the boxes {\textbf
-FunctionOptimizer}, {\textbf MinimizingPoint}, {\textbf MaximizingPoint},
-{\textbf ProjectedOneVariableFunction} and {\textbf
-VectorProjectedFunction} grayed.} In Smalltalk we have two classes
-of optimizing points: {\texttt PMMinimizingPoint} and its subclass
-{\texttt PMMaximizingPoint}. These classes are shown in listing
-\ref{ls:optimizerCommon}. The class {\texttt PMFunctionOptimizer} is
+\subsection{Common optimizing classes}
+%\label{sec:sgeneralOpt} \marginpar{Figure
+%\ref{fig:soptimizingclasses} with the boxes {\textbf
+%FunctionOptimizer}, {\textbf MinimizingPoint}, {\textbf MaximizingPoint},
+%{\textbf ProjectedOneVariableFunction} and {\textbf
+%  VectorProjectedFunction} grayed.}
+
+In Pharo we have two classes of optimizing points: {\texttt PMMinimizingPoint}
+and its subclass {\texttt PMMaximizingPoint}.
+These classes are shown in listing
+\ref{ls:optimizerCommon}.
+The class {\texttt PMFunctionOptimizer} is
 in charge of handling the management of the optimizing points.
 This clas is shown in listing \ref{ls:optimizerAbstract}.
 
@@ -389,11 +392,11 @@ default numerical precision.
 
 In order to find an optimum along a given direction, one needs to
 construct an object able to transform a vector function into a one
-variable function. The class {\texttt PMProjectedOneVariableFunction}
-and its subclass {\texttt PMVectorProjectedFunction} provide this
-functionality. They are shown in listing
-\ref{ls:projectedfunctions}. The class {\texttt
-PMProjectedOneVariableFunction} has the following instance
+variable function.
+The class {\texttt PMProjectedOneVariableFunction} and its subclass {\texttt
+  PMVectorProjectedFunction} provide this functionality.
+They are shown in listing \ref{ls:projectedfunctions}.
+The class {\texttt PMProjectedOneVariableFunction} has the following instance
 variables:
 \begin{description}
   \item[\texttt function] the goal function $f\left({\textbf x}\right)$;
@@ -570,13 +573,14 @@ and $\lambda_2$. Thus, at each iteration, the quantity
 $\lambda_2-\lambda_0$ give an estimate of the error on the
 position of the optimum.
 
-\subsection{Optimizing in one dimension --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
-OneVariableFunctionOptimizer} grayed.} Listing
-\ref{ls:optimizerOneDim} shows the class {\texttt
+\subsection{Optimizing in one dimension}
+%\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
+%OneVariableFunctionOptimizer} grayed.}
+Listing \ref{ls:optimizerOneDim} shows the class {\texttt
 PMOneVariableFunctionOptimizer} implementing the search for an
 optimum of a one-variable function using the golden section
-search. The following code example shows how to use this class to
+search.
+The following code example shows how to use this class to
 find the maximum of the gamma distribution discussed in section
 \ref{sec:gammadist}.
 
@@ -671,7 +675,8 @@ PMOneVariableFunctionOptimizer>>hasBracketingPoints
     x1 := (bestPoints at: 1) position.
     ^ ((bestPoints at: 2) position - x1) * ((bestPoints at: 3) 
                                                     position - x1) < 0
-
+\end{displaycode}
+                                                  
 \begin{displaycode}{Smalltalk}
 PMOneVariableFunctionOptimizer>>indexOfOuterPoint
     | inferior superior x |
@@ -736,14 +741,14 @@ algorithm will cause a floating overflow exception quite rapidly.
 \noindent The implementation in each language have too little in
 common. The common section is therefore omitted.
 
-\subsection{Bracketing the optimum --- Smalltalk implementation}
-\label{sec:sbracket} \marginpar{Figure
-\ref{fig:soptimizingclasses} with the box {\textbf
-OptimizingBracketFinder} grayed.} Listing
-\ref{ls:optimizerbracket} shows the Smalltalk code of the class
+\subsection{Bracketing the optimum}
+%\label{sec:sbracket} \marginpar{Figure
+%\ref{fig:soptimizingclasses} with the box {\textbf
+%OptimizingBracketFinder} grayed.}
+Listing \ref{ls:optimizerbracket} shows the Smalltalk code of the class
 implementing the search algorithm for an optimizing bracket. The
-class {\texttt DhbOptimizingBracketFinder} is a subclass of class {\texttt
-DhbOneVariableFunctionOptimizer} from section
+class {\texttt PMOptimizingBracketFinder} is a subclass of class {\texttt
+PMOneVariableFunctionOptimizer} from section
 \ref{ls:optimizerOneDim}. This was a convenient, but not
 necessary, choice to be able to reuse most of the management and
 accessor methods. The methods pertaining to the algorithm are of
@@ -751,14 +756,14 @@ course quite different.
 
 Example of use of the optimizing bracket finder can be found in
 method {\texttt computeInitialValues} of class {\texttt
-DhbOneVariableFunctionOptimizer} (\cf listing
+PMOneVariableFunctionOptimizer} (\cf listing
 \ref{ls:optimizerOneDim}).
 
 The method {\texttt setInitialPoints:} allows to use the collection of
 best points of another optimizer inside the class. This breach to
 the rule of hiding the implementation can be tolerated here
-because the class {\texttt DhbOptimizingBracketFinder} is used
-exclusively with the class {\texttt DhbOneVariableFunctionOptimizer}.
+because the class {\texttt PMOptimizingBracketFinder} is used
+exclusively with the class {\texttt PMOneVariableFunctionOptimizer}.
 It allows the two class to use the same sorted collection of
 optimizing points. If no initial point has been supplied, it is
 obtained from a random generator.
@@ -858,26 +863,28 @@ The precision computed  at the end of each iterations is the
 maximum of the relative change on all components between the
 vectors ${\textbf x}_n$ and ${\textbf x}_0$.
 
-\subsection{Powell's algorithm --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
-HillClimbingOptimizer} grayed.} Listing \ref{ls:optimizerpowell}
-shows the implementation of Powell's algorithm in Smalltalk. The
-following code example shows how to find the maximum of a vector
-function
-
+\subsection{Powell's algorithm}
+%\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf HillClimbingOptimizer} grayed.}
+Listing \ref{ls:optimizerpowell} shows the implementation of Powell's algorithm
+in Pharo.
+The following code example shows how to find the maximum of a vector function
 \begin{listing}[label=ex:spowell]{Smalltalk}
 {}
  | fBlock educatedGuess hillClimber result |
 \end{listing}
- {\texttt fBlock :=<\textsl the goal function\texttt >}\hfil\break
- {\texttt educatedGuess :=<\textsl a vector not too far from the optimum\texttt >}
 \begin{displaycode}{Smalltalk}
- hillClimber := DhbHillClimbingOptimizer maximizingFunction: fBlock.
- hillClimber initialValue: educatedGuess.
- result := hillClimber evaluate.
+   fBlock := [ :v | 
+   | x y |
+   x := v at: 1.
+   y := v at: 2.
+   ((2 - x) * (2 - x)) negated + ((2 - y) * (2 - y)) negated ].
+   educatedGuess := #(100 100) asPMVector.  
+   hillClimber := PMHillClimbingOptimizer maximizingFunction: fBlock.
+   hillClimber initialValue: educatedGuess.
+   result := hillClimber evaluate.
 \end{displaycode}
-The class {\texttt DhbHillClimbingOptimizer} is a subclass of class
-{\texttt DhbFunctionOptimizer}. It has only one additional instance
+The class {\texttt PMHillClimbingOptimizer} is a subclass of class
+{\texttt PMFunctionOptimizer}. It has only one additional instance
 variable, {\texttt unidimensionalFinder}, to hold the one-dimensional
 optimizer used to find an optimum of the goal function along a
 given direction.
