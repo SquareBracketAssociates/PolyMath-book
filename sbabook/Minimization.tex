@@ -386,9 +386,98 @@ Because finding an optimum cannot be determined numerically with
 high precision \cite{Press} the class {\texttt PMFunctionOptimizer}
 redefines the method {\texttt defaultPrecision} to be 100 times the
 default numerical precision.
-\begin{listing} Smalltalk abstract class for all optimizing classes \label{ls:optimizerAbstract}
-\input{Smalltalk/Minimization/DhbFunctionOptimizer}
+
+
+\begin{listing}[label=ls:optimizerAbstract]{Smalltalk}
+ {Smalltalk abstract class for all optimizing classes}
+PMFunctionalIterator subclass: #PMFunctionOptimizer
+   instanceVariableNames: 'optimizingPointClass bestPoints'
+   classVariableNames: ''
+   package: 'Math-Numerical-Math-FunctionIterator'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer class>>defaultPrecision}
+   ^ super defaultPrecision * 100
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer class>>forOptimizer: aFunctionOptimizer
+   ^ self new initializeForOptimizer: aFunctionOptimizer
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}    
+PMFunctionOptimizer class>>maximizingFunction: aFunction
+   ^ super new initializeAsMaximizer; setFunction: aFunction
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer class>>minimizingFunction: aFunction
+   ^ super new initializeAsMinimizer; setFunction: aFunction
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>addPointAt: aNumber
+
+    bestPoints add: (optimizingPointClass vector: aNumber
+                                        function: functionBlock)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>bestPoints
+   ^ bestPoints
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>finalizeIterations
+   result := bestPoints first position.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>functionBlock
+   ^ functionBlock
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>initialize
+    bestPoints := SortedCollection sortBlock:
+                                         [ :a :b | a betterThan: b ].
+    ^ super initialize
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>initializeAsMaximizer
+    optimizingPointClass := PMMaximizingPoint.
+    ^ self initialize
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>initializeAsMinimizer
+   optimizingPointClass := PMMinimizingPoint
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>initializeForOptimizer: aFunctionOptimizer
+   optimizingPointClass := aFunctionOptimizer pointClass.
+   functionBlock := aFunctionOptimizer functionBlock.
+   ^ self initialize
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>initialValue: aVector
+    result := aVector copy.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>pointClass
+    ^ optimizingPointClass
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>printOn: aStream
+    super printOn: aStream.
+    bestPoints do: [ :each | aStream cr. each printOn: aStream ].
+\end{displaycode}
 
 In order to find an optimum along a given direction, one needs to
 construct an object able to transform a vector function into a one
@@ -863,11 +952,11 @@ The precision computed  at the end of each iterations is the
 maximum of the relative change on all components between the
 vectors ${\textbf x}_n$ and ${\textbf x}_0$.
 
-\subsection{Powell's algorithm}
+%\subsection{Powell's algorithm}
 %\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf HillClimbingOptimizer} grayed.}
 Listing \ref{ls:optimizerpowell} shows the implementation of Powell's algorithm
 in Pharo.
-The following code example shows how to find the maximum of a vector function
+The following code example shows how to find the maximum of a vector function.
 \begin{listing}[label=ex:spowell]{Smalltalk}
 {}
  | fBlock educatedGuess hillClimber result |
@@ -908,13 +997,13 @@ PMFunctionOptimizer subclass: #PMHillClimbingOptimizer
 
 \begin{displaycode}{Smalltalk}
 PMFunctionOptimizer>>computeInitialValues
-    unidimensionalFinder := DhbOneVariableFunctionOptimizer
+    unidimensionalFinder := PMOneVariableFunctionOptimizer
                                                    forOptimizer: self.
     unidimensionalFinder desiredPrecision: desiredPrecision.
     bestPoints := (1 to: result size)
-                 collect: [ :n | ( DhbVectorProjectedFunction
+                 collect: [ :n | ( PMVectorProjectedFunction
                                       function: functionBlock)
-                                     direction: ((DhbVector
+                                     direction: ((PMVector
                                                      new: result size)
                                                          atAllPut: 0;
                                                          at: n put: 1;
@@ -1101,8 +1190,8 @@ Except for the line creating the instance of the simplex
 optimizer, this code example is identical to the example of
 Powell's hill climbing algorithm (code example \ref{ex:spowell}).
 
-The class {\texttt DhbSimplexOptimizer} is a subclass of class {\texttt
-DhbFunctionOptimizer}. In order to be able to use the iterator
+The class {\texttt PMSimplexOptimizer} is a subclass of class {\texttt
+PMFunctionOptimizer}. In order to be able to use the iterator
 methods efficiently, the worst point of the simplex, ${\textbf A}$, is
 held in a separate instance variable {\texttt worstPoint}. As we do
 not need to know the function's value $f\left({\textbf A}\right)$, it
@@ -1214,7 +1303,7 @@ uncharted regions of the search space.
 algorithm of choice when the goal function is expressed on
 integers.}
 
-\subsection{Genetic algorithm --- General implementation}
+\subsection{General implementation}
 \label{sec:gengenetic} The left hand side of the diagram of figure
 \ref{fig:geneticFlow} is quite similar to the flow diagram of an
 iterative process (\cf figure \ref{fig:itercoarse} in chapter
@@ -1345,7 +1434,7 @@ algorithm simply returns a constant pseudo precision
 --- set to one --- and runs until the maximum number of iterations
 becomes exhausted.
 
-\subsection{Genetic algorithm --- Smalltalk implementation}
+\subsection{Pharo implementation}
 %\marginpar{Figure \ref{fig:soptimizingclasses} with the boxes {\textbf
 %GeneticOptimizer}, {\textbf ChromosomeManager} and {\textbf VectorChromosomeManager} grayed.}
 Listing \ref{ls:chromosome} shows the code of an abstract chromosome manager in
@@ -1384,8 +1473,8 @@ function.
  {\texttt origin :=<\textsl a vector containing the minimum expected value of the component\texttt >}\hfil\break
  {\texttt range :=<\textsl a vector containing the expected range of the component\texttt >}\hfil\break
 \begin{displaycode}{Smalltalk}
-    optimizer := DhbGeneticOptimizer maximizingFunction: fBlock.
-    manager := DhbVectorChromosomeManager new: 100 mutation: 0.1 crossover: 0.1.
+    optimizer := PMGeneticOptimizer maximizingFunction: fBlock.
+    manager := PMVectorChromosomeManager new: 100 mutation: 0.1 crossover: 0.1.
     manager origin: origin; range: range.
     optimizer chromosomeManager: manager.
     result := optimizer evaluate
@@ -1440,7 +1529,7 @@ Then, one can use the simplex algorithm to get rapidly near the
 optimum. The final location of the optimum is obtained using a
 hill climbing optimizer.
 
-\subsection{Multiple strategy approach --- General implementation}
+\subsection{General implementation}
 This multiple strategy approach, inspired from the program MINUIT,
 has been adapted to the use of the algorithms discussed here. The
 class {\texttt MultiVariableGeneralOptimizer} combines the three
@@ -1481,8 +1570,7 @@ Smalltalk. At this point we shall abstain from
 commenting the code as the reader should have no more need for
 such thing$\ldots$ Hopefully!
 
-\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
-MultiVariableGeneralOptimizer} grayed.}
+%\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf MultiVariableGeneralOptimizer} grayed.}
 \begin{listing} Smalltalk
 implementation of a general optimizer \label{ls:optimizergeneral}
 \input{Smalltalk/Minimization/DhbMultiVariableGeneralOptimizer}
