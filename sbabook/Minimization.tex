@@ -898,10 +898,88 @@ action involving two consecutive elements of an indexed collection
 --- is somewhat unusual, but highly convenient\cite{Beck}. The method {\texttt
 minimizeDirection:} implements step 3 of the algorithm.
 
-\begin{listing} Smalltalk implementation of Powell's algorithm
-\label{ls:optimizerpowell}
-\input{Smalltalk/Minimization/DhbHillClimbingOptimizer}
+\begin{listing}[label=ls:optimizerpowell]{Smalltalk}
+{Smalltalk implementation of Powell's algorithm}
+PMFunctionOptimizer subclass: #PMHillClimbingOptimizer
+   instanceVariableNames: 'unidimensionalFinder'
+   classVariableNames: ''
+   package: 'Math-Numerical-Math-FunctionIterator'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>computeInitialValues
+    unidimensionalFinder := DhbOneVariableFunctionOptimizer
+                                                   forOptimizer: self.
+    unidimensionalFinder desiredPrecision: desiredPrecision.
+    bestPoints := (1 to: result size)
+                 collect: [ :n | ( DhbVectorProjectedFunction
+                                      function: functionBlock)
+                                     direction: ((DhbVector
+                                                     new: result size)
+                                                         atAllPut: 0;
+                                                         at: n put: 1;
+                                                         yourself);
+                                            yourself
+                          ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>evaluateIteration
+    | oldResult |
+    precision := 1.
+    bestPoints inject: result
+                 into: [ :prev :each | ( self minimizeDirection: each
+                                                         from: prev)].
+    self shiftDirections.
+    self minimizeDirection: bestPoints last.
+    oldResult := result.
+    result := bestPoints last origin.
+    precision := 0.
+    result with: oldResult do:
+        [ :x0 :x1 |
+          precision := ( self precisionOf: (x0 - x1) abs relativeTo:
+                                               x0 abs) max: precision.
+        ].
+    ^ precision
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>minimizeDirection: aVectorFunction
+    ^ unidimensionalFinder
+        reset;
+        setFunction: aVectorFunction;
+        addPointAt: 0;
+        addPointAt: precision;
+        addPointAt: precision negated;
+        evaluate
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>minimizeDirection: aVectorFunction from: aVector
+    ^aVectorFunction
+        origin: aVector;
+        argumentWith: (self minimizeDirection: aVectorFunction)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMFunctionOptimizer>>shiftDirections
+    | position delta firstDirection |
+    firstDirection := bestPoints first direction.
+    bestPoints inject: nil
+                    into: [ :prev :each |
+                            position isNil
+                                ifTrue: [ position := each origin]
+                                ifFalse:[ prev direction: each
+                                                           direction].
+                            each
+                            ].
+    position := bestPoints last origin - position.
+    delta := position norm.
+    delta > desiredPrecision
+        ifTrue: [ bestPoints last direction: (position scaleBy: (1 /
+                                                              delta))]
+        ifFalse:[ bestPoints last direction: firstDirection]
+\end{displaycode}
 
 \section{Simplex algorithm}
 \label{sec:simplex} The simplex algorithm, invented by Nelder and
@@ -984,7 +1062,7 @@ all cases, one must make sure that the initial simplex has a
 non-vanishing size in all dimensions of the space. Otherwise the
 algorithm will not reach the optimum.
 
-\subsection{Simplex algorithm --- General implementation}
+\subsection{Simplex algorithm}
 The class implementing the simplex algorithm belong to the
 hierarchy of the iterative processes discussed in chapter
 \ref{ch:iteration}. The method {\texttt evaluateIteration} directly
@@ -1003,9 +1081,8 @@ mishaps can arise when the initial value is located on an axis of
 symmetry of the goal function.
 This can happen quite frequently with {\textsl educated guesses}.
 
-\subsection{Simplex algorithm --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf
-SimplexOptimizer} grayed.} Listing \ref{ls:optimizersimplex} shows
+%\marginpar{Figure \ref{fig:soptimizingclasses} with the box {\textbf SimplexOptimizer} grayed.}
+Listing \ref{ls:optimizersimplex} shows
 the Smalltalk implementation of the simplex algorithm. The
 following code example shows how to invoke the class to find the
 minimum of a vector function.
@@ -1016,7 +1093,7 @@ minimum of a vector function.
  {\texttt fBlock :=<\textsl the goal function\texttt >}\hfil\break
  {\texttt educatedGuess :=<\textsl a vector in the search space\texttt >}
 \begin{displaycode}{Smalltalk}
- simplex := DhbSimplexOptimizer minimizingFunction: fBlock.
+ simplex := PMSimplexOptimizer minimizingFunction: fBlock.
  simplex initialValue: educatedGuess.
  result := simplex evaluate
 \end{displaycode}
@@ -1269,19 +1346,18 @@ algorithm simply returns a constant pseudo precision
 becomes exhausted.
 
 \subsection{Genetic algorithm --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:soptimizingclasses} with the boxes {\textbf
-GeneticOptimizer}, {\textbf ChromosomeManager} and {\textbf
-VectorChromosomeManager} grayed.} Listing \ref{ls:chromosome}
-shows the code of an abstract chromosome manager in Smalltalk and
-of a concrete implementation for vector chromosomes. The class
-{\texttt DhbChromosomeManager} has one instance variable in addition
+%\marginpar{Figure \ref{fig:soptimizingclasses} with the boxes {\textbf
+%GeneticOptimizer}, {\textbf ChromosomeManager} and {\textbf VectorChromosomeManager} grayed.}
+Listing \ref{ls:chromosome} shows the code of an abstract chromosome manager in
+Smalltalk and of a concrete implementation for vector chromosomes. The class
+{\texttt PMChromosomeManager} has one instance variable in addition
 to the variables listed in section \ref{sec:gengenetic}: {\texttt
 population}. This variable is an instance of an {\texttt
 OrderedCollection} containing the individuals of the next
 generation being prepared.
 
-The class {\texttt DhbVectorChromosomeManager} is a sublcass of class
-{\texttt DhbChromosomeManager} implementing vector chromosomes. It has
+The class {\texttt PMVectorChromosomeManager} is a subclass of class
+{\texttt PMChromosomeManager} implementing vector chromosomes. It has
 two instance variables
 \begin{description}
   \item[\texttt origin] a vector containing the minimum possible
