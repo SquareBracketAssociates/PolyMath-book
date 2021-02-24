@@ -206,7 +206,7 @@ construct and the general behavior of a stream.
 The last four lines extract the main parameters of the distribution.
 
 If any of the distribution's parameters --- average, variance,
-skewness or kurtosis --- cannot be computed, we use {\texttt self shouldNotBeImplement}.
+skewness or kurtosis --- cannot be computed, we use {\texttt self shouldNoImplement}.
 
 \begin{listing}[label=lst:fastmoments]{Smalltalk}
 {Smalltalk fast implementation of statistical moments}
@@ -851,10 +851,374 @@ likelihood fit of a probability distribution. Smalltalk
 implementation of maximum likelihood fit is discussed in section
 \ref{sec:smlfhist}.
 
-\begin{listing} Smalltalk implementation of histograms \label{ls:histogram}
-\input{Smalltalk/Statistics/DhbHistogram}
+\begin{listing}[label=lst:histogram]{Smalltalk}
+  {Smalltalk implementation of histograms}
+Object subclass: #PMHistogram
+   instanceVariableNames: 'minimum binWidth overflow underflow moments contents freeExtent cacheSize desiredNumberOfBins'
+   classVariableNames: ''
+   package: 'Math-StatisticalMoments'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMHistogram class>>defaultCacheSize
+    ^ 100
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram class>>defaultNumberOfBins
+^ 50
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram class>>integerScales
+   ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram>>accumulate: aNumber
+    | bin |
+    self isCached
+        ifTrue: [ ^self accumulateInCache: aNumber ].
+    bin := self binIndex: aNumber.
+    ( bin between: 1 and: contents size)
+        ifTrue: [ contents at: bin put: ( contents at: bin) + 1.
+                     moments accumulate: aNumber.
+                   ]
+        ifFalse:[ self processOverflows: bin for: aNumber ].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram>>accumulateInCache: aNumber
+    contents add: aNumber.
+    contents size > cacheSize
+        ifTrue: [ self flushCache ].
+\end{displaycode}
+        
+\begin{displaycode}{Smalltalk}
+PMHistogram>>adjustDimensionUpTo: aNumber
+    | maximum |
+    binWidth := self roundToScale: ( aNumber - minimum) / 
+                                                  desiredNumberOfBins.
+    minimum := ( minimum / binWidth) floor * binWidth.
+    maximum := ( aNumber / binWidth) ceiling * binWidth.
+    contents := Array new: ( ( maximum - minimum) / binWidth) 
+                                                              ceiling.
+    contents atAllPut: 0.
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>average
+    ^ moments average
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>binIndex: aNumber
+    ^( ( aNumber - minimum) / binWidth) floor + 1
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>binWidth
+    self isCached
+        ifTrue: [ self flushCache].
+    ^binWidth
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>collectIntegralPoints: aBlock
+    | answer bin lastContents integral norm x |
+    self isCached
+        ifTrue: [ self flushCache].
+    answer := OrderedCollection new: ( contents size * 2 + 1).
+    bin := self minimum.
+    answer add: ( aBlock value: bin @ 0).
+    integral := self underflow.
+    norm := self totalCount.
+    contents do:
+        [ :each |
+          integral := integral + each.
+          x := integral / norm.
+          answer add: ( aBlock value: bin @ x).
+          bin := bin + binWidth.
+          answer add: ( aBlock value: bin @ x).
+        ].
+    answer add: ( aBlock value: bin @ 0).
+    ^ answer asArray
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>collectPoints: aBlock
+    | answer bin lastContents |
+    self isCached
+        ifTrue: [ self flushCache ].
+    answer := OrderedCollection new: ( contents size * 2 + 1).
+    bin := self minimum.
+    answer add: (aBlock value: bin @ 0).
+    contents do:
+        [ :each |
+          answer add: (aBlock value: bin @ each).
+          bin := bin + binWidth.
+          answer add: (aBlock value: bin @ each).
+        ].
+    answer add: (aBlock value: bin @ 0).
+    ^ answer asArray
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>count
+    ^ moments count
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>countAt: aNumber
+    | n |
+    n := self binIndex: aNumber.
+    ^ (n between: 1 and: contents size)
+            ifTrue: [ contents at: n ]
+            ifFalse: [ 0 ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram>>countOverflows: anInteger
+    anInteger > 0
+        ifTrue: [ overflow := overflow + 1 ]
+        ifFalse:[ underflow := underflow + 1 ].
+\end{displaycode}
+        
+\begin{displaycode}{Smalltalk}
+PMHistogram>>countsBetween: aNumber1 and: aNumber2
+    | n1 n2 answer |
+    n1 := self binIndex: aNumber1.
+    n2 := self binIndex: aNumber2.
+    answer := ( contents at: n1) * ( ( binWidth * n1 + minimum) - 
+                                                 aNumber1) / binWidth.
+    n2 > contents size
+        ifTrue: [ n2 := contents size + 1]
+        ifFalse:[ answer := answer + ( ( contents at: n2) * ( 
+      aNumber2 - ( binWidth * ( n2 - 1) + self maximum)) / binWidth)].
+    ( n1 + 1) to: ( n2 - 1) do: [ :n | answer := answer + ( contents 
+                                                              at: n)].
+    ^ answer
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>countsUpTo: aNumber
+    | n answer |
+    n := self binIndex: aNumber.
+    n > contents size
+        ifTrue: [ ^self count].
+    answer := ( contents at: n) * ( aNumber - ( binWidth * ( n - 1) + 
+                                            self minimum)) / binWidth.
+    1 to: ( n - 1) do: [ :m | answer := answer + ( contents at: m)].
+    ^ answer + underflow
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>errorOnAverage
+    ^ moments errorOnAverage
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>flushCache
+    | maximum values |
+    minimum isNil
+        ifTrue: [ minimum := contents isEmpty ifTrue: [ 0]
+                                                                      
+                                            ifFalse:[ contents first].
+                   ].
+    maximum := minimum.
+    contents do:
+        [ :each |
+          each < minimum
+            ifTrue: [ minimum := each]
+            ifFalse:[ each > maximum
+                            ifTrue: [ maximum := each].
+                        ].
+        ].
+    maximum = minimum
+        ifTrue: [ maximum := minimum + desiredNumberOfBins].
+    values := contents.
+    self adjustDimensionUpTo: maximum.
+    values do: [ :each | self accumulate: each ].
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMHistogram>>freeExtent: aBoolean
+    ( underflow = 0 and: [ overflow = 0])
+        ifFalse: [ self error: 'Histogram extent cannot be 
+                                                          redefined'].
+    freeExtent := aBoolean.
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>growContents: anInteger
+    anInteger > 0
+        ifTrue: [ self growPositiveContents: anInteger ]
+        ifFalse: [ self growNegativeContents: anInteger ].
+\end{displaycode}
+      
+\begin{displaycode}{Smalltalk}
+PMHistogram>>growNegativeContents: anInteger
+    | n newSize newContents |
+    n := 1 - anInteger.
+    newSize := contents size + n.
+    newContents := Array new: newSize.
+    newContents
+            at: 1 put: 1;
+            replaceFrom: 2 to: n withObject: 0;
+            replaceFrom: ( n + 1) to: newSize with: contents.
+    contents := newContents.
+    minimum := ( anInteger - 1) * binWidth + minimum.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram>>growPositiveContents: anInteger
+    | n newContents |
+    n := contents size.
+    newContents := Array new: anInteger.
+    newContents
+            replaceFrom: 1 to: n with: contents;
+            replaceFrom: ( n + 1) to: ( anInteger - 1) withObject: 0;
+            at: anInteger put: 1.
+    contents := newContents.
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>initialize
+    freeExtent := false.
+    cacheSize := self class defaultCacheSize.
+    desiredNumberOfBins := self class defaultNumberOfBins.
+    contents := OrderedCollection new: cacheSize.
+    moments := DhbFixedStatisticalMoments new.
+    overflow := 0.
+    underflow := 0
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>inverseDistributionValue: aNumber
+    | count x integral |
+    count := self count * aNumber.
+    x := self minimum.
+    integral := 0.
+    contents do:
+        [ :each | | delta |
+          delta := count - integral.
+          each > delta
+            ifTrue: [ ^self binWidth * delta / each + x].
+          integral := integral + each.
+          x := self binWidth + x.
+        ].
+    ^ self maximum
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>isCached
+    ^ binWidth isNil
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMHistogram>>isEmpty
+    ^ false
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogram>>kurtosis
+    ^ moments kurtosis
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>lowBinLimitAt: anIntege
+    ^ (anInteger - 1) * binWidth + minimum
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>maximum
+    self isCached
+        ifTrue: [ self flushCache ].
+    ^ contents size * binWidth + minimum
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>maximumCount
+    self isCached
+        ifTrue: [ self flushCache ].
+    ^contents inject: ( contents isEmpty ifTrue: [ 1] ifFalse:[ 
+                                                      contents at: 1])
+                    into: [ :max :each | max max: each]
+\end{displaycode}
+                  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>minimum
+    self isCached
+        ifTrue: [ self flushCache ].
+    ^ minimum
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>overflow
+    ^ overflow
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>processOverflows: anInteger for: aNumber
+    freeExtent
+        ifTrue: [ self growContents: anInteger.
+                     moments accumulate: aNumber
+                   ]
+        ifFalse:[ self countOverflows: anInteger ].
+
+\begin{displaycode}{Smalltalk}
+PMHistogram>>setDesiredNumberOfBins: anInteger
+    anInteger > 0
+        ifFalse:[ self error: 'Desired number of bins must be 
+                                                           positive'].
+    desiredNumberOfBins := anInteger.
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>setRangeFrom: aNumber1 to: aNumber2 bins: anInteger
+    self isCached
+        ifFalse: [ self error: 'Histogram limits cannot be 
+                                                          redefined'].
+    minimum := aNumber1.
+    self setDesiredNumberOfBins: anInteger;
+           adjustDimensionUpTo: aNumber2.
+\end{displaycode}
+         
+\begin{displaycode}{Smalltalk}
+PMHistogram>>setWidth: aNumber1 from: aNumber2 bins: anInteger
+    self isCached
+        ifFalse: [ self error: 'Histogram limits cannot be 
+                                                          redefined'].
+    minimum := aNumber2.
+    self setDesiredNumberOfBins: anInteger;
+           adjustDimensionUpTo: ( aNumber1 * anInteger + aNumber2).
+\end{displaycode}
+           
+\begin{displaycode}{Smalltalk}
+PMHistogram>>skewness
+    ^ moments skewness
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>standardDeviation
+    ^ moments standardDeviation
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMHistogram>>totalCount
+    ^ moments count + underflow + overflow
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>underflow
+    ^ underflow
+\end{displaycode}
+  
+\begin{displaycode}{Smalltalk}
+PMHistogram>>variance
+    ^ moments variance
+\end{displaycode}
+  
 \section{Random number generator}
 \label{sec:random} When studying statistical processes on a
 computer one often has to simulate the behavior of a random
