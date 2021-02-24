@@ -152,28 +152,26 @@ of the distribution. It can be used in all cases where
 distribution parameters are needed.
 
 \subsection{Statistical moments --- Smalltalk implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
-FastStatisticalMoments} grayed.} To describe this implementation
-we must anticipated on the next section: the class {\textbf
-FastStatisticalMoments} implementing statistical moments as
+%\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf FastStatisticalMoments} grayed.}
+To describe this implementation we must anticipated on the next section: the class {\textbf
+PMFastStatisticalMoments} implementing statistical moments as
 described in Section \ref{sec:moments} is a subclass of the class
 defined in section \ref{sec:robustmoment}.
 
-Space allocation is handled by the superclass. The class {\texttt
-FastStatisticalMoments} uses this allocation to store the moments
-(instead of the central moments). The method {\texttt accumulate:}
-perform the accumulation of the moments. The methods {\texttt
-average}, {\texttt variance}, {\texttt skewness} and {\texttt kurtosis}
-compute the respective quantities using explicit expansion of the
+Space allocation is handled by the superclass.
+The class {\texttt PMFastStatisticalMoments} uses this allocation to store the moments
+(instead of the central moments).
+The method {\texttt accumulate:} perform the accumulation of the moments. The
+methods {\texttt average}, {\texttt variance}, {\texttt skewness} and {\texttt
+  kurtosis} compute the respective quantities using explicit expansion of the
 central moments as a function of the moments.
 
 The computation of the standard deviation and of the error on the
-average are handled by the superclass (\cf listing
-\ref{ls:genmoments}).
+average are handled by the superclass (\cf listing \ref{ls:genmoments}).
 
 \label{sec:smoments}Listing \ref{lst:fastmoments} shows the
-Smalltalk implementation. The class {\texttt
-PMFastStatisticalMoments} is a subclass of class {\texttt
+Smalltalk implementation.
+The class {\texttt PMFastStatisticalMoments} is a subclass of class {\texttt
 PMStatisticalMoments} presented in listing \ref{lst:genmoments} of
 section \ref{sec:srobustmoment}. The reason for the split into two
 classes will become clear in section \ref{sec:robustmoment}.
@@ -199,17 +197,16 @@ are obtained from a stream. The exact implementation of the stream
 is not shown here.
 
 After the declarative statements, the first executable statement
-creates a new instance of the class {\texttt
-PMFastStatisticalMoments} with the default dimension. This
-default allocates enough storage to accumulate up to the moment of
-$4\th$ order. The next two lines are the accumulation proper using
-a {\texttt whileFalse:} construct and the general behavior of a
-stream. The last four lines extract the main parameters of the
-distribution.
+creates a new instance of the class {\texttt PMFastStatisticalMoments} with the
+default dimension.
+This default allocates enough storage to accumulate up to the
+moment of $4\th$ order.
+The next two lines are the accumulation proper using a {\texttt whileFalse:}
+construct and the general behavior of a stream.
+The last four lines extract the main parameters of the distribution.
 
 If any of the distribution's parameters --- average, variance,
-skewness or kurtosis --- cannot be computed, the returned value is
-{\texttt nil}.
+skewness or kurtosis --- cannot be computed, we use {\texttt self shouldNotBeImplement}.
 
 \begin{listing}[label=lst:fastmoments]{Smalltalk}
 {Smalltalk fast implementation of statistical moments}
@@ -393,36 +390,35 @@ For the central moment of order 4 we have:
 \end{mainEquation}
 
 \subsection{Robust central moments --- General implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf
-StatisticalMoments} and {\textbf FixedStatisticalMoments} grayed.} The
-class {\texttt StatisticalMoments} has a single instance variable {\texttt
+%\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf StatisticalMoments} and {\textbf FixedStatisticalMoments} grayed.}
+The class {\texttt PMStatisticalMoments} has a single instance variable {\texttt
 moments} used to store the accumulated central moments.
 
 The evaluation of equation \ref{eq:deltamoment} is not as hard as
-it seems from a programming point of view. One must remember that
-the binomial coefficients can be obtained by recursion (Pascal
-triangle). Furthermore, the terms of the sum can be computed
-recursively from those of the previous order so that raising the
-correction $\Delta_{n+1}$ to an integer power is never made
-explicitly. Equation \ref{eq:deltamoment} is implemented in method
-{\texttt accumulate}. The reader will notice that the binomial
-coefficients are computed inside the loop computing the sum.
+it seems from a programming point of view.
+One must remember that the binomial coefficients can be obtained by recursion (Pascal
+triangle).
+Furthermore, the terms of the sum can be computed recursively from those of the
+previous order so that raising the correction $\Delta_{n+1}$ to an integer power
+is never made explicitly.
+Equation \ref{eq:deltamoment} is implemented in method {\texttt accumulate}. The
+reader will notice that the binomial coefficients are computed inside the loop
+computing the sum.
+Accumulating the central moments using equation \ref{eq:deltamoment} has the
+advantage that the estimated value of the central moment is always available.
+Nevertheless, accumulation is about 2 times slower than with the brute force
+method exposed in section \ref{sec:moments}.
+The reader must decide between speed and accuracy to chose between the two implementations.
 
-Accumulating the central moments using equation
-\ref{eq:deltamoment} has the advantage that the estimated value of
-the central moment is always available. Nevertheless, accumulation
-is about 2 times slower than with the brute force method exposed
-in section \ref{sec:moments}. The reader must decide between speed
-and accuracy to chose between the two implementations.
-
-The class {\texttt FixedStatisticalMoments} is a subclass of class
-{\texttt StatisticalMoments} specialized in the accumulation of
-central moments up to order 4. Instead of implementing the general
-equation \ref{eq:deltamoment}, the central moments are accumulated
-using equations \ref{eq:accumvariance}, \ref{eq:accumskewness} and
-\ref{eq:accumkurtosis}. The only instance method redefined by this
-class is the method {\texttt accumulate}. All other computations are
-performed using the methods of the superclass.
+The class {\texttt PMFixedStatisticalMoments} is a subclass of class
+{\texttt PMStatisticalMoments} specialized in the accumulation of
+central moments up to order 4.
+Instead of implementing the general equation \ref{eq:deltamoment}, the central
+moments are accumulated using equations \ref{eq:accumvariance},
+\ref{eq:accumskewness} and \ref{eq:accumkurtosis}.
+The only instance method redefined by this
+class is the method {\texttt accumulate}.
+All other computations are performed using the methods of the superclass.
 
 \subsection{Robust central moments --- Smalltalk implementation}
 \label{sec:srobustmoment} Listing
@@ -631,8 +627,8 @@ PMFixedStatisticalMoments >> accumulate: aNumber
 \label{sec:histogram} Whereas statistical moments provides a quick
 way of obtaining information about the distribution of a measured
 random variable, the information thus provided is rather terse and
-quite difficult to interpret by humans. Histograms provide a more
-complete way of analyzing an experimental distribution. A
+quite difficult to interpret by humans.
+Histograms provide a more complete way of analyzing an experimental distribution. A
 histogram has a big advantage over statistical moments: it can
 easily be represented graphically. Figure \ref{fig:histogram}
 shows a typical histogram.
@@ -674,29 +670,30 @@ $\sqrt{n_i}$.
 
 To obtain more information about the measured distribution, one
 can also keep track of the number of values falling outside of the
-histogram limits. The {\textsl underflow} of a histogram is defined as
-the number of values falling below the minimum  of the accumulated
-values. Similarly, the {\textsl overflow} of a histogram is defined as
-the number of values falling on\footnote{This is different from
-the definition of the underflow to be consistent with the fact
-that the definition of a bin interval is open ended at the upper
-limit.} or above the maximum of the accumulated values.
+histogram limits.
+The {\textsl underflow} of a histogram is defined as the number of values
+falling below the minimum  of the accumulated values.
+Similarly, the {\textsl overflow} of a histogram is defined as the number of
+values falling on\footnote{This is different from the definition of the
+  underflow to be consistent with the fact that the definition of a bin interval
+  is open ended at the upper limit.} or above the maximum of the accumulated values.
 
 \subsection{Histograms --- General implementation}
-\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
-Histogram} grayed.} Our implementation of histogram also
-accumulates the values into statistical moments. One can in
-principle compute the statistical moments of the measured
-distribution from the histogram contents. This determination,
-however, depends strongly on the bin width, especially if the bin
-width is large compared to the standard deviation. Thus, it is
-preferable to use the original data when accumulating the
-statistical moments. The net result is that a histogram has the
-same polymorphic behavior as a statistical moment.
+%\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf Histogram}
+%grayed.}
+Our implementation of histogram also accumulates the values into statistical
+moments.
+One can in principle compute the statistical moments of the measured
+distribution from the histogram contents.
+This determination, however, depends strongly on the bin width, especially if
+the bin width is large compared to the standard deviation.
+Thus, it is preferable to use the original data when accumulating the
+statistical moments.
+The net result is that a histogram has the same polymorphic behavior as a statistical moment.
 
 When defining a histogram, the histogram limits --- $x_{\min}$ and
-$x_{\max}$ --- must be known in advance. This is not always
-practical since it implies a first scan of the measurements to
+$x_{\max}$ --- must be known in advance.
+This is not always practical since it implies a first scan of the measurements to
 determine the limits and a second scan to perform the accumulation
 into the defined histogram. Thus, our implementation offers the
 possibility of defining a histogram without predefined limits. In
@@ -740,13 +737,13 @@ measurements into a histogram.
  | histogram valueStream |
  histogram := PMHistogram new.
  [ valueStream atEnd ]
-        whileFalse: [ histogram accumulate: valueStream next ].
+ whileFalse: [ histogram accumulate: valueStream next ].
+\end{displaycode} 
 \hfil {\texttt<\textsl printing or display of the histogram\texttt >}\hfil
-\end{displaycode}
 
 This example assumes that the measurement of the random variable
-are obtained from a stream. The exact implementation of the stream
-is not shown here.
+are obtained from a stream.
+The exact implementation of the stream is not shown here.
 
 After the declarative statements, the first executable statement
 creates a new instance of the class {\texttt PMHistogram} with the
@@ -754,8 +751,8 @@ default settings: automatic determination of the limits for 50
 desired bins. The next two lines are the accumulation proper using
 a {\texttt whileFalse:} construct and the general behavior of a
 stream. This code is very similar to the code example presented in
-section \ref{sec:smoments}. Extracting the parameters of the
-distribution can also be performed from the histogram.
+section \ref{sec:smoments}.
+Extracting the parameters of the distribution can also be performed from the histogram.
 
 \noindent The next example shows how to declare a histogram with
 given limits (2 and 7) and a desired number of bins of 50:
