@@ -151,7 +151,7 @@ moments up to order 4. One can then easily compute the parameters
 of the distribution. It can be used in all cases where
 distribution parameters are needed.
 
-\subsection{Statistical moments --- Smalltalk implementation}
+\subsection{Statistical moments --- implementation}
 %\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf FastStatisticalMoments} grayed.}
 To describe this implementation we must anticipated on the next section: the class {\textbf
 PMFastStatisticalMoments} implementing statistical moments as
@@ -389,7 +389,7 @@ For the central moment of order 4 we have:
   \end{array}
 \end{mainEquation}
 
-\subsection{Robust central moments --- General implementation}
+\subsection{Robust central moments --- implementation}
 %\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf StatisticalMoments} and {\textbf FixedStatisticalMoments} grayed.}
 The class {\texttt PMStatisticalMoments} has a single instance variable {\texttt
 moments} used to store the accumulated central moments.
@@ -420,7 +420,6 @@ The only instance method redefined by this
 class is the method {\texttt accumulate}.
 All other computations are performed using the methods of the superclass.
 
-\subsection{Robust central moments --- Smalltalk implementation}
 \label{sec:srobustmoment} Listing
 \ref{ls:genmoments} shows the implementation of the robust
 statistical moments. Listing \ref{lst:fixedmoments} shows a
@@ -431,10 +430,9 @@ Using the class is identical for all classes of the hierarchy.
 Thus, the code example presented in section \ref{sec:smoments} is
 also valid for these two classes.
 
-The creation method {\texttt new:} takes as argument the highest order
-of the accumulated moments. The corresponding initialization
-method allocates the required storage. The creation method {\texttt
-new} corresponds to the most frequent usage: the highest order is
+The creation method {\texttt new:} takes as argument the highest order of the accumulated moments.
+The corresponding initialization method allocates the required storage.
+The creation method {\texttt new} corresponds to the most frequent usage: the highest order is
 4.
 
 The methods computing the distribution parameters --- average,
@@ -678,7 +676,7 @@ values falling on\footnote{This is different from the definition of the
   underflow to be consistent with the fact that the definition of a bin interval
   is open ended at the upper limit.} or above the maximum of the accumulated values.
 
-\subsection{Histograms --- General implementation}
+\subsection{Histograms --- implementation}
 %\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf Histogram}
 %grayed.}
 Our implementation of histogram also accumulates the values into statistical
@@ -728,7 +726,6 @@ minimum and maximum are adjusted to be integral multiples of the
 bin width enclosing the given limits. In our example, there are
 $2.1$ and $5.175$ and the number of bins becomes 41 instead of 50.
 
-\subsection{Histograms --- Smalltalk implementation}
 \label{sec:shistogram} Listing \ref{ls:histogram} shows the
 implementation of a histogram in Smalltalk. The following code
 shows how to use the class {\texttt PMHistogram} to accumulate
@@ -1440,7 +1437,6 @@ randomness. Furthermore the randomness of the series guarantees
 that two series generated at almost the same time are quite
 different. Here is how to do it.
 \begin{displaycode}{Smalltalk}
-
  | generator x |
  generator := PMCongruentialRandomNumberGenerator
                         seed: Time millisecondClockValue.
@@ -1488,10 +1484,72 @@ numbers using floating point parameters is about 3 times faster
 than with integer parameters. This can easily be verified by the
 reader.
 
-\begin{listing} Smalltalk implementation of congruential random number generators
-\label{ls:randomcong}
-\input{Smalltalk/Statistics/DhbCongruentialRandomNumberGenerator}
+\begin{listing}[label=ls:randomcong]{Smalltalk}
+  {Smalltalk implementation of congruential random number generators}
+Object subclass: #PMCongruentialRandomNumberGenerator
+    instanceVariableNames: 'constant modulus multiplicator seed'
+    classVariableNames: 'UniqueInstance'
+    package: #'Math-Distributions'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator class >> constant: aNumber1 multiplicator: aNumber2 modulus: aNumber3
+    ^ super new 
+        initialize: aNumber1
+        multiplicator: aNumber2
+        modulus: aNumber3
+
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator class >> new
+    UniqueInstance isNil
+        ifTrue: [ UniqueInstance := super new initialize.
+                     UniqueInstance setSeed: 1 ].
+    ^ UniqueInstance
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator class >> seed: aNumber
+    ^ super new initialize; setSeed: aNumber; yourself
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator >> floatValue
+    ^ self value asFloat / modulus
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator >> initialize
+    self initialize: 2718281829.0 multiplicator: 3141592653.0 
+                                                modulus: 4294967296.0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator >> initialize: aNumber1 multiplicator: aNumber2 modulus: aNumber3
+    constant := aNumber1.
+    modulus := aNumber2.
+    multiplicator := aNumber3.
+    self setSeed: 1.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator >> integerValue: anInteger
+    ^ (self value \\ ( anInteger * 1000)) // 1000
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator >> setSeed: aNumber
+    seed := aNumber
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMCongruentialRandomNumberGenerator >> value
+    seed := (seed * multiplicator + constant) \\ modulus.
+    ^ seed
+\end{displaycode}
+
+%\input{Smalltalk/Statistics/DhbCongruentialRandomNumberGenerator}
 
 \noindent The class {\texttt PMMitchellMooreGenerator} implements a
 random number generator with additive sequence. It has two public
@@ -1519,7 +1577,7 @@ good} indices $k$ and $l$ in \cite{Knuth2}.
 
 \begin{listing} Smalltalk implementation of an additive sequence random number generator
 \label{ls:randomseq}
-\input{Smalltalk/Statistics/DhbMitchellMooreGenerator}
+%\input{Smalltalk/Statistics/DhbMitchellMooreGenerator}
 \end{listing}
 
 For simple simulation, one wishes to generate a random number ---
@@ -1549,20 +1607,28 @@ excluded. Finally the following Smalltalk expression
 \end{quote}
 \noindent generates a floating random number between 0 and 1
 excluded.
-\begin{listing} Smalltalk implementation of random number generators
+
 \label{ls:randomuse}
-\input{Smalltalk/Statistics/Integer(DhbStatistics)}
-\input{Smalltalk/Statistics/Number(DhbStatistics)}
+\begin{listing}[label=lst:matrix]{Smalltalk}
+  {Smalltalk implementation of random number generators}
+Integer >> random
+    ^PMMitchellMooreGenerator new integerValue: self
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+Number class >> random
+    ^ PMMitchellMooreGenerator new floatValue
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+Number >> random
+    ^ self class random * self
+\end{displaycode}
+
 \section{Probability distributions}
-\label{sec:probdistr}A probability density function defines the
-probability of finding a continuous random variable within an
-infinitesimal interval. More precisely, the probability density
-function $P\left(x\right)$ gives the probability for a random
-variable to take a value lying in the interval
-$\left[x,x+dx\right[$. A probability density function is a special
-case of a one variable function described in section
+\label{sec:probdistr}A probability density function defines the probability of finding a continuous random variable within an infinitesimal interval.
+More precisely, the probability density function $P\left(x\right)$ gives the probability for a random variable to take a value lying in the interval $\left[x,x+dx\right[$.
+A probability density function is a special case of a one variable function described in section
 \ref{sec:function}.
 
 The moment of $k^{\mathop{\textrm th}}$ order for a probability
@@ -1779,7 +1845,7 @@ them to the analytical expression of the distribution's parameter.
 
 \begin{listing} Smalltalk implementation of a probability distribution
 \label{ls:probdistr}
-\input{Smalltalk/Statistics/DhbProbabilityDensity}
+%\input{Smalltalk/Statistics/DhbProbabilityDensity}
 \end{listing}
 
 The class {\texttt PMProbabilityDensityWithUnknownDistribution} is
@@ -1801,7 +1867,7 @@ method {\texttt lowestValue} must be redefined by the subclass.
 
 \begin{listing} Smalltalk implementation of a probability distribution with unknown
 distribution function\label{ls:probunkdistr}
-\input{Smalltalk/Statistics/DhbProbabilityDensityWithUnknownDistribution}
+%\input{Smalltalk/Statistics/DhbProbabilityDensityWithUnknownDistribution}
 \end{listing}
 
 Listing \ref{ls:probdistrfun} shows the implementation of the
@@ -1813,7 +1879,7 @@ PMProbabilityDensity} as argument.
 
 \begin{listing} Smalltalk implementation of a probability distribution function
 \label{ls:probdistrfun}
-\input{Smalltalk/Statistics/DhbProbabilityDistributionFunction}
+%\input{Smalltalk/Statistics/DhbProbabilityDistributionFunction}
 \end{listing}
 
 
