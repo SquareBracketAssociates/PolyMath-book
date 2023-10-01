@@ -1406,9 +1406,8 @@ original matrix --- LUP decomposition is the algorithm of choice.
 
 \subsection{LUP decomposition --- General implementation}
 %\marginpar{Figure \ref{fig:linearalgebraclasses} with the box \textbf{LUPDecomposition} grayed.}
-To implement the LUP algorithm, let us
-first note that we do not need much storage for the three matrices
-$\textbf{L}$, $\textbf{U}$ and $\textbf{P}$. Indeed, the permutation matrix
+To implement the LUP algorithm, let us first note that we do not need much storage for the three matrices $\textbf{L}$, $\textbf{U}$ and $\textbf{P}$.
+Indeed, the permutation matrix
 $\textbf{P}$ can be represented with a vector of integers of the same
 dimension as the matrix rows. Since the diagonal elements of the
 matrix $\textbf{L}$ are set in advance, we only need to store
@@ -1508,12 +1507,150 @@ the method \code{solve:} returns \code{nil}.
 
 \begin{listing}[label=lst:lup]{Smalltalk}
 {Implementation of the LUP decomposition}
-%\input{Smalltalk/LinearAlgebra/DhbLUPDecomposition}
+Object subclass: #PMLUPDecomposition
+   instanceVariableNames: 'rows permutation parity'
+   classVariableNames: ''
+   package: 'Math-Matrix'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition class >> direct: anArrayOfArrays
+    ^ self new initialize: anArrayOfArrays
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition class >>  equations: anArrayOfArrays
+        ^self new initialize: ( anArrayOfArrays collect: [ :each | 
+                                                      each deepCopy])
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> backwardSubstitution: anArray
+    | n sum answer|
+    n := rows size.
+    answer := DhbVector new: n.
+    n to: 1 by: -1 do:
+        [ :i |
+          sum := anArray at: i.
+          ( i + 1) to: n do: [ :j | sum := sum - ( ( ( rows at: i) 
+                                           at: j) * ( answer at: j))].
+          answer at: i put: sum / ( ( rows at: i) at: i) ].
+    ^ answer
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> decompose
+    | n |
+    n := rows size.
+    permutation := (1 to: n) asArray.
+    1 to: ( n - 1) do:
+        [ :k |
+          self swapRow: k withRow: ( self largestPivotFrom: k);
+               pivotAt: k ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> forwardSubstitution: anArray
+    | n sum answer |
+    answer := permutation collect: [ :each | anArray at: each].
+    n := rows size.
+    2 to: n do:
+        [ :i |
+          sum := answer at: i.
+          1 to: ( i - 1) do: [ :j | sum := sum - ( ( ( rows at: i) 
+                                           at: j) * ( answer at: j))].
+          answer at: i put: sum ].
+    ^ answer
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> initialize: anArrayOfArrays
+    rows := anArrayOfArrays.
+    parity := 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> largestPivotFrom: anInteger
+    | valueOfMaximum indexOfMaximum value |
+    valueOfMaximum := ( ( rows at: anInteger) at: anInteger) abs.
+    indexOfMaximum := anInteger.
+    ( anInteger + 1) to: rows size do:
+        [ :n |
+          value := ( ( rows at: n) at: anInteger) abs.
+          value > valueOfMaximum
+                ifTrue: [ valueOfMaximum := value.
+                          indexOfMaximum := n ] ].
+    ^ indexOfMaximum 
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> pivotAt: anInteger
+    | inversePivot size k |
+    inversePivot := 1 / ((rows at: anInteger) at: anInteger).
+    size := rows size.
+    k := anInteger + 1.
+    k to: size
+        do: [ :i |
+              ( rows at: i) at: anInteger put: (( rows at: i) at: 
+                                            anInteger) * inversePivot.
+              k to: size
+                do: [ :j |
+                      ( rows at: i) at: j put: ( ( rows at: i) at: j) 
+   - ( (( rows at: i) at: anInteger) * (( rows at: anInteger) at: j)) ]
+            ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> printOn: aStream
+    | first delimitingString n k |
+    n := rows size.
+    first := true.
+    rows do:
+        [ :row |
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
+          delimitingString := '('.
+          row do:
+            [ :each |
+                aStream nextPutAll: delimitingString.
+                each printOn: aStream.
+                delimitingString := ' ' ].
+          aStream nextPut: $) ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> protectedDecomposition
+    [ self decompose] when: ExAll do: [ :signal | permutation := 0. 
+                                                signal exitWith: nil ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> solve: anArrayOrVector
+    permutation isNil
+        ifTrue: [ self protectedDecomposition ].
+    ^permutation = 0
+        ifTrue: [ nil ]
+        ifFalse:[ self backwardSubstitution: ( self 
+                                forwardSubstitution: anArrayOrVector)] 
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> swapRow: anInteger1 withRow: anInteger2
+    anInteger1 = anInteger2
+        ifFalse: [ | swappedRow |
+                  swappedRow := rows at: anInteger1.
+                  rows at: anInteger1 put: ( rows at: anInteger2).
+                  rows at: anInteger2 put: swappedRow.
+                  swappedRow := permutation at: anInteger1.
+                  permutation at: anInteger1 put: ( permutation at: 
+                                                          anInteger2).
+                  permutation at: anInteger2 put: swappedRow.
+                  parity := parity negated.
+                ]
+\end{displaycode}
+
 \section{Computing the determinant of a matrix}
-\label{sec:determinant} The determinant of a matrix is defined
-as
+\label{sec:determinant} The determinant of a matrix is defined as
 \begin{equation}
 \label{eq:determinant}
   \det\textbf{A}=\left|
@@ -1568,9 +1705,20 @@ Listing \ref{lst:determinant} shows the methods of classes \code{PMMatrix} and \
 
 \begin{listing}[label=lst:determinant]{Smalltalk}
 {Methods to compute a matrix determinant}
-%\input{Smalltalk/LinearAlgebra/DhbMatrix(DhbMatrixDeterminant)}
-%\input{Smalltalk/LinearAlgebra/DhbLUPDecomposition(DhbMatrixDeterminant)}
 \end{listing}
+\begin{displaycode}{Smalltalk}
+PMMatrix >> determinant
+  ^self lupDecomposition determinant
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLUPDecomposition >> determinant
+    | n |
+    permutation isNil
+        ifTrue: [ self protectedDecomposition ].
+    permutation = 0
+        ifTrue: [ ^0 ]  
+\end{displaycode}
 
 \section{Matrix inversion}
 \label{sec:matrixinversion} The inverse of a square matrix $\textbf{A}$ is denoted $\textbf{A}^{-1}$. It is defined by the following
