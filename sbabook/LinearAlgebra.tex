@@ -9,19 +9,14 @@
 \chapter{Linear algebra}
 \label{ch:linearalgebra}
 \begin{flushright}
-{\textsl On ne trouve pas l'espace, il faut toujours le
-construire.}\footnote{Space is not to be found; it must always be
+{\textsl On ne trouve pas l'espace, il faut toujours le construire.}\footnote{Space is not to be found; it must always be
 constructed.}\\ Gaston Bachelard
 \end{flushright}
-\vspace{1 ex} Linear algebra concerns itself with the manipulation
-of vectors and matrices. The concepts of linear algebra are not
-difficult and linear algebra is usually taught in the first year
-of university. Solving systems of linear equations are even taught
-in high school. Of course, one must get used to the book keeping
-of the indices. The concise notation introduced in linear algebra
-for vector and matrix operations allows expressing difficult
-problems in a few short equations. This notation can be directly
-adapted to object oriented programming.
+\vspace{1 ex} Linear algebra concerns itself with the manipulation of vectors and matrices.
+The concepts of linear algebra are not difficult and linear algebra is usually taught in the first year of university.
+Solving systems of linear equations are even taught in high school. Of course, one must get used to the book keeping of the indices.
+The concise notation introduced in linear algebra for vector and matrix operations allows expressing difficult problems in a few short equations.
+This notation can be directly adapted to object oriented programming.
 
 Figure \ref{fig:linearalgebraclasses} shows the classes described
 in this chapter.
@@ -29,12 +24,10 @@ in this chapter.
 \centering\includegraphics[width=11cm]{Figures/LinearAlgebraClasses}
 \caption{Linear algebra classes}\label{fig:linearalgebraclasses}
 \end{figure}
-Like chapter \ref{ch:function}, this chapter discusses some
-fundamental concepts and operations that shall be used throughout
-the rest of the book. It might appear austere to many readers
-because, unlike the preceding chapters, it does not contains
-concrete examples. However, the reader will find example of use of
-linear algebra in nearly all remaining chapters of this book.
+Like chapter \ref{ch:function}, this chapter discusses some fundamental concepts and operations that shall be used throughout
+the rest of the book.
+It might appear austere to many readers because, unlike the preceding chapters, it does not contains concrete examples.
+However, the reader will find example of use of linear algebra in nearly all remaining chapters of this book.
 
 The chapter begins with a reminder of operations defined on
 vectors and matrices. Then, two methods for solving systems of
@@ -530,16 +523,16 @@ presented in this book.
 
 \begin{quotation}
 \noindent {\textbf{Note:}} The presented matrix implementation is
-straightforward. Depending on the problem to solve, however, it is
-not the most efficient one. Each multiplication allocates a lot of
-memory. If the problem is such that one can allocate memory once
-for all, more efficient methods can be designed.
+straightforward.
+Depending on the problem to solve, however, it is not the most efficient one. Each multiplication allocates a lot of
+memory.
+If the problem is such that one can allocate memory once for all, more efficient methods can be designed.
 \end{quotation}
 
 The implementation of matrix operations --- addition, subtraction,
 product --- uses double or multiple dispatching to determine
-whether or not the result is a symmetric matrix. Double and
-multiple dispatching are explained in sections
+whether or not the result is a symmetric matrix.
+Double and multiple dispatching are explained in sections
 \ref{sec:doubledisp} and \ref{sec:multipledisp}. The reader who is
 not familiar with multiple dispatching should trace down a few
 examples between simple matrices using the debugger.
@@ -553,7 +546,7 @@ Object subclass: #PMMatrix
 \end{listing}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix >> class >> new: anInteger
+PMMatrix class >> new: anInteger
     ^ self new initialize: anInteger
 \end{displaycode}
 
@@ -563,22 +556,22 @@ PMMatrix class >> rows: anArrayOrVector
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> * aNumberOrMatrixOrVector
+PMMatrix >> * aNumberOrMatrixOrVector
     ^ aNumberOrMatrixOrVector productWithMatrix: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> + aMatrix
+PMMatrix >> + aMatrix
     ^ aMatrix addWithRegularMatrix: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> - aMatrix
+PMMatrix >> - aMatrix
     ^ aMatrix subtractWithRegularMatrix: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> accumulate: aMatrix
+PMMatrix >> accumulate: aMatrix
     | n |
     n := 0.
     self rowsCollect: [ :each | n := n + 1. each accumulate: ( 
@@ -586,7 +579,7 @@ PMMatrix class >> accumulate: aMatrix
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> accumulateNegated: aMatrix
+PMMatrix >> accumulateNegated: aMatrix
     | n |
     n := 0.
     self rowsCollect: [ :each | n := n + 1. each accumulateNegated: ( 
@@ -594,7 +587,7 @@ PMMatrix class >> accumulateNegated: aMatrix
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> addWithMatrix: aMatrix class: aMatrixClass
+PMMatrix >> addWithMatrix: aMatrix class: aMatrixClass
     | n |
     n := 0.
     ^ aMatrixClass rows: ( self rowsCollect: [ :each | n := n + 1. 
@@ -602,27 +595,27 @@ PMMatrix class >> addWithMatrix: aMatrix class: aMatrixClass
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> addWithRegularMatrix: aMatrix
+PMMatrix >> addWithRegularMatrix: aMatrix
     ^ aMatrix addWithMatrix: self class: aMatrix class
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> addWithSymmetricMatrix: aMatrix
+PMMatrix >> addWithSymmetricMatrix: aMatrix
     ^ aMatrix addWithMatrix: self class: self class
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> asSymmetricMatrix
+PMMatrix >> asSymmetricMatrix
     ^PMbSymmetricMatrix rows: rows
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> columnAt: anInteger
+PMMatrix >> columnAt: anInteger
     ^ rows collect: [ :each | each at: anInteger]
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> columnsCollect: aBlock
+PMMatrix >> columnsCollect: aBlock
     | n |
     n := 0.
     ^rows last collect: [ :each | n := n + 1. aBlock value: ( self 
@@ -630,7 +623,7 @@ PMMatrix class >> columnsCollect: aBlock
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> columnsDo: aBlock
+PMMatrix >> columnsDo: aBlock
     | n |
     n := 0.
     ^ rows last do: [ :each | n := n + 1. aBlock value: ( self 
@@ -638,29 +631,29 @@ PMMatrix class >> columnsDo: aBlock
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> initialize: anInteger
+PMMatrix >> initialize: anInteger
     rows := ( 1 to: anInteger) asVector collect: [ :each | PMVector 
                                                       new: anInteger].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> initializeRows: anArrayOrVector
+PMMatrix >> initializeRows: anArrayOrVector
     rows := anArrayOrVector asVector collect: [ :each | each 
                                                             asVector].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> isSquare
+PMMatrix >> isSquare
     ^ rows size = rows last size
 \end{verbatim}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> isSymmetric
+PMMatrix >> isSymmetric
     ^ false
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> lupDecomposition
+PMMatrix >> lupDecomposition
     lupDecomposition isNil
         ifTrue: [ lupDecomposition := PMLUPDecomposition equations: 
                                                                 rows].
@@ -668,22 +661,22 @@ PMMatrix class >> lupDecomposition
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> negate
+PMMatrix >> negate
     rows do: [ :each |each negate].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> numberOfColumns
+PMMatrix >> numberOfColumns
     ^ rows last size
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> numberOfRows
+PMMatrix >> numberOfRows
     ^ rows size
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> printOn: aStream
+PMMatrix >> printOn: aStream
     | first |
     first := true.
     rows do: 
@@ -695,61 +688,61 @@ PMMatrix class >> printOn: aStream
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> productWithMatrix: aMatrix
+PMMatrix >> productWithMatrix: aMatrix
     ^ self productWithMatrixFinal: aMatrix
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> productWithMatrixFinal: aMatrix
+PMMatrix >> productWithMatrixFinal: aMatrix
     ^ self class rows: ( aMatrix rowsCollect: [ :row | self 
                                  columnsCollect: [ :col | row * col]])
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> productWithSymmetricMatrix: aSymmetricMatrix
+PMMatrix >> productWithSymmetricMatrix: aSymmetricMatrix
     ^ self class rows: ( self rowsCollect: [ :row | aSymmetricMatrix 
                                  columnsCollect: [ :col | row * col]])
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> productWithTransposeMatrix: aMatrix
+PMMatrix >> productWithTransposeMatrix: aMatrix
     ^ self class rows: ( self rowsCollect: [ :row | aMatrix 
                                     rowsCollect: [ :col | row * col]])
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> productWithVector: aVector
+PMMatrix >> productWithVector: aVector
     ^ self columnsCollect: [ :each | each * aVector]
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> rowAt: anInteger
+PMMatrix >> rowAt: anInteger
     ^ rows at: anInteger
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> rowsCollect: aBlock
+PMMatrix >> rowsCollect: aBlock
     ^ rows collect: aBlock
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> rowsDo: aBlock
+PMMatrix >> rowsDo: aBlock
     ^ rows do: aBlock
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> scaleBy: aNumber
+PMMatrix >> scaleBy: aNumber
     rows do: [ :each | each scaleBy: aNumber].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> squared
+PMMatrix >> squared
     ^ PMSymmetricMatrix rows: ( self columnsCollect: [ :col | self 
                                columnsCollect: [ :colT | col * colT]])
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> subtractWithMatrix: aMatrix class: aMatrixClass
+PMMatrix >> subtractWithMatrix: aMatrix class: aMatrixClass
     | n |
     n := 0.
     ^ aMatrixClass rows: ( self rowsCollect: [ :each | n := n + 1. 
@@ -757,41 +750,97 @@ PMMatrix class >> subtractWithMatrix: aMatrix class: aMatrixClass
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> subtractWithRegularMatrix: aMatrix
+PMMatrix >> subtractWithRegularMatrix: aMatrix
     ^ aMatrix subtractWithMatrix: self class: aMatrix class
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> subtractWithSymmetricMatrix: aMatrix
+PMMatrix >> subtractWithSymmetricMatrix: aMatrix
     ^ aMatrix subtractWithMatrix: self class: self class
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> transpose
+PMMatrix >> transpose
     ^ self class rows: ( self columnsCollect: [ :each | each])
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-PMMatrix class >> transposeProductWithMatrix: aMatrix
+PMMatrix >> transposeProductWithMatrix: aMatrix
     ^ self class rows: ( self columnsCollect: [ :row | aMatrix 
                                  columnsCollect: [ :col | row * col]])
 \end{displaycode}
 
-Listing \ref{lst:symmatrix} shows the implementation of the class
-\code{PMSymmetricMatrix} representing symmetric matrices. A few
-algorithms are implemented differently for symmetric matrices.
+Listing \ref{lst:symmatrix} shows the implementation of the class \code{PMSymmetricMatrix} representing symmetric matrices.
+A few algorithms are implemented differently for symmetric matrices.
 
-The reader should pay attention to the methods implementing
-addition, subtraction and products. Triple dispatching is used to
-ensure that the addition or subtraction of two symmetric matrices
-yields a symmetric matrix whereas the same operations between a
-symmetric matrix and a normal matrix yield a normal matrix.
+The reader should pay attention to the methods implementing addition, subtraction and products.
+Triple dispatching is used to ensure that the addition or subtraction of two symmetric matrices
+yields a symmetric matrix whereas the same operations between a symmetric matrix and a normal matrix yield a normal matrix.
 Product requires quadruple dispatching.
 
 \begin{listing}[label=lst:symatrix]{Smalltalk}
 {Symmetric matrix classes}
-%\input{Smalltalk/LinearAlgebra/DhbSymmetricMatrix}
+PMMatrix subclass: #SymmetricMatrix
+   instanceVariableNames: ''
+   classVariableNames: ''
+   package: 'Math-Matrix'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix class >> identity: anInteger
+    ^ self new initializeIdentity: anInteger
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> + aMatrix
+    ^ aMatrix addWithSymmetricMatrix: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> - aMatrix
+    ^ aMatrix subtractWithSymmetricMatrix: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> addWithSymmetricMatrix: aMatrix
+    ^ aMatrix addWithMatrix: self class: self class
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> clear
+    rows do: [ :each | each atAllPut: 0].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> initializeIdentity: anInteger
+    rows := ( 1 to: anInteger) asVector collect: [ :n | (DhbVector 
+                 new: anInteger) atAllPut: 0; at: n put: 1; yourself].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> isSquare
+    ^ true
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> isSymmetric
+    ^ true
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> productWithMatrix: aMatrix
+    ^ aMatrix productWithSymmetricMatrix: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> productWithSymmetricMatrix: aSymmetricMatrix
+    ^ aSymmetricMatrix productWithMatrixFinal: self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+SymmetricMatrix >> subtractWithSymmetricMatrix: aMatrix
+    ^ aMatrix subtractWithMatrix: self class: self class
+\end{displaycode}
 
 \section{Linear equations}
 \label{sec:lineqs} A linear equation is an equation in which the
@@ -1054,10 +1103,8 @@ The class \code{PMLinearEquationSystem}.
 The class method \code{equations:constants:} allows one to create a new instance for a given
 matrix and a series of constant vectors.
 
-The method \code{solutionAt:} returns the solution for a given
-constant vector. The index specified as argument to that method
-corresponds to that of the desired constant vector.
-
+The method \code{solutionAt:} returns the solution for a given constant vector.
+The index specified as argument to that method corresponds to that of the desired constant vector.
 
 The method \code{solve} performs all required pivoting steps using
 a \code{do:} iterator. The method \code{pivotStepAt:} first swaps
@@ -1067,8 +1114,8 @@ pivoting.
 
 Convenience methods \code{equations:constant:} and \code{solution}
 are supplied to treat the most frequent case where there is only
-one single constant vector. However, the reader should be reminded
-that LUP decomposition is more effective in this case.
+one single constant vector.
+However, the reader should be reminded that LUP decomposition is more effective in this case.
 
 If the system does not have a solution --- that is, if the
 system's matrix is singular --- an arithmetic error occurs in the
@@ -1081,8 +1128,142 @@ attempting Gaussian elimination a second time. Then, the value
 
 \begin{listing}[label=lst:lineqs]{Smalltalk}
 {Implementation of a system of linear equations}
-%\input{Smalltalk/LinearAlgebra/DhbLinearEquationSystem}
+Object variableSubclass: #PMLinearEquationSystem
+   instanceVariableNames: 'rows solutions'
+   classVariableNames: ''
+   package: 'Math-Core'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem class >> equations: anArrayOfArrays constant: anArray 
+  ^ self basicNew
+      initialize: anArrayOfArrays 
+      constants: (Array with: anArray)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem class >> equations: anArrayOfArrays constants: anArrayOfConstantArrays
+  ^ self basicNew 
+      initialize: anArrayOfArrays
+      constants: anArrayOfConstantArrays
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> backSubstitutionAt: anInteger
+    | size answer accumulator |
+    size := rows size.
+    answer := Array new: size.
+    size to: 1 by: -1 do:
+        [ :n |
+          accumulator := (rows at: n) at: (anInteger + size).
+          ( n + 1) to: size
+            do: [ :m | accumulator := accumulator - ( ( answer at: m) 
+                                           * ( ( rows at: n) at: m))].
+          answer at: n put: ( accumulator / ( ( rows at: n) at: n)) ].
+    solutions at: anInteger put: answer
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> initialize: anArrayOfArrays constants: anArrayOfConstantArrays
+    | n |
+    n := 0.
+    rows := anArrayOfArrays collect: [ :each | n := n + 1. each, ( 
+                   anArrayOfConstantArrays collect: [ :c | c at: n])]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> largestPivotFrom: anInteger
+    | valueOfMaximum indexOfMaximum |
+    valueOfMaximum := ( rows at: anInteger) at: anInteger.
+    indexOfMaximum := anInteger.
+    ( anInteger + 2) to: rows size do:
+        [ :n |
+          ( ( rows at: n) at: anInteger) > valueOfMaximum
+                ifTrue: [ valueOfMaximum := ( rows at: n) at: 
+                                                            anInteger.
+                             indexOfMaximum := n ].
+        ].
+    ^indexOfMaximum 
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> pivotAt: anInteger
+    | inversePivot rowPivotValue row pivotRow |
+    pivotRow := rows at: anInteger.
+    inversePivot := 1 / ( pivotRow at: anInteger).
+    ( anInteger + 1) to: rows size do:
+        [ :n |
+          row := rows at: n.
+          rowPivotValue := ( row at: anInteger) * inversePivot.
+          anInteger to: row size do:
+            [ :m |
+              row at: m put: ( ( row at: m) - (( pivotRow at: m) * 
+                                                      rowPivotValue)) ].
+        ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> pivotStepAt: anInteger
+    self swapRow: anInteger withRow: ( self largestPivotFrom: 
+                                                           anInteger);
+           pivotAt: anInteger
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> printOn: aStream
+    | first delimitingString n k |
+    n := rows size.
+    first := true.
+    rows do:
+        [ :row |
+          first ifTrue: [ first := false ]
+                 ifFalse: [ aStream cr ].
+          delimitingString := '('.
+          k := 0.
+          row do:
+            [ :each |
+                aStream nextPutAll: delimitingString.
+                each printOn: aStream.
+                k := k + 1.
+                delimitingString := k < n ifTrue: [ ' '] ifFalse: [ ' 
+                                                                 : '].
+            ].
+          aStream nextPut: $).
+        ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> solution
+    ^self solutionAt: 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> solutionAt: anInteger
+    solutions isNil
+        ifTrue: [ [self solve] when: ExError do: [ :signal |solutions 
+                                       := 0. signal exitWith: nil.] ].
+    solutions = 0
+        ifTrue: [ ^nil].
+    ( solutions at: anInteger) isNil
+        ifTrue: [ self backSubstitutionAt: anInteger].
+    ^ solutions at: anInteger
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> solve
+    1 to: rows size do: [ :n | self pivotStepAt: n].
+    solutions := Array new: ( (rows at: 1) size - rows size).
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMLinearEquationSystem >> swapRow: anInteger1 withRow: anInteger2
+    | swappedRow |
+    anInteger1 = anInteger2
+        ifFalse: [ swappedRow := rows at: anInteger1.
+                      rows at: anInteger1 put: ( rows at: 
+                                                          anInteger2).
+                      rows at: anInteger2 put: swappedRow ]
+\end{displaycode}
 
 \section{LUP decomposition}
 \label{sec:lup} LUP decomposition is another technique to solve a
