@@ -1897,9 +1897,93 @@ calling method.
 
 \begin{listing}[label=lst:inversion]{Smalltalk}
 {Implementation of matrix inversion}
-%\input{Smalltalk/LinearAlgebra/DhbSymmetricMatrix(DhbMatrixInversion)}
-%\input{Smalltalk/LinearAlgebra/DhbMatrix(DhbMatrixInversion)}
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMSymmetricMatrix class >> join: anArrayOfMatrices
+    | rows n |
+    rows := OrderedCollection new.
+    n := 0.
+    ( anArrayOfMatrices at: 1) rowsDo:
+        [ :each |
+          n := n + 1.
+          rows add: each, ((anArrayOfMatrices at: 3) columnAt: n) ].
+    n := 0.
+    ( anArrayOfMatrices at: 2) rowsDo:
+        [ :each |
+          n := n + 1.
+          rows add: ((anArrayOfMatrices at: 3) rowAt: n), each ].
+    ^ self rows: rows 
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMSymmetricMatrix class >> lupCRLCriticalDimension
+    ^ 36
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMSymmetricMatrix >> crlInverse
+    | matrices b1 cb1ct cb1 |
+    matrices := self split.
+    b1 := (matrices at: 1) inverse.
+    cb1 := (matrices at: 3) * b1.
+    cb1ct := (cb1 productWithTransposeMatrix: (matrices at: 3)) 
+                asSymmetricMatrix.
+    matrices at: 3 put: (matrices at: 2) * cb1.
+    matrices at: 2 put: ((matrices at: 2) accumulateNegated: cb1ct) 
+                                                              inverse.
+    matrices at: 1 put: ( b1 accumulate: (cb1 
+                       transposeProductWithMatrix: (matrices at: 3))).
+    (matrices at: 3) negate.
+    ^ self class join: matrices
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMSymmetricMatrix >> inverse
+    ^ (rows size < self class lupCRLCriticalDimension or: 
+                                           [ lupDecomposition notNil ]) 
+            ifTrue: [ self lupInverse ]
+            ifFalse: [ self crlInverse ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMSymmetricMatrix >> split
+    | n b d c |
+    n := self largestPowerOf2SmallerThan: rows size.
+    ^Array with: (self class rows: ((1 to: n) asVector collect: [ 
+                               :k | (rows at: k) copyFrom: 1 to: n]))
+              with:(self class rows: (((n+1) to: rows size) 
+      asVector collect: [ :k | (rows at: k) copyFrom: (n+1) to: rows 
+      size]))
+              with: (self class superclass rows: (((n+1) to: rows 
+     size) asVector collect: [ :k | (rows at: k) copyFrom: 1 to: n]))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix class >> lupCRLCriticalDimension
+    ^ 40
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix >> inverse
+    ^self isSquare 
+        ifTrue: [ self lupInverse ]
+        ifFalse: [ self squared inverse * self transpose ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix >> largestPowerOf2SmallerThan: anInteger
+    | m m2|
+    m := 2.
+    [ m2 := m * 2.
+      m2 < anInteger ] whileTrue:[ m := m2 ].
+    ^ m
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMMatrix >> lupInverse
+    ^ self class rows: self lupDecomposition inverseMatrixComponents
+\end{displaycode}
 
 \subsection{Matrix inversion --- Rounding problems}
 \label{sec:matrixrounding} Operations with large matrices are well
