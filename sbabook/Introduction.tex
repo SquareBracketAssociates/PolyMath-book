@@ -464,15 +464,13 @@ problem: the determination of the number $\pi$. The story is taken
 from the excellent book of Jan Gullberg, {\em Mathematics From the
 Birth of the Numbers} \cite{Gullberg}.
 
-Around 300BC, Archimedes devised a simple algorithm to approximate
-$\pi$. For a circle of diameter $d$, one computes the perimeter
-$p_{\mathop{\textrm in}}$ of a $n$-sided regular polygon inscribed
-within the circle and the perimeter $p_{\mathop{\textrm out}}$ of a
-$n$-sided regular polygon whose sides the tangent to the same
-circle. We have:
+Around 300BC, Archimedes devised a simple algorithm to approximate $\pi$. For a circle of diameter $d$, one computes the perimeter
+$p_{\mathop{\textrm{in}}}$ of a $n$-sided regular polygon inscribed within the circle and the perimeter $p_{\mathop{\textrm{out}}}$ of a
+$n$-sided regular polygon whose sides the tangent to the same circle.
+We have:
 \begin{equation}
-{\displaystyle p_{\mathop{\textrm in}} \over\displaystyle d
-}<\pi<{\displaystyle p_{\mathop{\textrm out}} \over\displaystyle d}.
+{\displaystyle p_{\mathop{\textrm{in}}} \over\displaystyle d
+}<\pi<{\displaystyle p_{\mathop{\textrm{out}}} \over\displaystyle d}.
 \end{equation}
 By increasing $n$, one can improve the precision of the
 determination of $\pi$. During the Antiquity and the Middle Age,
@@ -528,7 +526,7 @@ the desired precision. Since an application can be executing on
 different hardware, the desired precision is best determined at
 run time.
 
-The book of Press {\textit et al.} \cite{Press} shows a clever code
+The book of Press \textit{et al.} \cite{Press} shows a clever code
 determining all the parameters of the floating-point
 representation of a particular computer. In this book we shall
 concentrate only on the parameters which are relevant for
@@ -796,16 +794,12 @@ result of two different computations that should have yielded the
 same number from a mathematical standpoint to be different using a
 finite numerical representation.
 Somehow the computer courses are not giving enough emphasis about floating-point numbers.
-
 \begin{quote}
-{\textsl So, how should you check the equality of two floating-point
-numbers? The practical answer is: thou shalt not!}
+{\textsl{So, how should you check the equality of two floating-point numbers? The practical answer is: thou shalt not!}}
 \end{quote}
 
-As you will see, the algorithms in this book only
-compare numbers, but never check for equality.
-If you cannot
-escape the need for a test of equality, however, the best solution
+As you will see, the algorithms in this book only compare numbers, but never check for equality.
+If you cannot escape the need for a test of equality, however, the best solution
 is to create methods to do this.
 Since the floating-point representation is keeping a constant relative precision,
 comparison must be made using relative error.
@@ -880,7 +874,7 @@ digit shown in the final result.
 \caption{Compared execution speed between C and Smalltalk}
 \label{tb:speed} \vspace{1 ex}
 \begin{tabular}{|l | c r r |} \hline
-  \hfil {\textbf Operation} & {\textbf Units} & {\textbf C}\hfil & {\textbf Smalltalk}\hfil \\ \hline
+  \hfil \textbf{Operation} & \textbf{Units} & \textbf{C}\hfil & \textbf{Smalltalk}\hfil \\ \hline
   Polynomial $10\th$ degree & msec. & 1.1 & 27.7 \\
   Neville interpolation (20 points) & msec. & 0.9 & 11.0 \\
   LUP matrix inversion ($100\times 100$)& sec. & 3.9 & 22.9 \\ \hline

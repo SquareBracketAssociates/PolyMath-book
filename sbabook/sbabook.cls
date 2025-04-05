@@ -1,7 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{sbabook}[2013/03/08]
+\ProvidesClass{sbabook}[2024/03/18]
 
-% \ExecuteOptions{a4paper,11pt,twoside}
 \ProcessOptions*
 \LoadClassWithOptions{memoir}
 
@@ -19,17 +18,31 @@
     \settrims{#1}{#1}%
     \advance\stockheight 2\trimtop
     \advance\stockwidth  2\trimedge}
+
+% Paper format for US trade paperback (e.g. Lulu)
 \newcommand{\paperbackpage}{
   \stockustrade
   \setbleed{.125in}
   % \setbinding{5mm}
   \setlrmarginsandblock{.85in}{.65in}{*}
   \setulmarginsandblock{.75in}{.75in}{*}}
+
+% Paper format for office binding (both A4 and letter paper)
 \newcommand{\spiralboundpage}{
   \stockaivus
   \setbleed{0pt}% trims not required (unless we deliver this via Lulu as well?)
   \setlrmarginsandblock{1.25in}{1.25in}{*}
   \setulmarginsandblock{.75in}{1in}{*}}
+
+% Paper format for https://librairie.bod.fr
+\newcommand{\bodpage}{
+  \setstocksize{220mm}{155mm} % final trimmed book dimensions
+  \setbleed{5mm} % additional paper, before trimming
+  \setlrmarginsandblock{.85in}{.65in}{*}
+  \setulmarginsandblock{.75in}{.75in}{*}}
+
+% Use this to select the page layout.
+% Pass one of the above \FOOpage, or an equivalent custom macro
 \newcommand{\pagelayout}[1]{
   \providecommand{\setuppage}{#1}% set default page layout
   \setuppage\checkandfixthelayout
@@ -42,22 +55,23 @@
 %%%
 %%% Fonts & paragraph typography
 %%%
-\RequirePackage{fontspec}
+\RequirePackage{fontspec,gentium-otf,opensans,FiraMono}
 
-\setmainfont[
-  Ligatures=TeX, % supposed to replace Mapping=tex-text
-  UprightFont = {Gentium Book Basic},
-  ItalicFont = {Gentium Book Basic Italic}
-]{Gentium Basic}
-\setsansfont[
+\setmainfont{Gentium Book Plus}
+\setsansfont{Open Sans}[
+  \@ifpackagelater{opensans}{2019/06/19}% test for font naming bug
+    {}% 2019/06/20 fixed it
+    {BoldFont = {* Bold},}
   Scale=MatchLowercase,
-  BoldFont = {* Bold},
-  Ligatures=TeX,
   Numbers=OldStyle
-]{Open Sans}
-\setmonofont[
-  Scale=MatchLowercase
-]{Fira Mono}%{Hack}
+]
+\setmonofont{Fira Mono}[
+  Scale=MatchLowercase,
+  HyphenChar={-} % enable hyphenation (disabled by default in mono fonts)
+  % caveat: LuaLaTeX doesn't support changing the actual character
+  % alternative solution: \usepackage[htt]{hyphenat}
+]
+
 \let\codefamily\ttfamily
 \newcommand\textcode[1]{\texttt{#1}}
 
@@ -247,6 +261,11 @@
 \setfloatadjustment{figure}{\small\sffamily\centering}
 \setfloatadjustment{table} {\small\sffamily\centering}
 
+\usepackage{xtab}
+\newenvironment{fullwidthtabular}[1]{%
+    \begin{xtabular*}{\textwidth}{@{}#1@{}}%
+}{\end{xtabular*}}
+
 %%%
 %%% Graphics
 %%%
@@ -267,9 +286,55 @@
 %%%
 \RequirePackage{listings}
 
-% \renewcommand{\lstlistlistingname}{Code examples}
+% declare unicode points to support in listings
+% see https://tex.stackexchange.com/a/25396
+\lst@InputCatcodes
+\def\lst@DefEC{%
+  \lst@CCECUse \lst@ProcessLetter
+  ^^80^^81^^82^^83^^84^^85^^86^^87^^88^^89^^8a^^8b^^8c^^8d^^8e^^8f%
+  ^^90^^91^^92^^93^^94^^95^^96^^97^^98^^99^^9a^^9b^^9c^^9d^^9e^^9f%
+  ^^a0^^a1^^a2^^a3^^a4^^a5^^a6^^a7^^a8^^a9^^aa^^ab^^ac^^ad^^ae^^af%
+  ^^b0^^b1^^b2^^b3^^b4^^b5^^b6^^b7^^b8^^b9^^ba^^bb^^bc^^bd^^be^^bf%
+  ^^c0^^c1^^c2^^c3^^c4^^c5^^c6^^c7^^c8^^c9^^ca^^cb^^cc^^cd^^ce^^cf%
+  ^^d0^^d1^^d2^^d3^^d4^^d5^^d6^^d7^^d8^^d9^^da^^db^^dc^^dd^^de^^df%
+  ^^e0^^e1^^e2^^e3^^e4^^e5^^e6^^e7^^e8^^e9^^ea^^eb^^ec^^ed^^ee^^ef%
+  ^^f0^^f1^^f2^^f3^^f4^^f5^^f6^^f7^^f8^^f9^^fa^^fb^^fc^^fd^^fe^^ff%
+  %
+  ^^^^20ac% EURO SIGN
+  % french
+  ^^^^0152% LATIN CAPITAL LIGATURE OE
+  ^^^^0153% LATIN SMALL LIGATURE OE
+  ^^^^0178% LATIN CAPITAL LETTER Y WITH DIAERESIS
+  % esperanto
+  ^^^^0108% LATIN CAPITAL LETTER C WITH CIRCUMFLEX
+  ^^^^0109% LATIN SMALL LETTER C WITH CIRCUMFLEX
+  ^^^^011c% LATIN CAPITAL LETTER G WITH CIRCUMFLEX
+  ^^^^011d% LATIN SMALL LETTER G WITH CIRCUMFLEX
+  ^^^^0124% LATIN CAPITAL LETTER H WITH CIRCUMFLEX
+  ^^^^0125% LATIN SMALL LETTER H WITH CIRCUMFLEX
+  ^^^^0134% LATIN CAPITAL LETTER J WITH CIRCUMFLEX
+  ^^^^0135% LATIN SMALL LETTER J WITH CIRCUMFLEX
+  ^^^^015c% LATIN CAPITAL LETTER S WITH CIRCUMFLEX
+  ^^^^015d% LATIN SMALL LETTER S WITH CIRCUMFLEX
+  ^^^^016c% LATIN CAPITAL LETTER U WITH BREVE
+  ^^^^016d% LATIN SMALL LETTER U WITH BREVE
+  % serbian
+  ^^^^0106% LATIN CAPITAL LETTER C WITH ACUTE
+  ^^^^0107% LATIN SMALL LETTER C WITH ACUTE
+  ^^^^010c% LATIN CAPITAL LETTER C WITH CARON
+  ^^^^010d% LATIN SMALL LETTER C WITH CARON
+  ^^^^0110% LATIN CAPITAL LETTER D WITH STROKE
+  ^^^^0111% LATIN SMALL LETTER D WITH STROKE
+  ^^^^0160% LATIN CAPITAL LETTER S WITH CARON
+  ^^^^0161% LATIN SMALL LETTER S WITH CARON
+  ^^^^017d% LATIN CAPITAL LETTER Z WITH CARON
+  ^^^^017e% LATIN SMALL LETTER Z WITH CARON
+  ^^00}
+\lst@RestoreCatcodes
+
 \lstdefinestyle{sbabook}{
     inputencoding=utf8,
+    extendedchars=true,
     aboveskip=0pt, belowskip=0pt,
     columns=fullflexible,
     keepspaces,
@@ -281,6 +346,12 @@
     keywordstyle={},
     stringstyle={},
     commentstyle={},
+    numberstyle = \tiny\ttfamily,
+    numberblanklines = false,
+    % numberfirstline = true,
+    firstnumber = 1,
+    stepnumber = 2, % number placement varies from listing to listing…
+    numbersep = 7pt,
 }
 \lstset{style = sbabook}
 
@@ -392,7 +463,6 @@
 
 %% Combine figures, tables, listings into a single list. We redirect everything
 %% to the list of figures
-\renewcommand\listfigurename{Illustrations}
 \renewcommand\ext@table{lof}
 
 %% Avoid ugly page breaks in contents / list of illustrations
@@ -432,7 +502,6 @@
 %% verbatim setup
 \bvtopandtail % \bvsides
 \setlength{\bvboxsep}{.25em}
-\tabson[4]
 \setverbatimfont{\normalfont\codefamily\small}
 
 \DeclareRobustCommand{\LaTeX}{%
@@ -464,4 +533,6 @@
 %%% Language, localizations, hyphenation
 %%%
 \RequirePackage{polyglossia}
-
+\setmainlanguage{english}
+\addto\captionsenglish{%
+  \renewcommand*\listfigurename{Illustrations}}

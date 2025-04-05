@@ -1,3 +1,2 @@
-alltalk
-implementation of a general optimizer \label{ls:optimizergeneral}
-\input{Smalltalk/Minimization/DhbMultiVariableGeneralOptimizer}
+alltalk covariance cluster \label{ls:mahacluster}
+\input{Smalltalk/DataMining/DhbCovarianceCluster}
