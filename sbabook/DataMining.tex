@@ -111,7 +111,7 @@ implementation of the concrete class is shown in listing
 \ref{ls:memoryserver}.
 
 \noindent Our implementation uses the same methods used by the
-hierarchy of the class \texttt{Stream}.
+hierarchy of the class \code{Stream}.
 
 \begin{listing} Smalltalk abstract data server \label{ls:abstractserver}
 \input{Smalltalk/DataMining/DhbAbstractDataServer}
@@ -248,7 +248,7 @@ shall need to only compute the average of a vector, the
 implementation is spread over two classes, one being the subclass
 of the other for efficient reuse.
 
-\noindent The class \texttt{VectorAccumulator} has two instance
+\noindent The class \code{VectorAccumulator} has two instance
 variables: {} {\parskip 0pt
 \begin{description}
   \item[\texttt{count}] counts the number of vectors accumulated in the object so far;
@@ -256,8 +256,8 @@ variables: {} {\parskip 0pt
 \end{description}
 }
 
-\noindent The class \texttt{CovarianceAccumulator} is a subclass of
-the class \texttt{VectorAccumulator}. It has one additional instance
+\noindent The class \code{CovarianceAccumulator} is a subclass of
+the class \code{VectorAccumulator}. It has one additional instance
 variable: {} {\parskip 0pt
 \begin{description}
   \item[\texttt{covariance}] accumulates the components of the covariance
@@ -290,7 +290,7 @@ from a data stream.
 \end{listing}
 
 The reader can see that this example is totally equivalent to the
-code example \ref{ex:smoments}. Here the method \texttt{next} of the
+code example \ref{ex:smoments}. Here the method \code{next} of the
 data stream must return a vector instead of a number; all vectors
 must have the same dimension. The returned average is a vector of
 the same dimension.
@@ -311,12 +311,12 @@ example should be self explanatory to the reader.
  covarianceMatrix := accumulator covarianceMatrix.
 \end{listing}
 
-The method \texttt{accumulate} of class \texttt{PMVectorAccumulator}
+The method \code{accumulate} of class \code{PMVectorAccumulator}
 answers the corrections to each component of the average vector.
-This allows the class {\texttt{PMCovarianceAccumulator} to reuse the
-results of this method. In class \texttt{PMVectorAccumulator},
-vector operations are used. The method \texttt{accumulate} of class
-\texttt{PMCovarianceAccumulator} works with indices because one only
+This allows the class \code{PMCovarianceAccumulator} to reuse the
+results of this method. In class \code{PMVectorAccumulator},
+vector operations are used. The method \code{accumulate} of class
+\code{PMCovarianceAccumulator} works with indices because one only
 computes the lower half of the matrix.
 
 \begin{listing} Smalltalk implementation of vector average \label{ls:vectoraverage}
@@ -800,78 +800,75 @@ ClusterFinder} needs the following instance variables:
   variable {\texttt dataSetSize}.
 \end{description}
 
-The class \texttt{ClusterFinder} uses an instance of the data server
+The class \code{ClusterFinder} uses an instance of the data server
 to iterate over the data points. before starting the search the
 client application can assign the list of initial clusters (step 1
 of the algorithm . By default, the minimum relative size of the
 cluster is set to 0. A convenience method allows creating
 instances for a given data server and an initial set of clusters.
 
-The method \texttt{initializeIterations} scans all clusters and looks
+The method \code{initializeIterations} scans all clusters and looks
 for undefined clusters. The center of each undefined cluster is
 assigned to a data point read from the data server. This assumes
 that the data points have been collected randomly.
 
-\noindent The method \texttt{evaluateIteration} processes each data
+\noindent The method \code{evaluateIteration} processes each data
 point: first, it finds the index of the cluster nearest to the
 data point; then, the data point is accumulated into that cluster.
 After processing the data points, the clusters are processed to
 compute the new position of their centers and insignificant
 clusters are removed from the search. These tasks are performed
-within a method named \texttt{collectChangesAndResetClusters}. This
+within a method named \code{collectChangesAndResetClusters}. This
 method returns the number of data points which have changed
 cluster. The determination whether or not a cluster is significant
-is delegated to each cluster with the method \texttt{
-isInsignificant}. Thus, any subclass of cluster can implement its
-own strategy. The argument of the method \texttt{isInsignificant} is
-the cluster finder to provide each cluster with global information
+is delegated to each cluster with the method \code{isInsignificant}.
+Thus, any subclass of cluster can implement its own strategy. 
+The argument of the method \code{isInsignificant} is the cluster finder to provide each cluster with global information
 if needed.
 
-\noindent The method \texttt{finalizeIterations} just closes the data
+\noindent The method \code{finalizeIterations} just closes the data
 server.
 
 \subsection{Cluster analysis --- Smalltalk implementation}
 Listing \ref{ls:clusterfinder} shows the implementation of the
 $K$-cluster algorithm in Smalltalk. The following code example
 shows how to implement a search for clusters.
-\begin{codeExample}
-\begin{verbatim}
 
+\begin{listing}{Smalltalk}
+{ }
  | dataServer finder clusters |
-\end{verbatim}
-\noindent{\tt<\sl The variable \tt dataServer \sl is setup to read
-measurements from the calibrating set>}
-\begin{verbatim}
- finder := DhbClusterFinder new: 5 server: dataServer
-\end{verbatim}
-\hfil{\tt type: <\sl a concrete subclass of \tt Cluster>.}
-\begin{verbatim}
+\end{listing}
+
+The variable \code{dataServer} is setup to read measurements from the calibrating set.
+
+\begin{listing}{Smalltalk}
+{ }
+ finder := PMClusterFinder new: 5 server: dataServer type: <a concrete subclass of Cluster>.
  finder minimumRelativeClusterSize: 0.1.
  clusters := finder evaluate.
-\end{verbatim}
-\end{codeExample}
+\end{listing}
+
 After setting up a data server to read the data point, an instance
-of class \texttt{PMClusterFinder} is created. the number of desired
+of class \code{PMClusterFinder} is created. the number of desired
 clusters is set to 5. The class of the clusters is specified. The
 next line sets the minimum relative size of each cluster to be
 kept during the iteration. Finally, the $K$-cluster algorithm is
 performed and clusters are retrieved from the finder object.
 
-The abstract class \texttt{DhbCluster} is implemented with an
-instance variable \texttt{accumulator}. The cluster delegates the
+The abstract class \code{PMCluster} is implemented with an
+instance variable \code{accumulator}. The cluster delegates the
 responsibility of accumulating the data points to this variable.
-It is assumed that the object in \texttt{accumulator} implements the
+It is assumed that the object in \code{accumulator} implements the
 interface defined by the vector accumulators described in section
 \ref{sec:scovmatrix}.
 
-The class \texttt{PMClusterFinder} can be created in two ways. An
+The class \code{PMClusterFinder} can be created in two ways. An
 application can set the list of initial clusters and the data
-server using the methods \texttt{cluster} and \texttt{dataServer}
-respectively. The convenience class creation method \texttt{
-new:server:type:} allows to specify the initial number of
-clusters, the data server and the class of the clusters. When this
-method is used, the collection of clusters is created when the
-instance of \texttt{PMClusterFinder} is initialized; each cluster is
+server using the methods \code{cluster} and \code{dataServer}
+respectively. The convenience class creation method \code{new:server:type:} allows to specify the initial number of
+clusters, the data server and the class of the clusters.
+When this method is used, the collection of clusters is created when the
+instance of \code{PMClusterFinder} is initialized; each cluster is
 created in an undefined state.
 
 \begin{listing} Smalltalk $K$-cluster algorithm \label{ls:clusterfinder}
@@ -879,14 +876,12 @@ created in an undefined state.
 \input{Smalltalk/DataMining/DhbClusterFinder}
 \end{listing}
 Listing \ref{ls:euclidcluster} shows the implementation of the
-concrete cluster class \texttt{DhbEuclideanCluster}. The
-corresponding accumulator is an instance of class \texttt{
-PMVectorAccumulator}. Data points are directly accumulated into
+concrete cluster class \code{PMEuclideanCluster}.
+The corresponding accumulator is an instance of class \code{PMVectorAccumulator}. Data points are directly accumulated into
 the accumulaotr; individual data points are not kept.
 \begin{listing} Smalltalk implementation of an Euclidean cluster \label{ls:euclidcluster}
 \input{Smalltalk/DataMining/DhbEuclideanCluster}
 \end{listing}
-
 
 \section{Covariance clusters}
 \label{sec:mahalanobiscluster} As we have seen in section
@@ -905,14 +900,13 @@ covariance clusters can have different shapes since the metric
 adapts itself to the shape of each cluster. As the algorithm
 progresses the metric changes dynamically.
 
-\marginpar{Figure \ref{fig:dataminingclasses} with the boxes {\bf
-CovarianceCluster} grayed.} Covariance clusters need little
-implementation. All tasks are delegated to a Mahalanobis center
-described in section \ref{sec:mahalanobis}. Listing
-\ref{ls:mahacluster} shows the Smalltalk implementation.
+\marginpar{Figure \ref{fig:dataminingclasses} with the boxes \textbf{CovarianceCluster} grayed.} Covariance clusters need little
+implementation. 
+All tasks are delegated to a Mahalanobis center described in section \ref{sec:mahalanobis}.
+Listing \ref{ls:mahacluster} shows the Smalltalk implementation.
 
 \begin{listing} Smalltalk covariance cluster \label{ls:mahacluster}
 \input{Smalltalk/DataMining/DhbCovarianceCluster}
 \end{listing}
 
-\ifx\wholebook\relax\else\end{document}\fi
+%\ifx\wholebook\relax\else\end{document}\fi
