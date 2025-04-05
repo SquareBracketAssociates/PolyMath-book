@@ -1,0 +1,37 @@
+(TeX-add-style-hook
+ "Minimization"
+ (lambda ()
+   (TeX-run-style-hooks
+    "Smalltalk/Minimization/DhbOptimizingBracketFinder"
+    "Smalltalk/Minimization/DhbSimplexOptimizer"
+    "Smalltalk/Minimization/DhbChromosomeManager"
+    "Smalltalk/Minimization/DhbVectorChromosomeManager"
+    "Smalltalk/Minimization/DhbGeneticOptimizer"
+    "Smalltalk/Minimization/DhbMultiVariableGeneralOptimizer")
+   (LaTeX-add-labels
+    "ch:minimization"
+    "fig:soptimizingclasses"
+    "sec:optimum"
+    "eq:mincondition"
+    "fig:localabsobulte"
+    "tb:optimizingalgorithms"
+    "sec:goptonedim"
+    "sec:optonedim"
+    "sec:bracket"
+    "ls:optimizerbracket"
+    "sec:powell"
+    "sec:simplex"
+    "fig:simplexsample"
+    "ls:optimizersimplex"
+    "eq:geneticCase"
+    "fig:crossover"
+    "fig:geneticFlow"
+    "sec:gengenetic"
+    "eq:geneticprob"
+    "ls:chromosome"
+    "ls:optimizerabsgen"
+    "sec:multistrategy"
+    "fig:hillvsrandom"
+    "ls:optimizergeneral"))
+ :latex)
+

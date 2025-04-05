@@ -1,3 +1,2 @@
-Foo class>>with: parameter
-  ^ self new
-    initializeWith: parameter
+alltalk implementation of an experimental distribution \label{ls:histprob}
+\input{Smalltalk/Statistics/DhbHistogrammedDistribution}
