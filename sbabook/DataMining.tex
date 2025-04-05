@@ -347,7 +347,7 @@ inverse of the matrix $\tilde{\textbf{V}}$, equation
 P\left(\textbf{y}\right) =
 \sqrt{{\det{\tilde\textbf{C}}\over\left(2\pi\right)^m}}e^{-{1\over
 2}\left(\textbf{y}-\bar{\textbf{y}}\right)^{\mathop\textrm{T}}
-\tilde\textbf{C}}\left(\textbf{y}-\bar\textbf{y}\right)},
+\tilde\textbf{C}\left(\textbf{y}-\bar\textbf{y}\right)},
 \end{equation}
 where $\bar{\textbf{y}}$ is the vector whose components are
 $\mu_1,\ldots,\mu_m$. Let us now consider a change of coordinates
@@ -358,10 +358,10 @@ differential volume element is invariant under the change of
 coordinates. Thus, the probability density function of the vector
 $\textbf{x}$ is
 \begin{equation}
-\label{eq:multinorm} P\left({\bf x}\right) =
-\sqrt{{\det{\bf{C}}\over\left(2\pi\right)^m}}e^{-{1\over
-2}\left({\bf x}-\bar{{\bf x}}\right)^{\mathop{\rm T}}
-\bf{C}\left({\bf x}-\bar{{\bf x}}\right)},
+\label{eq:multinorm} P\left(\textbf{x}\right) =
+\sqrt{{\det\textbf{C}\over\left(2\pi\right)^m}}e^{-{1\over
+2}\left({\textbf x}-\bar{{\textbf x}}\right)^{\mathop{\textrm T}}
+\textbf{C}\left({\textbf x}-\bar{{\textbf x}}\right)},
 \end{equation}
 where the matrix $\textbf{C}$ is equal to $\transpose{O}\tilde{{\textbf
 C}}{\textbf O}$. The vector $\bar{{\textbf x}}$ is simply\footnote{All
@@ -372,10 +372,10 @@ $\transpose{O}\tilde{{\textbf V}}{\textbf O}$. It is also the inverse of
 the matrix ${\textbf C}$. Thus, equation \ref{eq:multinorm} can be
 rewritten as
 \begin{equation}
-\label{eq:multinormal} P\left({\bf x}\right) = {1
-\over\sqrt{\left(2\pi\right)^m{\det{\bf V}}}}e^{-{1\over
-2}\left({\bf x}-\bar{{\bf x}}\right)^{\mathop{\rm T}}
-\inverse{V}\left({\bf x}-\bar{{\bf x}}\right)}.
+\label{eq:multinormal} P\left({\textbf x}\right) = {1
+\over\sqrt{\left(2\pi\right)^m{\det{\textbf V}}}}e^{-{1\over
+2}\left({\textbf x}-\bar{{\textbf x}}\right)^{\mathop{\textrm T}}
+\inverse{V}\left({\textbf x}-\bar{{\textbf x}}\right)}.
 \end{equation}
 In the case of a normal distribution in a multi-dimensional space,
 the covariance matrix plays the same role as the variance in one
@@ -401,7 +401,7 @@ covariance matrix such that $\sigma^2_i < \sigma^2_j$ for $i<j$.
 Let us assume that there exist an index $k$ such that $\sigma^2_k
 \gg \sigma^2_{k-1}$. Then,  The rest of the data analysis can be
 made with a vector with components $y_k,\ldots,y_m$ where the
-vector $\textbf{y}$ is defined by $\textbf{y}=\transpose{O}{\bf x}$.
+vector $\textbf{y}$ is defined by $\textbf{y}=\transpose{O}{\textbf x}$.
 
 This reduction technique has been used successfully in high energy
 physics\footnote{H.Wind, {\em Pattern recognition by principal
@@ -430,7 +430,7 @@ anthropometric statistics. A paper by Mahalanobis himself can be
 found in \cite{AtchBry}. Readers interested by the historical
 dimension of the Mahalanobis distance can consult the paper by Das
 Gupta\footnote{Somesh Das Gupta, \em{The evolution of the $D\sp
-2$-statistics of Mahalanobis}, Indian J. Pure Appl. Math., {\bf
+2$-statistics of Mahalanobis}, Indian J. Pure Appl. Math., {\textbf
 26}(1995), no. 6, 485-501.}.
 
 By definition, the exponent of equation \ref{eq:multiprob} is
@@ -444,7 +444,7 @@ distance, $d_M$, is defined as the square root of the exponent, up
 to a factor $\sqrt{2}$. We have
 \begin{equation}
 \label{eq:mahalanobis} d^2_M = \left({\textbf x}-\bar{{\textbf
-x}}\right)^{\mathop{\rm T}} \inverse{V}\left({\textbf x}-\bar{{\textbf
+x}}\right)^{\mathop{\textrm T}} \inverse{V}\left({\textbf x}-\bar{{\textbf
 x}}\right).
 \end{equation}
 The Mahalanobis distance is a distance using the inverse of the
@@ -530,10 +530,10 @@ instance variable holding a covariance accumulator.
 
 \noindent The Mahalanobis center has the following variables
 \begin{description}
-  \item[\tt accumulator] a covariance accumulator as described in section
+  \item[\texttt accumulator] a covariance accumulator as described in section
 \ref{sec:covmatrix};
-  \item[\tt center] the vector $\bar\textbf{x}$ and
-  \item[\tt inverseCovariance] the inverse of the covariance
+  \item[\texttt center] the vector $\bar\textbf{x}$ and
+  \item[\texttt inverseCovariance] the inverse of the covariance
   matrix, that is $\inverse{V}$.
 \end{description}
 Our implementation is dictated by its future reuse in cluster
@@ -541,7 +541,7 @@ analysis (\cf section \ref{sec:mahalanobiscluster}). There, we
 need to be able to accumulate measurements while using the result
 of a preceding accumulation. Thus, computation of the center and
 the inverse covariance matrix must be done explicitly with the
-method {\tt computeParameters}.
+method \texttt{computeParameters}.
 
 There are two ways of creating a new instance. One is to specify
 the dimension of the vectors which will be accumulated into the
@@ -552,26 +552,32 @@ mode is explained in section \ref{sec:mahalanobiscluster}.
 Listing \ref{ls:mahalanobis} shows the implementation of a
 Mahalanobis center in Smalltalk. The following code example shows
 how to sort measurements using the Mahalanobis distance.
-\begin{codeExample}
-\begin{verbatim}
 
+\begin{listing}{Smalltalk}
+  { }
  | center calibrationServer dataServer data threshold|
- center := DhbMahalanobisCenter new: 5.
-\end{verbatim}
+ center := PMMahalanobisCenter new: 5.
+\end{listing}
+
 \noindent{\tt<\sl The variable \tt calibrationServer \sl is setup
 to read measurements from the calibrating set>}
-\begin{verbatim}
+
+\begin{listing}{Smalltalk}
+  { }
  calibrationServer open.
  [ calibrationServer atEnd ]
       whileFalse: [ center accumulate: calibrationServer next ].
  calibrationServer close.
  center computeParameters.
-\end{verbatim}
+\end{listing}
+
 \noindent{\tt<\sl The variable \tt dataServer \sl is setup to read
 the measurements to be sorted between accepted and rejected; the
 variable \tt threshold \sl must also be determined or given\tt >}
-\begin{verbatim}
- dataServer open.
+
+\begin{listing}{Smalltalk}
+  { }
+  dataServer open.
  [ dataServer atEnd ]
       whileFalse: [ data := dataServer next.
                     ( center distanceTo: data) > threshold
@@ -579,8 +585,8 @@ variable \tt threshold \sl must also be determined or given\tt >}
                         ifFalse:[ self accept: data ].
                   ].
  dataServer close.
-\end{verbatim}
-\end{codeExample}
+\end{listing}
+
 The first line after the declaration creates a new instance of a
 Mahalanobis center for vectors of dimension 5. After setting up
 the server for the calibrating set data from the calibrating set
@@ -641,24 +647,24 @@ this point that one needs to have a way of expressing the distance
 between two data points. For the algorithm to converge the
 distance must be a distance in the geometrical sense of the term.
 In geometry, a distance is a numerical function of two vectors,
-$d\left(\texbf{x},\textbf{y}\right)$. For all vectors $\textbf{x}$, $\textbf
+$d\left(\textbf{x},\textbf{y}\right)$. For all vectors $\textbf{x}$, $\textbf
 {y}$ and $\textbf{z}$ the following conditions must be met by the
 function
 \begin{equation}
 \nonumber
 \begin{array}{l}
- d\left({\bf x},{\bf y}\right) \geq 0, \\
- d\left({\bf x},{\bf y}\right) = d\left({\bf y},{\bf x}\right), \\
- d\left({\bf x},{\bf y}\right) \leq d\left({\bf x},{\bf z}\right)
- + d\left({\bf z},{\bf y}\right).
+ d\left({\textbf x},{\textbf y}\right) \geq 0, \\
+ d\left({\textbf x},{\textbf y}\right) = d\left({\textbf y},{\textbf x}\right), \\
+ d\left({\textbf x},{\textbf y}\right) \leq d\left({\textbf x},{\textbf z}\right)
+ + d\left({\textbf z},{\textbf y}\right).
 \end{array}
 \end{equation}
-Furthermore, $d\left({\bf x},{\bf y}\right)=0$ if and only if
-${\bf x}={\bf y}$. The simplest known distance function is the
+Furthermore, $d\left({\textbf x},{\textbf y}\right)=0$ if and only if
+${\textbf x}={\textbf y}$. The simplest known distance function is the
 Euclidean distance expressed as
 \begin{equation}
 \label{eq:eucliddist}
- d_E\left({\bf x},{\bf y}\right) = \sqrt{\left({\bf x}-{\bf y}\right)\cdot\left({\bf x}-{\bf
+ d_E\left({\textbf x},{\textbf y}\right) = \sqrt{\left({\textbf x}-{\textbf y}\right)\cdot\left({\textbf x}-{\textbf
  y}\right)}.
 \end{equation}
 The square root in equation \ref{eq:eucliddist} is required for
@@ -698,7 +704,7 @@ representative. However, this is not because of the small
 dimension nor because of the well separated clusters. It is
 because we knew in advance the number of clusters, 3 in this case.
 If we had started with 5 initial clusters, we would have ended up
-with 5 clusters, according to the expression, {\sl garbage in,
+with 5 clusters, according to the expression, \textsl{garbage in,
 garbage out}, well-known among programmers.
 
 One can modify the original algorithm to prune insignificant
@@ -713,40 +719,40 @@ will never get a chance of accumulating a significant amount of
 data points during the first few iterations.
 
 \subsection{Cluster analysis --- General implementation}
-\marginpar{Figure \ref{fig:dataminingclasses} with the boxes {\bf
-ClusterFinder} and {\bf Cluster} grayed.} Our implementation of
-the $K$-cluster algorithm uses two classes: {\tt ClusterFinder}
-and {\tt Cluster}.
+\marginpar{Figure \ref{fig:dataminingclasses} with the boxes \textbf{
+ClusterFinder} and \textbf{Cluster} grayed.} Our implementation of
+the $K$-cluster algorithm uses two classes: \texttt{ClusterFinder}
+and \texttt{Cluster}.
 
-The class {\tt Cluster} describes the behavior of a cluster. It is
+The class \texttt{Cluster} describes the behavior of a cluster. It is
 an abstract class. Subclasses implements the various strategies
 needed by the algorithm: distance calculation and pruning of
 insignificant clusters. The abstract class has only one instance
-variable, {\tt previousSampleSize}, keeping the count of data
+variable, \texttt{previousSampleSize}, keeping the count of data
 points accumulated in the previous iteration. A cluster must be
 able to return the number of data points contained in the cluster.
-The method {\tt changes} gives the number of data points which
-have changed cluster since the last iteration. The method {\tt
+The method \texttt{changes} gives the number of data points which
+have changed cluster since the last iteration. The method \texttt{
 isInsignificantIn} determines whether a cluster must be pruned
-from the process. The method {\tt isUndefined} allows the
+from the process. The method \texttt{isUndefined} allows the
 identification of clusters whose centers have not yet been
 defined. This method is used by the cluster finder to initialize
 undefined clusters with the data points before starting the
 iterative process.
 
-An instance of a subclass of {\tt cluster} must implement the
-following methods to interact with the class {\tt ClusterFinder}:
+An instance of a subclass of \texttt{cluster} must implement the
+following methods to interact with the class \texttt{ClusterFinder}:
 \begin{description}
-  \item[\tt distanceTo] the argument of this method is a vector
+  \item[\texttt distanceTo] the argument of this method is a vector
   representing the data point; the returned value is the distance
   between the supplied vector and the center of the cluster; any
-  subclass of {\tt Cluster} can implement a suitable distance function
+  subclass of \texttt{Cluster} can implement a suitable distance function
   as well as its own representation of the center;
-  \item[\tt accumulate] the argument of this method is a vector
+  \item[\texttt accumulate] the argument of this method is a vector
   representing the data point; this method is called when the
   cluster finder has determined that the data point must be placed
   within this cluster;
-  \item[\tt changes] this method returns the number of data points
+  \item[\texttt changes] this method returns the number of data points
   which have been added to and removed from the cluster since the
   last iteration; the default implementation only calculates the
   difference between the number currently in the cluster and the
@@ -755,9 +761,9 @@ following methods to interact with the class {\tt ClusterFinder}:
   simple approach fails. Such cases, however, correspond to
   situations where data points are oscillating between clusters
   and, therefore, do not converge. I have never met such cases in practice.};
-  \item[\tt sampleSize] this method returns the number of data
+  \item[\texttt sampleSize] this method returns the number of data
   points actually accumulated into the cluster;
-  \item[\tt reset] this method calculates the position of the new
+  \item[\texttt reset] this method calculates the position of the new
   center at the end of an iteration; the default implementation
   stores the size of the previous sample.
 \end{description}
@@ -766,62 +772,62 @@ following methods to interact with the class {\tt ClusterFinder}:
 \patstyle{Strategy} pattern to implement the distance. I have
 tried this approach, but the resulting classes were much more
 complex for little gain. It is easier to implement subclasses of
-{\tt Cluster}. Each subclass can not only implement the distance
+\texttt{Cluster}. Each subclass can not only implement the distance
 function, but can also choose how to accumulate data points:
 accumulation or storage.}
 
-The concrete class {\tt EuclideanCluster} calculates the square of
+The concrete class \texttt{EuclideanCluster} calculates the square of
 the Euclidean distance as defined in equation \ref{eq:eucliddist}.
 Using Euclidean distance requires that the components of the data
 vector have comparable scales. Cluster analysis with Euclidean
 clusters requires data preparation in general.
 
-The class {\tt ClusterFinder} implements the algorithm itself.
+The class \texttt{ClusterFinder} implements the algorithm itself.
 This class is a subclass of the class for iterative processes
 described in section \ref{sec:iteration}. The result of the
-iterative process is an array of clusters. The class {\tt
-ClusterFinder}  needs the following instance variables:
+iterative process is an array of clusters. The class \texttt{
+ClusterFinder} needs the following instance variables:
 \begin{description}
-  \item[\tt dataServer] a data server object as described in
+  \item[\texttt dataServer] a data server object as described in
   section \ref{sec:dataserver}; this object is used to iterate on
   the data points;
-  \item[\tt dataSetSize] a counter to keep track of the number of
+  \item[\texttt dataSetSize] a counter to keep track of the number of
   data points; this instance variable is combined with the next to
   provide a first order pruning strategy;
-  \item[\tt minimumRelativeClusterSize] the minimum relative size
+  \item[\texttt minimumRelativeClusterSize] the minimum relative size
   of a significant cluster; the minimum cluster
   size is computed at each iteration by taking the product of this variable with the
-  variable {\tt dataSetSize}.
+  variable {\texttt dataSetSize}.
 \end{description}
 
-The class {\tt ClusterFinder} uses an instance of the data server
+The class \texttt{ClusterFinder} uses an instance of the data server
 to iterate over the data points. before starting the search the
 client application can assign the list of initial clusters (step 1
 of the algorithm . By default, the minimum relative size of the
 cluster is set to 0. A convenience method allows creating
 instances for a given data server and an initial set of clusters.
 
-The method {\tt initializeIterations} scans all clusters and looks
+The method \texttt{initializeIterations} scans all clusters and looks
 for undefined clusters. The center of each undefined cluster is
 assigned to a data point read from the data server. This assumes
 that the data points have been collected randomly.
 
-\noindent The method {\tt evaluateIteration} processes each data
+\noindent The method \texttt{evaluateIteration} processes each data
 point: first, it finds the index of the cluster nearest to the
 data point; then, the data point is accumulated into that cluster.
 After processing the data points, the clusters are processed to
 compute the new position of their centers and insignificant
 clusters are removed from the search. These tasks are performed
-within a method named {\tt collectChangesAndResetClusters}. This
+within a method named \texttt{collectChangesAndResetClusters}. This
 method returns the number of data points which have changed
 cluster. The determination whether or not a cluster is significant
-is delegated to each cluster with the method {\tt
+is delegated to each cluster with the method \texttt{
 isInsignificant}. Thus, any subclass of cluster can implement its
-own strategy. The argument of the method {\tt isInsignificant} is
+own strategy. The argument of the method \texttt{isInsignificant} is
 the cluster finder to provide each cluster with global information
 if needed.
 
-\noindent The method {\tt finalizeIterations} just closes the data
+\noindent The method \texttt{finalizeIterations} just closes the data
 server.
 
 \subsection{Cluster analysis --- Smalltalk implementation}
@@ -845,27 +851,27 @@ measurements from the calibrating set>}
 \end{verbatim}
 \end{codeExample}
 After setting up a data server to read the data point, an instance
-of class {\tt DhbClusterFinder} is created. the number of desired
+of class \texttt{PMClusterFinder} is created. the number of desired
 clusters is set to 5. The class of the clusters is specified. The
 next line sets the minimum relative size of each cluster to be
 kept during the iteration. Finally, the $K$-cluster algorithm is
 performed and clusters are retrieved from the finder object.
 
-The abstract class {\tt DhbCluster} is implemented with an
-instance variable {\tt accumulator}. The cluster delegates the
+The abstract class \texttt{DhbCluster} is implemented with an
+instance variable \texttt{accumulator}. The cluster delegates the
 responsibility of accumulating the data points to this variable.
-It is assumed that the object in {\tt accumulator} implements the
+It is assumed that the object in \texttt{accumulator} implements the
 interface defined by the vector accumulators described in section
 \ref{sec:scovmatrix}.
 
-The class {\tt DhbClusterFinder} can be created in two ways. An
+The class \texttt{PMClusterFinder} can be created in two ways. An
 application can set the list of initial clusters and the data
-server using the methods {\tt cluster} and {\tt dataServer}
-respectively. The convenience class creation method {\tt
+server using the methods \texttt{cluster} and \texttt{dataServer}
+respectively. The convenience class creation method \texttt{
 new:server:type:} allows to specify the initial number of
 clusters, the data server and the class of the clusters. When this
 method is used, the collection of clusters is created when the
-instance of {\tt DhbClusterFinder} is initialized; each cluster is
+instance of \texttt{PMClusterFinder} is initialized; each cluster is
 created in an undefined state.
 
 \begin{listing} Smalltalk $K$-cluster algorithm \label{ls:clusterfinder}
@@ -873,9 +879,9 @@ created in an undefined state.
 \input{Smalltalk/DataMining/DhbClusterFinder}
 \end{listing}
 Listing \ref{ls:euclidcluster} shows the implementation of the
-concrete cluster class {\tt DhbEuclideanCluster}. The
-corresponding accumulator is an instance of class {\tt
-DhbVectorAccumulator}. Data points are directly accumulated into
+concrete cluster class \texttt{DhbEuclideanCluster}. The
+corresponding accumulator is an instance of class \texttt{
+PMVectorAccumulator}. Data points are directly accumulated into
 the accumulaotr; individual data points are not kept.
 \begin{listing} Smalltalk implementation of an Euclidean cluster \label{ls:euclidcluster}
 \input{Smalltalk/DataMining/DhbEuclideanCluster}
