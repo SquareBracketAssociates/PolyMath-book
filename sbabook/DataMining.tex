@@ -251,8 +251,8 @@ of the other for efficient reuse.
 \noindent The class \code{VectorAccumulator} has two instance
 variables: {} {\parskip 0pt
 \begin{description}
-  \item[\texttt{count}] counts the number of vectors accumulated in the object so far;
-  \item[\texttt{average}] keeps the average of the accumulated vector;
+  \item[\code{count}] counts the number of vectors accumulated in the object so far;
+  \item[\code{average}] keeps the average of the accumulated vector;
 \end{description}
 }
 
@@ -260,14 +260,14 @@ variables: {} {\parskip 0pt
 the class \code{VectorAccumulator}. It has one additional instance
 variable: {} {\parskip 0pt
 \begin{description}
-  \item[\texttt{covariance}] accumulates the components of the covariance
+  \item[\code{covariance}] accumulates the components of the covariance
   matrix; for efficiency reason, only the lower half of the matrix
   is computed since it is symmetric.
 \end{description}
 }
 
 The topmost class implements equation \ref{eq:deltaverage} in the
-method \texttt{accumulate}. The subclass overloads this method to
+method \code{accumulate}. The subclass overloads this method to
 implement equation \ref{eq:robustcov}.
 
 \subsection{Covariance matrix --- Smalltalk implementation}
@@ -516,7 +516,7 @@ can be automatized using the Mahalanobis distance.
 MahalanobisCenter} grayed.} The final goal of the object
 implementing the Mahalanobis distance is to compute the square
 Mahalanobis distance as defined in equation \ref{eq:mahalanobis}.
-This is achieved with the method \texttt{distanceTo}. The inverse of
+This is achieved with the method \code{distanceTo}. The inverse of
 the covariance matrix as well as the average vector $\bar\textbf{x}$
 are contained within the object. We have called the object a
 Mahalanobis center since it describes the \textsl{center} of the
@@ -525,15 +525,15 @@ calibrating set.
 To have a self-contained object, the Mahalanobis center is acting
 as a \patstyle{facade} to the covariance accumulator of section
 \ref{sec:covmatrix} for the accumulation of measurements. The
-methods \texttt{accumulate} and \texttt{reset} are delegated to an
+methods \code{accumulate} and \code{reset} are delegated to an
 instance variable holding a covariance accumulator.
 
 \noindent The Mahalanobis center has the following variables
 \begin{description}
-  \item[\texttt accumulator] a covariance accumulator as described in section
+  \item[\code{accumulator}] a covariance accumulator as described in section
 \ref{sec:covmatrix};
-  \item[\texttt center] the vector $\bar\textbf{x}$ and
-  \item[\texttt inverseCovariance] the inverse of the covariance
+  \item[\code{center}] the vector $\bar\textbf{x}$ and
+  \item[\code{inverseCovariance}] the inverse of the covariance
   matrix, that is $\inverse{V}$.
 \end{description}
 Our implementation is dictated by its future reuse in cluster
@@ -541,7 +541,7 @@ analysis (\cf section \ref{sec:mahalanobiscluster}). There, we
 need to be able to accumulate measurements while using the result
 of a preceding accumulation. Thus, computation of the center and
 the inverse covariance matrix must be done explicitly with the
-method \texttt{computeParameters}.
+method \code{computeParameters}.
 
 There are two ways of creating a new instance. One is to specify
 the dimension of the vectors which will be accumulated into the
