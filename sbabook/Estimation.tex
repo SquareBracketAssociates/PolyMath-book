@@ -9,23 +9,19 @@
 \chapter{Statistical analysis}
 \label{ch:estimation}
 \begin{flushright}
-{\textsl L'expérience instruit plus sûrement que le
-conseil.}\footnote{Experience teaches more surely than
+{\textsl L'expérience instruit plus sûrement que le conseil.}\footnote{Experience teaches more surely than
 counseling.}\\ André Gide
 \end{flushright}
 \vspace{1 ex}This chapter is dedicated on how to extract
 information from large amount of data using statistical analysis.
-One of the best book I have read on this subject is titled {\textsl
-How to lies with statistics}\footnote{D. Huff, {\textsl How to lies
+One of the best book I have read on this subject is titled {\textsl How to lies with statistics}\footnote{D. Huff, {\textsl How to lies
   with statistics}, Norton and Co., New York 1954.}.
-This admittedly slanted title seems a little pessimistic.
-The truth, however, is that most people in their daily job ignore the little statistics
-they have learned in high school.
-As a result, statistical argumentation is often used wrongly to produce the wrong
-conclusions.
 
-The problems addressed in this section pertain to the
-interpretation of experimental measurements.
+This admittedly slanted title seems a little pessimistic.
+The truth, however, is that most people in their daily job ignore the little statistics they have learned in high school.
+As a result, statistical argumentation is often used wrongly to produce the wrong conclusions.
+
+The problems addressed in this section pertain to the interpretation of experimental measurements.
 For a long time such a discipline was reserved to physicists only. Recently natural
 science disciplines discovered that statistics could be used
 effectively to verify hypotheses or to determine parameters based
@@ -209,15 +205,12 @@ accumulated into each set separately (\cf code example
 percent that the two sets of data have the same standard
 deviation.
 
-The class {\texttt PMFisherSnedecorDistribution} is implemented as a
-subclass of {\texttt PMProbabilityDensity} because its distribution
-function can be computed numerically using the incomplete beta
-function (\cf section \ref{sec:incbeta}).
+The class \code{PMFisherSnedecorDistribution} is implemented as a subclass of \code{PMProbabilityDensity} because its distribution function can be computed numerically using the incomplete beta function (\cf section \ref{sec:incbeta}).
 
 \begin{listing}[label=ls:Fdist]{Smalltalk}
 {Smalltalk implementation of the Fisher-Snedecor distribution}
 PMProbabilityDensity subclass: #PMFisherSnedecorDistribution
-  instanceVariableNames: 'dof1 dof2 norm chiSquareDistribution1
+  instanceVariableNames: 'dof1 dof2 norm chiSquareDistribution1'
   chiSquareDistribution2 incompleteBetaFunction'
   classVariableNames: ''
   package: 'Math-DistributionForHistogram'
@@ -349,18 +342,10 @@ PMFisherSnedecorDistribution >> variance
                    ifFalse:[ nil ]
 \end{displaycode}
 
-The computation of the confidence level for the $F$-test is
-implemented in the method {\texttt fConfidenceLevel:} of the class
-{\texttt PMStatisticalMoments}.
-It calculates the statistics $F$
-according to equation \ref{eq:Ftest}, creates an instance of a
-Fisher-Snedecor distribution and passes the value of $F$ to the
-method {\texttt confidenceLevel:} of the distribution.
-The method {\texttt fConfidenceLevel:} is also implemented by the class {\texttt
-Histogram} where it is simply delegated to the statistical moments
-accumulated by the histogram.
-The argument of the method can be a
-statistical moment or a histogram since the messages sent by the
+The computation of the confidence level for the $F$-test is implemented in the method \code{fConfidenceLevel:} of the class \code{PMStatisticalMoments}.
+It calculates the statistics $F$ according to equation \ref{eq:Ftest}, creates an instance of a Fisher-Snedecor distribution and passes the value of $F$ to the method \code{confidenceLevel:} of the distribution.
+The method \code{fConfidenceLevel:} is also implemented by the class \code{Histogram} where it is simply delegated to the statistical moments accumulated by the histogram.
+The argument of the method can be a statistical moment or a histogram since the messages sent by the
 method are polymorphic to both classes.
 
 \begin{listing}[label=ls:Ftest]{Smalltalk}
@@ -404,8 +389,8 @@ PMHistogram >> fConfidenceLevel: aStatisticalMomentsOrHistogram
 \label{sec:ttest} The $t$-test tries to answer the following
 question: given two series of measurements, $x_1,\ldots,x_n$ and
 $y_1,\ldots,y_m$, what is the probability that the two
-measurements have the same average?  The $t$-test is used when
-there are not enough statistics to perform a detailed analysis of
+measurements have the same average?
+The $t$-test is used when there are not enough statistics to perform a detailed analysis of
 the data.
 
 Let us assume that the distribution of the two random variables,
@@ -493,16 +478,15 @@ normal distribution is also given for comparison.
 }\label{fig:studentDistr}
 \end{figure}
 
-
 The confidence level of a Student distribution is defined as the
 probability to find a value whose absolute value is larger than a
 given value. Thus, it estimates the level of confidence that the
 hypothesis --- namely, that the two sets of measurements have the
 same average --- cannot be accepted. Traditionally the confidence
-level is given in percent. The confidence level corresponds to the
-surface of shaded area in the insert in the upper left corner of
-figure \ref{fig:studentDistr}. By definition, the confidence level
-is related to the interval acceptance function:
+level is given in percent.
+The confidence level corresponds to the surface of shaded area in the insert in the upper left corner of
+figure \ref{fig:studentDistr}.
+By definition, the confidence level is related to the interval acceptance function:
 \begin{equation}
 \label{eq:tcl}
   {\cl}_t\left(t,n\right)=100\left[1-
@@ -525,22 +509,21 @@ from the properties of the distribution (\cf table \ref{tb:tdist})
 and using equations \ref{eq:tcl} and \ref{eq:incBetaFunction}.
 
 \rubrique{Example} Now, we shall continue the analysis of the
-results of table \ref{tb:Ftest}. The $t$ value computed from the
-two sets of measurements is $0.112$ for a degree of freedom of 18.
-the corresponding confidence level is $8.76\%$. That is, there is
-only a $8.76\%$ probability that the two generators have a
-different behavior. Thus, we can conclude that the Mitchell-Moore
-random generator is as good as the congruential random generator.
+results of table \ref{tb:Ftest}.
+The $t$ value computed from the two sets of measurements is $0.112$ for a degree of freedom of 18.
+the corresponding confidence level is $8.76\%$.
+That is, there is only a $8.76\%$ probability that the two generators have a
+different behavior.
+Thus, we can conclude that the Mitchell-Moore random generator is as good as the congruential random generator.
 
-\subsection{Student distribution --- Smalltalk implementation}
+\subsection{Student distribution --- implementation}
 \marginpar{Figure \ref{fig:estimationclasses} with the box {\textbf
 StudentDistribution} grayed.} Listing \ref{ls:tdist} shows the
 implementation of the Student distribution in Smalltalk. Listing
 \ref{ls:tTest} shows the implementation of the $t$-test in
-Smalltalk. Performing a $t$-test between two sets of experimental
-measurements is very similar to performing a $F$-test. In code
-example \ref{exs:Ftest} it suffices to replace the last line with
-the following:
+Smalltalk.
+Performing a $t$-test between two sets of experimental measurements is very similar to performing a $F$-test. In code
+example \ref{exs:Ftest} it suffices to replace the last line with the following:
 \begin{displaycode}
  confidenceLevel := mom1 fConfidenceLevel: mom2.
 \end{displaycode}
@@ -548,28 +531,174 @@ This last line returns the probability in percent that the two
 sets of data have the same average provided that the two sets have
 the same standard deviation.
 
-The class {\texttt PMStudentDistribution} is implemented as a
-subclass of {\texttt PMProbabilityDensity} because its distribution
+The class \code{PMStudentDistribution} is implemented as a
+subclass of \code{PMProbabilityDensity} because its distribution
 function can be computed numerically using the incomplete beta
 function (\cf section \ref{sec:incbeta}).
 
-The method {\texttt symmetricAcceptance:} computes the symmetric
+The method \code{symmetricAcceptance:} computes the symmetric
 acceptance function defined by equation \ref{eq:tsymacc}. This
 method is used to compute the disribution function and the
-confidence level. The method {\texttt confidenceLevel:} gives the
-confidence level in percent.
-\begin{listing} Smalltalk implementation of the Student distribution \label{ls:tdist}
-\input{Smalltalk/Statistics/DhbStudentDistribution}
+confidence level.
+The method \code{confidenceLevel:} gives the confidence level in percent.
+
+\begin{listing}[label=ls:tdist]{Smalltalk}
+{Smalltalk implementation of the Student distribution}
+PMProbabilityDensity subclass: #PMStudentDistribution
+ instanceVariableNames:'degreeOfFreedom norm chiSquareDistribution incompleteBetaFunction'
+ classVariableNames: ''
+ package: 'Math-Distributions-ForHistogram'
 \end{listing}
 
-The computation of the confidence level for the $t$-test is
-implemented in the method {\texttt tConfidenceLevel:} of the class
-{\texttt PMStatisticalMoments}. It calculates the statistics $t$
-according to equation \ref{eq:tTest}, creates an instance of a
-Student distribution and passes the value of $t$ to the method
-{\texttt confidenceLevel:} of the distribution. The method {\texttt
-tConfidenceLevel:} is also implemented by the class {\texttt
-Histogram} where it is simply delegated to the statistical moments
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution class >> asymptoticLimit
+    ^ 30
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution class >> degreeOfFreedom: anInteger
+    ^anInteger > self asymptoticLimit 
+        ifTrue: [DhbNormalDistribution new]
+        ifFalse: 
+            [anInteger = 1 
+                ifTrue: [DhbCauchyDistribution shape: 0 scale: 1]
+                ifFalse: [super new initialize: anInteger]]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution class >> distributionName
+    ^'Student distribution'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution class >> fromHistogram: aHistogram
+    | dof var |
+    var := aHistogram variance.
+    var = 0
+        ifTrue: [ ^nil].
+    dof :=  ( 2 / (1 - (1 / aHistogram variance))) rounded max: 1.
+    ^dof > self asymptoticLimit ifTrue: [ nil]
+                                ifFalse:[ self degreeOfFreedom: dof]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution class >>  new
+    ^self error: 'Illegal creation message for this class'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution class >> test: aStatisticalMoment1 with: aStatisticalMoment2
+    | t |
+    t := ( aStatisticalMoment1 average - aStatisticalMoment2 average) 
+                                                                  abs.
+    ^1 - ( ( self class degreeOfFreedom: (  aStatisticalMoment1 count 
+  + aStatisticalMoment2 count - 2)) acceptanceBetween: t negated and: 
+  t)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> average
+    ^ 0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> changeParametersBy: aVector
+    degreeOfFreedom := degreeOfFreedom + ( aVector at: 1).
+    self computeNorm.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> chiSquareDistribution
+    chiSquareDistribution isNil
+        ifTrue: [ chiSquareDistribution := PMChiSquareDistribution 
+                              degreeOfFreedom: (degreeOfFreedom - 1)].
+    ^ chiSquareDistribution
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> computeNorm
+    norm := ( ( degreeOfFreedom / 2 logBeta: ( 1 / 2) ) + ( 
+                                     degreeOfFreedom ln / 2)) negated.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> confidenceLevel: aNumber
+    ^ (1 - (self symmetricAcceptance: aNumber abs)) * 100
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> distributionValue: aNumber
+    aNumber = 0
+        ifTrue: [ ^0.5].
+    ^ (aNumber > 0
+        ifTrue: [ 2 - (self symmetricAcceptance: aNumber abs) ]
+        ifFalse:[ self symmetricAcceptance: aNumber abs ]) / 2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> incompleteBetaFunction
+    incompleteBetaFunction isNil 
+        ifTrue: 
+            [incompleteBetaFunction := PMIncompleteBetaFunction 
+                        shape: degreeOfFreedom / 2
+                        shape: 0.5].
+    ^ incompleteBetaFunction
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> initialize: anInteger
+    anInteger > 0
+        ifFalse: [ self error: 'Degree of freedom must be positive'].
+    degreeOfFreedom := anInteger.
+    self computeNorm.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> kurtosis
+    ^ degreeOfFreedom > 4 ifTrue: [ 6 / ( degreeOfFreedom - 4)]
+                         ifFalse: [ nil ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> parameters
+    ^Array with: degreeOfFreedom
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> random
+    ^PMNormalDistribution random * ( ( (degreeOfFreedom - 1) / self 
+                                  chiSquareDistribution random ) sqrt)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> skewness
+    ^ 0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> symmetricAcceptance: aNumber
+    ^ self incompleteBetaFunction value: ( degreeOfFreedom / ( 
+                                   aNumber squared + degreeOfFreedom))
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> value: aNumber
+    ^(norm - ((aNumber squared / degreeOfFreedom + 1) ln * ( ( 
+                                       degreeOfFreedom + 1) / 2))) exp
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMStudentDistribution >> variance
+    ^ degreeOfFreedom > 2 ifTrue: [ degreeOfFreedom / ( 
+                                                 degreeOfFreedom - 2) ]
+                         ifFalse:[ nil ]
+\end{displaycode}
+
+The computation of the confidence level for the $t$-test is implemented in the method {\texttt tConfidenceLevel:} of the class
+{\texttt PMStatisticalMoments}. It calculates the statistics $t$ according to equation \ref{eq:tTest}, creates an instance of a
+Student distribution and passes the value of $t$ to the method {\texttt confidenceLevel:} of the distribution. The method {\texttt
+tConfidenceLevel:} is also implemented by the class {\texttt Histogram} where it is simply delegated to the statistical moments
 accumulated by the histogram. The argument of the method can be a
 statistical moment or a histogram since the messages sent by the
 method are polymorphic to both classes.

@@ -68,8 +68,7 @@ patient.}. If one can identify a population with high risk of
 cancer, the scanning only needs to done for that population, thus
 keeping the cost low.
 
-A good collection of articles about the techniques exposed in this
-chapter can be found in \cite{AtchBry}.
+A good collection of articles about the techniques exposed in this chapter can be found in \cite{AtchBry}.
 
 \section{Data server}
 \label{sec:dataserver} \marginpar{Figure
@@ -479,23 +478,16 @@ from the $\chi^2$ distribution.
 be applied in all problems where measurements must be classified.
 
 A good example is the detection of coins in a vending machine.
-When a coin is inserted into the machine, a series of sensors
-gives several measurements, between a handful and a dozen. The
-detector can be calibrated using a set of good coins forming a
-calibration set. The coin detector can differentiate good coins
-from the fake coins using the Mahalanobis distance computed on the
-covariance matrix of the calibration set. Figure
-\ref{fig:mahalanobis} shows an example of such data\footnote{Data
+When a coin is inserted into the machine, a series of sensors gives several measurements, between a handful and a dozen. The
+detector can be calibrated using a set of good coins forming a calibration set.
+The coin detector can differentiate good coins from the fake coins using the Mahalanobis distance computed on the covariance matrix of the calibration set. Figure\ref{fig:mahalanobis} shows an example of such data\footnote{Data
 are reproduced with permission; the owner of the data wants to
-remain anonymous, however.}. The light gray histogram is the
-distribution of the Mahalanobis distance of the good coins; the
-dark gray histogram that of the fake coins. The dotted line is the
-$\chi^2$-distribution corresponding to the degrees of freedom of
-the problem; in other words, the distribution was not fitted. The
-reader can see that the curve of the $\chi^2$-distribution
-reproduces the distribution of the experimental data. Figure
-\ref{fig:mahalanobis} also shows the power of separation achieved
-between good and fake coins.
+remain anonymous, however.}.
+The light gray histogram is the distribution of the Mahalanobis distance of the good coins; the
+dark gray histogram that of the fake coins. The dotted line is the $\chi^2$-distribution corresponding to the degrees of freedom of
+the problem; in other words, the distribution was not fitted.
+The reader can see that the curve of the $\chi^2$-distribution reproduces the distribution of the experimental data. Figure
+\ref{fig:mahalanobis} also shows the power of separation achieved between good and fake coins.
 \begin{figure}
 \centering\includegraphics[width=12cm]{Figures/Mahalanobis}
 \caption{Using the Mahalanobis distance to differentiate between
@@ -558,8 +550,8 @@ how to sort measurements using the Mahalanobis distance.
  center := PMMahalanobisCenter new: 5.
 \end{listing}
 
-\noindent{\tt<\sl The variable \tt calibrationServer \sl is setup
-to read measurements from the calibrating set>}
+\noindent{The variable \code{calibrationServer} is setup
+to read measurements from the calibrating set.}
 
 \begin{listing}{Smalltalk}
   { }
