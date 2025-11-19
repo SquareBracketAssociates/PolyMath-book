@@ -34,11 +34,11 @@ The reader in the need for additional should consult the numerous textbooks on t
 \label{sec:moments} When one measures the values of an observable random variable, each measurement gives a different magnitude.
 Assuming measurement errors are negligible, the fluctuation of the measured values correspond to the distribution of the random variable.
 The problem to be solved by the experimenter is to determine the parameters of the distribution from the observed
-values. {\textsl Statistical moments} can contribute to the characterization of the distribution\footnote{Central moments are
+values.
+{\textsl Statistical moments} can contribute to the characterization of the distribution\footnote{Central moments are
 related to the coefficients of the Taylor expansion of the Fourier transform of the distribution function.}.
 
-Given a set of measurements, $x_1,\ldots,x_n$, of the values
-measured for a random variable one defines the moment of $k\th$
+Given a set of measurements, $x_1,\ldots,x_n$, of the values measured for a random variable one defines the moment of $k\th$
 order by:
 \begin{equation}
   M_k={1\over n}\sum_{i=1}^n x_i^k.
@@ -140,18 +140,14 @@ distribution parameters are needed.
 
 \subsection{Statistical moments --- implementation}
 %\marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf FastStatisticalMoments} grayed.}
-To describe this implementation we must anticipated on the next section: the class {\textbf
-PMFastStatisticalMoments} implementing statistical moments as
-described in Section \ref{sec:moments} is a subclass of the class
+To describe this implementation we must anticipated on the next section: the class \code{PMFastStatisticalMoments} implementing statistical moments as described in Section \ref{sec:moments} is a subclass of the class
 defined in section \ref{sec:robustmoment}.
 
 Space allocation is handled by the superclass.
-The class {\texttt PMFastStatisticalMoments} uses this allocation to store the moments
+The class \code{PMFastStatisticalMoments} uses this allocation to store the moments
 (instead of the central moments).
-The method {\texttt accumulate:} perform the accumulation of the moments. The
-methods {\texttt average}, {\texttt variance}, {\texttt skewness} and {\texttt
-  kurtosis} compute the respective quantities using explicit expansion of the
-central moments as a function of the moments.
+The method \code{accumulate:} perform the accumulation of the moments.
+The methods \code{average}, \code{variance}, \code{skewness} and \code{kurtosis} compute the respective quantities using explicit expansion of the central moments as a function of the moments.
 
 The computation of the standard deviation and of the error on the
 average are handled by the superclass (\cf listing \ref{ls:genmoments}).
