@@ -543,14 +543,11 @@ PMStatisticalMoments >> variance
     ^ self unnormalizedVariance / ( n - 1)
 \end{displaycode}
 
-The class {\texttt PMFixedStatisticalMoments} is a specialization of
-the class {\texttt PMStatisticalMoments} for a fixed number of
+The class \code{PMFixedStatisticalMoments} is a specialization of the class \code{PMStatisticalMoments} for a fixed number of
 central moments going up to the $4\th$ order.
 
-The class creation method {\texttt new:} is barred from usage as the
-class can only be used for a fixed number of moment orders. As a
-consequence the default creation method must be redefined to
-delegate the parametric creation to the method of the superclass.
+The class creation method \code{new:} is barred from usage as the class can only be used for a fixed number of moment orders.
+As a consequence the default creation method must be redefined to delegate the parametric creation to the method of the superclass.
 
 \begin{listing}[label=ls:fixedmoments]{Smalltalk}
 {Smalltalk implementation of accurate statistical moments with fixed orders}
