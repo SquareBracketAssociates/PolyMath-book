@@ -695,18 +695,15 @@ PMStudentDistribution >> variance
                          ifFalse:[ nil ]
 \end{displaycode}
 
-The computation of the confidence level for the $t$-test is implemented in the method {\texttt tConfidenceLevel:} of the class
-{\texttt PMStatisticalMoments}. It calculates the statistics $t$ according to equation \ref{eq:tTest}, creates an instance of a
-Student distribution and passes the value of $t$ to the method {\texttt confidenceLevel:} of the distribution. The method {\texttt
-tConfidenceLevel:} is also implemented by the class {\texttt Histogram} where it is simply delegated to the statistical moments
-accumulated by the histogram. The argument of the method can be a
-statistical moment or a histogram since the messages sent by the
-method are polymorphic to both classes.
+The computation of the confidence level for the $t$-test is implemented in the method \code{tConfidenceLevel:} of the class
+\code{PMStatisticalMoments}.
+It calculates the statistics $t$ according to equation \ref{eq:tTest}, creates an instance of a Student distribution and passes the value of $t$ to the method \code{confidenceLevel:} of the distribution.
+The method \code{tConfidenceLevel:} is also implemented by the class {\texttt Histogram} where it is simply delegated to the statistical moments accumulated by the histogram.
+The argument of the method can be a statistical moment or a histogram since the messages sent by the method are polymorphic to both classes.
 
-The method {\texttt unnormalizedVariance} of class {\texttt
-PMStatisticalMoments} corresponds to each sums in the numerator
+The method \code{unnormalizedVariance} of class \code{PMStatisticalMoments} corresponds to each sums in the numerator
 of equation \ref{eq:sbart}. To allow performing a $t$-test also
-with instances of class {\texttt PMFastStatisticalMoments}, it was
+with instances of class \code{PMFastStatisticalMoments}, it was
 necessary to define this for that class.
 
 \begin{listing} Smalltalk implementation of the $t$-test \label{ls:tTest}
