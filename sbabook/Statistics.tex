@@ -154,9 +154,8 @@ average are handled by the superclass (\cf listing \ref{ls:genmoments}).
 
 \label{sec:smoments}Listing \ref{lst:fastmoments} shows the
 Smalltalk implementation.
-The class {\texttt PMFastStatisticalMoments} is a subclass of class {\texttt
-PMStatisticalMoments} presented in listing \ref{lst:genmoments} of
-section \ref{sec:srobustmoment}. The reason for the split into two
+The class \code{PMFastStatisticalMoments} is a subclass of class \code{PMStatisticalMoments} presented in listing \ref{lst:genmoments} of section \ref{sec:srobustmoment}.
+The reason for the split into two
 classes will become clear in section \ref{sec:robustmoment}.
 
 The following code shows how to use the class {\texttt
@@ -176,15 +175,15 @@ kurtosis := accumulator kurtosis
 \end{displaycode}
 
 This example assumes that the measurement of the random variable
-are obtained from a stream. The exact implementation of the stream
-is not shown here.
+are obtained from a stream.
+The exact implementation of the stream is not shown here.
 
 After the declarative statements, the first executable statement
-creates a new instance of the class {\texttt PMFastStatisticalMoments} with the
+creates a new instance of the class \code{PMFastStatisticalMoments} with the
 default dimension.
 This default allocates enough storage to accumulate up to the
 moment of $4\th$ order.
-The next two lines are the accumulation proper using a {\texttt whileFalse:}
+The next two lines are the accumulation proper using a \code{whileFalse:}
 construct and the general behavior of a stream.
 The last four lines extract the main parameters of the distribution.
 
@@ -374,8 +373,7 @@ For the central moment of order 4 we have:
 
 \subsection{Robust central moments --- implementation}
 %\marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf StatisticalMoments} and {\textbf FixedStatisticalMoments} grayed.}
-The class {\texttt PMStatisticalMoments} has a single instance variable {\texttt
-moments} used to store the accumulated central moments.
+The class \code{PMStatisticalMoments} has a single instance variable \code{moments} used to store the accumulated central moments.
 
 The evaluation of equation \ref{eq:deltamoment} is not as hard as
 it seems from a programming point of view.
@@ -393,14 +391,12 @@ Nevertheless, accumulation is about 2 times slower than with the brute force
 method exposed in section \ref{sec:moments}.
 The reader must decide between speed and accuracy to chose between the two implementations.
 
-The class {\texttt PMFixedStatisticalMoments} is a subclass of class
-{\texttt PMStatisticalMoments} specialized in the accumulation of
-central moments up to order 4.
+The class \code{PMFixedStatisticalMoments} is a subclass of class \code{PMStatisticalMoments} specialized in the accumulation of central moments up to order 4.
 Instead of implementing the general equation \ref{eq:deltamoment}, the central
 moments are accumulated using equations \ref{eq:accumvariance},
 \ref{eq:accumskewness} and \ref{eq:accumkurtosis}.
 The only instance method redefined by this
-class is the method {\texttt accumulate}.
+class is the method \code{accumulate}.
 All other computations are performed using the methods of the superclass.
 
 \label{sec:srobustmoment} Listing
@@ -410,19 +406,14 @@ specialization to optimize the speed of accumulation for the most
 frequently used case (accumulation up to the $4\th$ order).
 
 Using the class is identical for all classes of the hierarchy.
-Thus, the code example presented in section \ref{sec:smoments} is
-also valid for these two classes.
+Thus, the code example presented in section \ref{sec:smoments} is also valid for these two classes.
 
-The creation method {\texttt new:} takes as argument the highest order of the accumulated moments.
+The creation method \code{new:} takes as argument the highest order of the accumulated moments.
 The corresponding initialization method allocates the required storage.
-The creation method {\texttt new} corresponds to the most frequent usage: the highest order is
-4.
+The creation method \code{new} corresponds to the most frequent usage: the highest order is 4.
 
-The methods computing the distribution parameters --- average,
-variance, skewness and kurtosis --- are using the method {\texttt
-centralMoment:} retrieving the central moment of a given order.
-They will return {\texttt nil} if not enough data as been accumulated
-in the moments.
+The methods computing the distribution parameters --- average, variance, skewness and kurtosis --- are using the method \code{centralMoment:} retrieving the central moment of a given order.
+They will return \code{nil} if not enough data as been accumulated in the moments.
 
 \begin{listing}[label=lst:genmoments]{Smalltalk}
 {Smalltalk implementation of accurate statistical moments}
