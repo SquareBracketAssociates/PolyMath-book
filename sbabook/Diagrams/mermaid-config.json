@@ -12,7 +12,16 @@
     "textColor": "#000000",
     "edgeLabelBackground": "#ffffff"
   },
+  "themeCSS": "code{font-size:13px;font-family:Menlo,Monaco,monospace;} .node rect,.node polygon,.node path{filter:none !important;}",
   "class": {
     "hideEmptyMembersBox": false
+  },
+  "flowchart": {
+    "wrappingWidth": 260,
+    "curve": "step",
+    "nodeSpacing": 30,
+    "rankSpacing": 25,
+    "padding": 8,
+    "diagramPadding": 4
   }
 }

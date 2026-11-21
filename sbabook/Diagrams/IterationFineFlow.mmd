@@ -1,0 +1,23 @@
+%% Detailed algorithm for successive approximations (Figure "fig:iterfine" in Iteration.tex)
+%% Grey boxes are the steps implemented by subclasses. Regenerate the PDF with:
+%%   Diagrams/mermaid2pdf.sh Diagrams/IterationFineFlow.mmd Figures/IterationFineFlow.pdf
+flowchart TB
+    begin([Begin])
+    init["Compute or choose<br/>initial object"]
+    zero["<code>iterations = 0</code>"]
+    next["Compute next object"]
+    incr["<code>iterations =<br/>iterations + 1</code>"]
+    conv{"<code>precision &lt;<br/>desiredPrecision</code>"}
+    more{"<code>iterations &lt;<br/>maximumIterations</code>"}
+    clean["Perform clean up"]
+    finish([End])
+
+    begin --> init --> zero --> next --> incr --> conv
+    conv -- Yes --> clean
+    conv -- No --> more
+    more -- Yes --> next
+    more -- No --> clean
+    clean --> finish
+
+    classDef sub fill:#e6e6e6,stroke:#000000
+    class init,next,clean sub
