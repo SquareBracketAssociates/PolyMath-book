@@ -673,23 +673,16 @@ of the difference between the result of the integration algorithm and the true r
   \centering
   \caption{Comparison between integration algorithms}\label{tb:intcompar}
 \vspace{1 ex}
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|} \hline
-  &\multicolumn{3}{c|}{\textbf{Trapeze algorithm}} &\multicolumn{3}{c|}{\textbf{Simpson algorithm}}&\multicolumn{3}{c|}{\textbf{Romberg algorithm}}  \\ \hline
-  $\epsilon_{\mathop{\textrm{max}}}$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$
-  \\ \hline
-$10^{-5}$&8&$4.1\cdot 10^{-6}$&$9.5\cdot 10^{-7}$&4&$9.9\cdot
-10^{-6}$&$4.7\cdot 10^{-7}$&4&$1.7\cdot 10^{-9}$&$1.4\cdot
-10^{-9}$\\ \hline $10^{-7}$&11&$6.4\cdot 10^{-8}$&$1.5\cdot
-10^{-8}$&6&$4.0\cdot 10^{-8}$&$1.9\cdot 10^{-9}$&4&$1.7\cdot
-10^{-9}$&$1.4\cdot 10^{-9}$\\ \hline $10^{-9}$ &15&$2.5\cdot
-10^{-10}$&$5.8\cdot 10^{-11}$&8&$1.5\cdot 10^{-10}$&$7.3\cdot
-10^{-12}$&5&$1.4\cdot 10^{-11}$&$3.7\cdot 10^{-12}$\\ \hline
-$10^{-11}$ &18&$3.9\cdot 10^{-12}$&$9.0\cdot 10^{-13}$&9&$9.8\cdot
-10^{-12}$&$5.7\cdot 10^{-13}$&6&$7.6\cdot 10^{-14}$&$5.7\cdot
-10^{-15}$\\ \hline $10^{-13}$&21&$4.8\cdot 10^{-14}$&$2.8\cdot
-10^{-14}$&11&$3.8\cdot 10^{-14}$&$1.9\cdot 10^{-15}$&6&$7.6\cdot
-10^{-14}$&$5.7\cdot 10^{-15}$\\ \hline
-\end{tabular}
+{\footnotesize\setlength{\tabcolsep}{2pt}%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} \hline
+  & \multicolumn{3}{c|}{\textbf{Trapeze}} & \multicolumn{3}{c|}{\textbf{Simpson}} & \multicolumn{3}{c|}{\textbf{Romberg}} \\ \hline
+  $\epsilon_{\max}$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ & $n$ & $\tilde{\epsilon}$ & $\epsilon$ \\ \hline
+  $10^{-5}$ & $8$ & $4.1\cdot 10^{-6}$ & $9.5\cdot 10^{-7}$ & $4$ & $9.9\cdot 10^{-6}$ & $4.7\cdot 10^{-7}$ & $4$ & $1.7\cdot 10^{-9}$ & $1.4\cdot 10^{-9}$ \\ \hline
+  $10^{-7}$ & $11$ & $6.4\cdot 10^{-8}$ & $1.5\cdot 10^{-8}$ & $6$ & $4.0\cdot 10^{-8}$ & $1.9\cdot 10^{-9}$ & $4$ & $1.7\cdot 10^{-9}$ & $1.4\cdot 10^{-9}$ \\ \hline
+  $10^{-9}$ & $15$ & $2.5\cdot 10^{-10}$ & $5.8\cdot 10^{-11}$ & $8$ & $1.5\cdot 10^{-10}$ & $7.3\cdot 10^{-12}$ & $5$ & $1.4\cdot 10^{-11}$ & $3.7\cdot 10^{-12}$ \\ \hline
+  $10^{-11}$ & $18$ & $3.9\cdot 10^{-12}$ & $9.0\cdot 10^{-13}$ & $9$ & $9.8\cdot 10^{-12}$ & $5.7\cdot 10^{-13}$ & $6$ & $7.6\cdot 10^{-14}$ & $5.7\cdot 10^{-15}$ \\ \hline
+  $10^{-13}$ & $21$ & $4.8\cdot 10^{-14}$ & $2.8\cdot 10^{-14}$ & $11$ & $3.8\cdot 10^{-14}$ & $1.9\cdot 10^{-15}$ & $6$ & $7.6\cdot 10^{-14}$ & $5.7\cdot 10^{-15}$ \\ \hline
+\end{tabular}}
 \end{table}
 
 \subsection{Smalltalk comparison}
