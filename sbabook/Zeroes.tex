@@ -347,8 +347,74 @@ algorithm have been already implemented in the superclasses.
 
 \begin{listing}[label=lst:newtonZero]{Smalltalk}
 {Smalltalk implementation of Newton's zero-finding method}
-
+PMFunctionalIterator subclass: #PMNewtonZeroFinder
+ instanceVariableNames: 'derivativeBlock searchStep lastFunctionValue  newFunctionValue lineSearch lineSearchFunctionBlock'
+   classVariableNames: ''
+   package: 'Math-Numerical-Math-FunctionIterator'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder class >> function: aBlock1 derivative: aBlock2
+    ^(self new) setFunction: aBlock1; setDerivative: aBlock2; 
+                                                              yourself
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder >> computeInitialValues
+    | n |
+    result isNil
+        ifTrue: [ result := 0].
+    derivativeBlock isNil
+        ifTrue: [ derivativeBlock := self defaultDerivativeBlock].
+    n := 0.
+    [ (derivativeBlock value: result) equalsTo: 0]
+        whileTrue: [ n := n + 1.
+                     n > maximumIterations
+                        ifTrue: [ self error: 'Function''s derivative 
+                                        seems to be zero everywhere'].
+                     result := Number random + result].
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder >> defaultDerivativeBlock
+    ^[ :x | 5000 * ( ( functionBlock value: (x + 0.0001)) - ( 
+                                  functionBlock value: (x - 0.0001)))]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder >> evaluateIteration
+    | delta |
+    delta := ( functionBlock value: result) / ( derivativeBlock 
+                                                       value: result).
+    result := result - delta.
+    ^self relativePrecision: delta abs
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder >> initialValue: aNumber
+    result := aNumber
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder >> setDerivative: aBlock
+    | x |
+    ( aBlock respondsTo: #value:)
+        ifFalse:[ self error: 'Derivative block must implement the 
+                                                      method value:'].
+    x := result ifNil: [ Number random] ifNot: [ :base | base + 
+                                                       Number random].
+    ( ( aBlock value: x) relativelyEqualsTo: (self 
+                        defaultDerivativeBlock value: x) upTo: 0.0001)
+        ifFalse:[ self error: 'Supplied derivative is not correct'].
+    derivativeBlock := aBlock
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNewtonZeroFinder >> setFunction: aBlock
+    super setFunction: aBlock.
+    derivativeBlock := nil
+\end{displaycode}
+
 
 %\input{Smalltalk/IterativeAlgorithms/DhbNewtonZeroFinder}
 
