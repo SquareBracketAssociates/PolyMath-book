@@ -249,8 +249,8 @@ of the other for efficient reuse.
 \noindent The class \code{VectorAccumulator} has two instance
 variables: {} {\parskip 0pt
 \begin{description}
-  \item[\code{count}] counts the number of vectors accumulated in the object so far;
-  \item[\code{average}] keeps the average of the accumulated vector;
+  \item[\texttt{count}] counts the number of vectors accumulated in the object so far;
+  \item[\texttt{average}] keeps the average of the accumulated vector;
 \end{description}
 }
 
@@ -258,7 +258,7 @@ variables: {} {\parskip 0pt
 the class \code{VectorAccumulator}. It has one additional instance
 variable: {} {\parskip 0pt
 \begin{description}
-  \item[\code{covariance}] accumulates the components of the covariance
+  \item[\texttt{covariance}] accumulates the components of the covariance
   matrix; for efficiency reason, only the lower half of the matrix
   is computed since it is symmetric.
 \end{description}
@@ -521,10 +521,10 @@ instance variable holding a covariance accumulator.
 
 \noindent The Mahalanobis center has the following variables
 \begin{description}
-  \item[\code{accumulator}] a covariance accumulator as described in section
+  \item[\texttt{accumulator}] a covariance accumulator as described in section
 \ref{sec:covmatrix};
-  \item[\code{center}] the vector $\bar\textbf{x}$ and
-  \item[\code{inverseCovariance}] the inverse of the covariance
+  \item[\texttt{center}] the vector $\bar\textbf{x}$ and
+  \item[\texttt{inverseCovariance}] the inverse of the covariance
   matrix, that is $\inverse{V}$.
 \end{description}
 Our implementation is dictated by its future reuse in cluster
@@ -562,9 +562,9 @@ to read measurements from the calibrating set.}
  center computeParameters.
 \end{listing}
 
-\noindent{\tt<\sl The variable \tt dataServer \sl is setup to read
+\noindent\texttt{<}\textsl{The variable \code{dataServer} is setup to read
 the measurements to be sorted between accepted and rejected; the
-variable \tt threshold \sl must also be determined or given\tt >}
+variable \code{threshold} must also be determined or given}\texttt{>}
 
 \begin{listing}{Smalltalk}
   { }
