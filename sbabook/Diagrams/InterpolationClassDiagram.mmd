@@ -1,0 +1,45 @@
+%% Class diagram for the interpolation classes (Figure "cls:interpolation" in Interpolation.tex)
+%% Methods keep "()" here because Mermaid needs it to tell methods from attributes;
+%% the script strips them so selectors appear Smalltalk-style. Regenerate the PDF with:
+%%   Diagrams/mermaid2pdf.sh Diagrams/InterpolationClassDiagram.mmd Figures/InterpolationClassDiagram.pdf
+classDiagram
+    direction TB
+
+    class PMLagrangeInterpolator {
+        pointCollection
+        add:()
+        value:()
+    }
+    class AbstractPointCollection {
+        <<abstract>>
+        add:()
+        at:()
+        size()
+    }
+    class PMNevilleInterpolator {
+        leftErrors
+        rightErrors
+        value:()
+        valueAndError:()
+    }
+    class PMBulirschStoerInterpolator
+    class PMNewtonInterpolator {
+        coefficients
+        add:()
+        value:()
+    }
+    class PMSplineInterpolator {
+        startPointDerivative
+        endPointDerivative
+        endPointDerivative:()
+        resetEndPointDerivatives()
+        setEndPointDerivatives:()
+        startPointDerivative:()
+        value:()
+    }
+
+    PMLagrangeInterpolator o-- AbstractPointCollection : pointCollection
+    PMLagrangeInterpolator <|-- PMNevilleInterpolator
+    PMLagrangeInterpolator <|-- PMNewtonInterpolator
+    PMNevilleInterpolator <|-- PMBulirschStoerInterpolator
+    PMNewtonInterpolator <|-- PMSplineInterpolator
