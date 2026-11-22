@@ -1,0 +1,13 @@
+%% Successive approximation algorithm (Figure "fig:itercoarse" in Iteration.tex)
+%% Regenerate the PDF with:
+%%   Diagrams/mermaid2pdf.sh Diagrams/IterationCoarseFlow.mmd Figures/IterationCoarseFlow.pdf
+flowchart TB
+    begin([Begin])
+    init["Compute or choose<br/>initial object"]
+    next["Compute<br/>next object"]
+    done{"Object<br/>sufficient?"}
+    finish([End])
+
+    begin --> init --> next --> done
+    done -- No --> next
+    done -- Yes --> finish
