@@ -372,12 +372,10 @@ iterativeProcess hasConverged ifFalse:[ <special case processing>].
 In this example the function on which the process will operate is
 the polynomial $3x^2+2x+1$ (\cf section \ref{sec:polynomial}).
 
-Listing \ref{ls:iterrel} shows the implementation of the abstract
-class \code{PMFunctionalIterator} in Smalltalk.
+Listing \ref{lst:iterrel} shows the implementation of the abstract class \code{PMFunctionalIterator} in Smalltalk.
 
-This class has one instance variable \code{functionBlock} to store
-the function. A single class method allows creating a new instance
-while defining the function.
+This class has one instance variable \code{functionBlock} to store the function.
+A single class method allows creating a new instance while defining the function.
 
 As we have seen in section \ref{sec:stFunction}, a function can be
 any object responding to the message value:. This allows supplying
