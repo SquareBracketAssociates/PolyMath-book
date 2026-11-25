@@ -150,7 +150,7 @@ The method \code{accumulate:} perform the accumulation of the moments.
 The methods \code{average}, \code{variance}, \code{skewness} and \code{kurtosis} compute the respective quantities using explicit expansion of the central moments as a function of the moments.
 
 The computation of the standard deviation and of the error on the
-average are handled by the superclass (\cf listing \ref{ls:genmoments}).
+average are handled by the superclass (\cf listing \ref{lst:genmoments}).
 
 \label{sec:smoments}Listing \ref{lst:fastmoments} shows the
 Smalltalk implementation.
@@ -376,18 +376,11 @@ method exposed in section \ref{sec:moments}.
 The reader must decide between speed and accuracy to chose between the two implementations.
 
 The class \code{PMFixedStatisticalMoments} is a subclass of class \code{PMStatisticalMoments} specialized in the accumulation of central moments up to order 4.
-Instead of implementing the general equation \ref{eq:deltamoment}, the central
-moments are accumulated using equations \ref{eq:accumvariance},
-\ref{eq:accumskewness} and \ref{eq:accumkurtosis}.
-The only instance method redefined by this
-class is the method \code{accumulate}.
+Instead of implementing the general equation \ref{eq:deltamoment}, the central moments are accumulated using equations \ref{eq:accumvariance}, \ref{eq:accumskewness} and \ref{eq:accumkurtosis}.
+The only instance method redefined by this class is the method \code{accumulate}.
 All other computations are performed using the methods of the superclass.
 
-\label{sec:srobustmoment} Listing
-\ref{ls:genmoments} shows the implementation of the robust
-statistical moments. Listing \ref{lst:fixedmoments} shows a
-specialization to optimize the speed of accumulation for the most
-frequently used case (accumulation up to the $4\th$ order).
+\label{sec:srobustmoment} Listing \ref{lst:genmoments} shows the implementation of the robust statistical moments. Listing \ref{lst:fixedmoments} shows a specialization to optimize the speed of accumulation for the most frequently used case (accumulation up to the $4\th$ order).
 
 Using the class is identical for all classes of the hierarchy.
 Thus, the code example presented in section \ref{sec:smoments} is also valid for these two classes.
@@ -532,7 +525,7 @@ The class \code{PMFixedStatisticalMoments} is a specialization of the class \cod
 The class creation method \code{new:} is barred from usage as the class can only be used for a fixed number of moment orders.
 As a consequence the default creation method must be redefined to delegate the parametric creation to the method of the superclass.
 
-\begin{listing}[label=ls:fixedmoments]{Smalltalk}
+\begin{listing}[label=lst:fixedmoments]{Smalltalk}
 {Smalltalk implementation of accurate statistical moments with fixed orders}
 PMStatisticalMoments subclass: #PMFixedStatisticalMoments
    instanceVariableNames: ''
@@ -676,7 +669,7 @@ is $-2$.
 The bin width is then selected to be $0.075$ and the minimum and maximum are adjusted to be integral multiples of the bin width enclosing the given limits.
 In our example, there are $2.1$ and $5.175$ and the number of bins becomes 41 instead of 50.
 
-\label{sec:shistogram} Listing \ref{ls:histogram} shows the
+\label{sec:shistogram} Listing \ref{lst:histogram} shows the
 implementation of a histogram in Smalltalk. The following code
 shows how to use the class \code{PMHistogram} to accumulate
 measurements into a histogram.
@@ -1106,14 +1099,15 @@ PMHistogram>>processOverflows: anInteger for: aNumber
         ifTrue: [ self growContents: anInteger.
                      moments accumulate: aNumber
                    ]
-        ifFalse:[ self countOverflows: anInteger ].
+        ifFalse:[ self countOverflows: anInteger ]
+\end{displaycode}
 
 \begin{displaycode}{Smalltalk}
 PMHistogram>>setDesiredNumberOfBins: anInteger
     anInteger > 0
         ifFalse:[ self error: 'Desired number of bins must be 
                                                            positive'].
-    desiredNumberOfBins := anInteger.
+    desiredNumberOfBins := anInteger
 \end{displaycode}
   
 \begin{displaycode}{Smalltalk}
@@ -1314,12 +1308,10 @@ exercise to the reader.
 
 \subsection{Random number generator --- Smalltalk implementation}
 \marginpar{Figure \ref{fig:statisticsclasses} with the boxes {\textbf
-CongruentialRandomNumberGenerator} and {\textbf
-MitchellMooreGenerator} grayed.} Listing \ref{ls:randomcong} shows
-the implementation of a congruential random generator in
-Smalltalk. Listing \ref{ls:randomseq} shows the implementation of
-a additive sequence random generator in Smalltalk.
-Listing \ref{ls:randomuse} shows usage of the generator for standard use.
+CongruentialRandomNumberGenerator} and {\textbf MitchellMooreGenerator} grayed.} Listing \ref{lst:randomcong} shows
+the implementation of a congruential random generator in Smalltalk.
+Listing \ref{lst:randomseq} shows the implementation of a additive sequence random generator in Smalltalk.
+Listing \ref{lst:randomuse} shows usage of the generator for standard use.
 
 \noindent The class \code{PMCongruentialRandomNumberGenerator} has
 three public methods:
@@ -1411,7 +1403,7 @@ numbers using floating point parameters is about 3 times faster
 than with integer parameters. This can easily be verified by the
 reader.
 
-\begin{listing}[label=ls:randomcong]{Smalltalk}
+\begin{listing}[label=lst:randomcong]{Smalltalk}
   {Smalltalk implementation of congruential random number generators}
 Object subclass: #PMCongruentialRandomNumberGenerator
     instanceVariableNames: 'constant modulus multiplicator seed'
@@ -1497,7 +1489,7 @@ numbers $k$ and $l$ as well as the initial series of numbers.
 The reader wishing to use this method should consult the table of {\textsl good} indices $k$ and $l$ in \cite{Knuth2}.
 
 %\input{Smalltalk/Statistics/DhbMitchellMooreGenerator}
-\begin{listing}[label=ls:randomseq]{Smalltalk}
+\begin{listing}[label=lst:randomseq]{Smalltalk}
 {Smalltalk implementation of an additive sequence random number generator}
 Object subclass: #PMMitchellMooreGenerator
     instanceVariableNames: 'randoms lowIndex highIndex'
@@ -1566,29 +1558,26 @@ floating or integer --- within certain limits.
 Here are convenience methods implemented for the class \code{Number} and \code{Integer}.
 These methods frees the user from keeping track of the instance of the random number generator.
 For example, the following Smalltalk expression
-\begin{quote}
-\begin{verbatim}
- 50 random
-\end{verbatim}
-\end{quote}
-\noindent generates an integer random number between 0 and 49
-included. Similarly the following Smalltalk expression
-\begin{quote}
-\begin{verbatim}
- 2.45 random
-\end{verbatim}
-\end{quote}
-\noindent generates a floating random number between $0$ and $2.45$
-excluded. Finally the following Smalltalk expression
-\begin{quote}
-\begin{verbatim}
- Number random
-\end{verbatim}
-\end{quote}
-\noindent generates a floating random number between 0 and 1
-excluded.
 
-\label{ls:randomuse}
+\begin{displaycode}{Smalltalk}
+50 random
+\end{displaycode}
+
+\noindent generates an integer random number between $0$ and $49$ included. Similarly the following Smalltalk expression
+
+\begin{displaycode}{Smalltalk}
+ 2.45 random
+\end{displaycode}
+
+\noindent generates a floating random number between $0$ and $2.45$ excluded. Finally the following Smalltalk expression
+
+\begin{displaycode}{Smalltalk}
+Number random
+\end{displaycode}
+
+\noindent generates a floating random number between $0$ and $1$ excluded.
+
+\label{lst:randomuse}
 \begin{listing}[label=lst:matrix]{Smalltalk}
   {Smalltalk implementation of random number generators}
 Integer >> random
@@ -1782,7 +1771,7 @@ As we have quoted earlier a probability density function is a function, as defin
 must be provided to create a function (as defined in section
 \ref{sec:function}) for the distribution function.
 
-Listing \ref{ls:probdistr} shows the implementation of a general
+Listing \ref{lst:probdistr} shows the implementation of a general
 probability density distribution in Smalltalk. The class \code{PMProbabilityDensity} is an abstract implementation.
 Concrete implementation of probability density distributions are subclass
 of it.
@@ -1812,7 +1801,7 @@ made using the statistical moments of the histogram and comparing
 them to the analytical expression of the distribution's parameter.
 
 %\input{Smalltalk/Statistics/DhbProbabilityDensity}
-\begin{listing}[label=ls:probdistr]{Smalltalk}
+\begin{listing}[label=lst:probdistr]{Smalltalk}
 {Smalltalk implementation of a probability distribution}
 Object subclass: #PMProbabilityDensity
     instanceVariableNames: ''
@@ -1953,27 +1942,62 @@ Therefore, methods computing the acceptance function (\code{distributionValue:})
 The lower limit of the integral for the distribution function ---
 $x_{\min}$ of equation \ref{eq:defdistrmin} --- is defined by the
 method {\texttt lowestValue}. Since the majority of the probability
-density distributions are defined for non-negative numbers, this
-method returns 0. If the supplied default is not appropriate, the
-method {\texttt lowestValue} must be redefined by the subclass.
+density distributions are defined for non-negative numbers, this method returns 0. If the supplied default is not appropriate, the method {\texttt lowestValue} must be redefined by the subclass.
 
-\begin{listing} Smalltalk implementation of a probability distribution with unknown
-distribution function\label{ls:probunkdistr}
 %\input{Smalltalk/Statistics/DhbProbabilityDensityWithUnknownDistribution}
+
+\begin{listing}[label=lst:probunkdistr]{Smalltalk}
+{Smalltalk implementation of a probability distribution with unknown distribution function}
+PMProbabilityDensity subclass: #PMProbabilityDensityWithUnknownDistribution
+   instanceVariableNames: ''
+    classVariableNames: ''
+    package: #'Math-Distributions'
 \end{listing}
 
-Listing \ref{ls:probdistrfun} shows the implementation of the
-\patstyle{Adapter} for the distribution function. The class {\texttt
-PMProbabilityDistributionFunction} has a single instance variable
-containing the corresponding probability density function. The
-creation method {\texttt density:} takes an instance of class {\texttt
-PMProbabilityDensity} as argument.
+\begin{displaycode}{Smalltalk}
+PMProbabilityDensityWithUnknownDistribution >> acceptanceBetween: aNumber1 and: aNumber2
+    ^ (PMRombergIntegrator new: self from: aNumber1 to: aNumber2) 
+                                                              evaluate
+\end{displaycode}
 
-\begin{listing} Smalltalk implementation of a probability distribution function
-\label{ls:probdistrfun}
+\begin{displaycode}{Smalltalk}
+PMProbabilityDensityWithUnknownDistribution >> distributionValue: aNumber
+    ^ (PMRombergIntegrator new: self from: self lowestValue to: 
+                                                     aNumber) evaluate
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProbabilityDensityWithUnknownDistribution >> lowestValue
+    ^ 0
+\end{displaycode}
+
+Listing \ref{lst:probdistrfun} shows the implementation of the \patstyle{Adapter} for the distribution function. The class {\texttt PMProbabilityDistributionFunction} has a single instance variable containing the corresponding probability density function.
+The creation method {\texttt density:} takes an instance of class {\texttt PMProbabilityDensity} as argument.
+
 %\input{Smalltalk/Statistics/DhbProbabilityDistributionFunction}
+\begin{listing}[label=lst:probdistrfun]{Smalltalk}
+{Smalltalk implementation of a probability distribution function}
+Object subclass: #PMProbabilityDistributionFunction
+   instanceVariableNames: 'probabilityDensity'
+    classVariableNames: ''
+    package: #'Math-Distributions'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMProbabilityDistributionFunction class >> density: aProbabilityDensity
+    ^ self new initialize: aProbabilityDensity
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProbabilityDistributionFunction >> initialize: aProbabilityDensity
+    probabilityDensity := aProbabilityDensity.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMProbabilityDistributionFunction >> value: aNumber
+    ^ probabilityDensity distributionValue: aNumber
+\end{displaycode}
 
 \section{Normal distribution}
 \label{sec:normdist} The normal distribution is the most important
@@ -2016,7 +2040,7 @@ $\sigma$.
 
 \subsection{Normal distribution --- Smalltalk implementation}
 \marginpar{Figure \ref{fig:statisticsclasses} with the box {\textbf
-NormalDistribution} grayed.} Listing \ref{ls:normdist} shows the
+NormalDistribution} grayed.} Listing \ref{lst:normdist} shows the
 implementation of the normal distribution in Smalltalk.
 
 The distribution function of the normal distribution can be
@@ -2025,7 +2049,7 @@ computed with the error function (\cf section
 PMNormalDistribution} is implemented as a subclass of {\texttt
 PMProbabilityDensity}.
 
-\begin{listing} Smalltalk implementation of the normal distribution \label{ls:normdist}
+\begin{listing} Smalltalk implementation of the normal distribution \label{lst:normdist}
 \input{Smalltalk/Statistics/DhbNormalDistribution}
 \end{listing}
 
@@ -2074,7 +2098,7 @@ variable.
 \subsection{Gamma distribution --- Smalltalk implementation}
 \label{sec:sgammadist}\marginpar{Figure
 \ref{fig:statisticsclasses} with the box {\textbf GammaDistribution}
-grayed.}  Listing \ref{ls:gammadist} shows the implementation of
+grayed.}  Listing \ref{lst:gammadist} shows the implementation of
 the gamma distribution in Smalltalk.
 
 The distribution function of the gamma distribution can be
@@ -2082,7 +2106,7 @@ computed with the incomplete gamma function (\cf section
 \ref{sec:gammafunc}). Therefore the class {\texttt
 PMGammaDistribution} is implemented as a subclass of {\texttt
 PMProbabilityDensity}.
-\begin{listing} Smalltalk implementation of the gamma distribution \label{ls:gammadist}
+\begin{listing} Smalltalk implementation of the gamma distribution \label{lst:gammadist}
 \input{Smalltalk/Statistics/DhbGammaDistribution}
 \end{listing}
 
@@ -2162,7 +2186,7 @@ automatic adjustment of the limits (\cf section
 \end{quote}
 
 \subsection{Experimental distribution --- Smalltalk  implementation}
-Listing \ref{ls:histprob} shows the implementation of an
+Listing \ref{lst:histprob} shows the implementation of an
 experimental distribution in Smalltalk.
 
 The class {\texttt PMHistogrammedDistribution} is a subclass of the
@@ -2172,7 +2196,7 @@ instance is defined. To prevent creating a instance with undefined
 instance variable, the default class creation method {\texttt new}
 returns an error.
 
-\begin{listing} Smalltalk implementation of an experimental distribution \label{ls:histprob}
+\begin{listing} Smalltalk implementation of an experimental distribution \label{lst:histprob}
 \input{Smalltalk/Statistics/DhbHistogrammedDistribution}
 \end{listing}
 
