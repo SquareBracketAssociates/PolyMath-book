@@ -2101,15 +2101,191 @@ variable.
 grayed.}  Listing \ref{lst:gammadist} shows the implementation of
 the gamma distribution in Smalltalk.
 
-The distribution function of the gamma distribution can be
-computed with the incomplete gamma function (\cf section
-\ref{sec:gammafunc}). Therefore the class {\texttt
-PMGammaDistribution} is implemented as a subclass of {\texttt
-PMProbabilityDensity}.
-\begin{listing} Smalltalk implementation of the gamma distribution \label{lst:gammadist}
-\input{Smalltalk/Statistics/DhbGammaDistribution}
+The distribution function of the gamma distribution can be computed with the incomplete gamma function (\cf section \ref{sec:gammafunc}).
+Therefore the class {\texttt PMGammaDistribution} is implemented as a subclass of {\texttt PMProbabilityDensity}.
+
+%\input{Smalltalk/Statistics/DhbGammaDistribution}
+\begin{listing}[label=lst:gammadist]{Smalltalk}
+{Smalltalk implementation of the gamma distribution}
+PMProbabilityDensity subclass: #PMGammaDistribution
+   instanceVariableNames: 'alpha beta norm randomCoefficients incompleteGammaFunction'
+    classVariableNames: ''
+    package: #'Math-Distributions'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution class >> distributionName
+    ^ 'Gamma distribution'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution class >> fromHistogram: aHistogram
+    | alpha beta |
+    aHistogram minimum < 0
+        ifTrue: [ ^nil].
+    alpha := aHistogram average.
+    beta := aHistogram variance / alpha.
+    ^ [ self shape: alpha / beta scale: beta] when: ExAll do: [ 
+                                       :signal | signal exitWith: nil]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution class >> new
+    ^ self error: 'Illegal creation message for this class'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution class >> shape: aNumber1 scale: aNumber2
+    ^ super new initialize: aNumber1 scale: aNumber2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> average
+    ^ alpha * beta
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> changeParametersBy: aVector
+    alpha := alpha + ( aVector at: 1).
+    beta := beta + ( aVector at: 2).
+    self computeNorm.
+    incompleteGammaFunction := nil.
+    randomCoefficients := nil
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> computeNorm
+    norm := beta ln * alpha + alpha logGamma.
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> distributionValue: aNumber
+    ^ self incompleteGammaFunction value: aNumber / beta
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> incompleteGammaFunction
+    incompleteGammaFunction isNil 
+        ifTrue: 
+            [ incompleteGammaFunction := PMIncompleteGammaFunction 
+                                                        shape: alpha ].
+    ^ incompleteGammaFunction
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> initialize: aNumber1 scale: aNumber2
+    (aNumber1 > 0 and: [ aNumber2 > 0])
+        ifFalse: [ self error: 'Illegal distribution parameters'].
+    alpha := aNumber1.
+    beta := aNumber2.
+    self computeNorm.
+    ^ self
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> initializeRandomCoefficientsForLargeAlpha
+    | a b q d |
+    a := 1 / ( 2 * alpha - 1) sqrt.
+    b := alpha - (4 ln).
+    q := 1 / a + alpha.
+    d := 4.5 ln + 1.
+    ^ Array with: a with: b with: q with: d
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> initializeRandomCoefficientsForSmallAlpha
+    | e |
+    e := 1 exp.
+    ^ (e + alpha) / e
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> kurtosis
+    ^ 6 / alpha
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> parameters
+    ^ Array with: alpha with: beta
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> random
+    ^ ( alpha > 1 ifTrue: [ self randomForLargeAlpha]
+                        ifFalse:[ self randomForSmallAlpha]) * beta
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> randomCoefficientsForLargeAlpha
+    randomCoefficients isNil
+        ifTrue: [ randomCoefficients := self initializeRandomCoefficientsForLargeAlpha].
+    ^ randomCoefficients
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> randomCoefficientsForSmallAlpha
+    randomCoefficients isNil
+        ifTrue: [ randomCoefficients := self 
+                           initializeRandomCoefficientsForSmallAlpha].
+    ^ randomCoefficients
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> randomForLargeAlpha
+    [ true] whileTrue: [
+    | u1 u2 c v y z w |
+    u1 := PMMitchellMooreGenerator new floatValue.
+    u2 := PMMitchellMooreGenerator new floatValue.
+    c := self randomCoefficientsForLargeAlpha.
+    v := ( u1 / ( 1 - u1)) ln * (c at: 1).
+    y := v exp * alpha.
+    z := u1 squared * u2.
+    w := ( c at: 3) * v + ( c at: 2) - y.
+    ( c at: 4) + w >= ( 4.5 * z) ifTrue: [ ^y].
+    z ln <= w ifTrue: [ ^y].
+    ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> randomForSmallAlpha
+    [ true] whileTrue: [
+    | p |
+    p := PMMitchellMooreGenerator new floatValue * self 
+                                      randomCoefficientsForSmallAlpha.
+    p > 1
+        ifTrue: [ | y |
+                     y := ( ( self randomCoefficientsForSmallAlpha - 
+                                               p) / alpha) ln negated.
+                     PMMitchellMooreGenerator new floatValue <= ( y 
+                                               raisedTo: ( alpha - 1))
+                        ifTrue: [ ^y].
+                    ]
+        ifFalse: [ | y |
+                        y := p raisedTo: ( 1 / alpha).
+                     PMMitchellMooreGenerator new floatValue <= ( y 
+                                                          negated exp)
+                        ifTrue: [ ^y].
+                     ].
+    ]
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> skewness
+    ^ 2 / alpha sqrt
+\end{displaycode}
+    
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> value: aNumber
+    ^ aNumber > 0
+        ifTrue: [ ( aNumber ln * (alpha - 1) - (aNumber / beta) - 
+                                                            norm) exp ]
+        ifFalse:[ 0 ]
+\end{displaycode}
+        
+\begin{displaycode}{Smalltalk}
+PMGammaDistribution >> variance
+    ^ beta squared * alpha
+\end{displaycode}
 
 \section{Experimental distribution}
 A histogram described in section \ref{sec:histogram} can be used
