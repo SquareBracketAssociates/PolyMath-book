@@ -1,0 +1,76 @@
+name: Build PDF
+
+# Build the book on every push and pull request.
+# On pushes to master, the PDF is also published on the "latest" pre-release:
+# https://github.com/SquareBracketAssociates/PolyMath-book/releases/tag/latest
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+      # git must be present before checkout so that .git is kept (gitinfo2 needs it)
+      - name: Install git
+        run: |
+          if ! command -v git >/dev/null; then
+            apt-get update && apt-get install -y --no-install-recommends git
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history and tags, for the commit/release info on the title page
+
+      - name: Mark workspace as safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Build sbabook.pdf with latexmk (LuaLaTeX)
+        working-directory: sbabook
+        run: latexmk
+
+      - name: Show LaTeX log on failure
+        if: failure()
+        working-directory: sbabook
+        run: tail -n 100 sbabook.log || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PolyMath-pdf
+          path: sbabook/sbabook.pdf
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-latest-pdf
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: PolyMath-pdf
+
+      - name: Update the "latest" pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mv sbabook.pdf PolyMath.pdf
+          git tag -f latest "$GITHUB_SHA"
+          git push -f origin refs/tags/latest
+          NOTES="PDF built automatically from commit ${GITHUB_SHA::7} on $(date -u +%Y-%m-%d)."
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest PolyMath.pdf --clobber
+            gh release edit latest --notes "$NOTES"
+          else
+            gh release create latest PolyMath.pdf --prerelease \
+              --title "PolyMath (latest build)" --notes "$NOTES"
+          fi
