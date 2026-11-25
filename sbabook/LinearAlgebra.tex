@@ -346,13 +346,10 @@ dispatching as explained in section \ref{sec:polymath} for
 operations between polynomials. Double dispatching is described in
 appendix (\cf section \ref{sec:doubledisp}).
 
-The method \code{asPMVector} is defined for compatibility with a
-similar method defined in the class \code{Collection} to construct a
-vector out of any collection object.
+The method \code{asPMVector} is defined for compatibility with a similar method defined in the class \code{Collection} to construct a vector out of any collection object.
 
-The method \code{tensorProduct} returns an instance of a symmetric
-matrix.
-This class is defined in listing \ref{ls:symmatrix}.
+The method \code{tensorProduct} returns an instance of a symmetric matrix.
+This class is defined in listing \ref{lst:symmatrix}.
 
 The method \code{accumulate} is meant to be used when there is a
 need to add several vectors.
@@ -645,7 +642,7 @@ PMMatrix >> initializeRows: anArrayOrVector
 \begin{displaycode}{Smalltalk}
 PMMatrix >> isSquare
     ^ rows size = rows last size
-\end{verbatim}
+\end{displaycode}
 
 \begin{displaycode}{Smalltalk}
 PMMatrix >> isSymmetric
@@ -778,67 +775,67 @@ Triple dispatching is used to ensure that the addition or subtraction of two sym
 yields a symmetric matrix whereas the same operations between a symmetric matrix and a normal matrix yield a normal matrix.
 Product requires quadruple dispatching.
 
-\begin{listing}[label=lst:symatrix]{Smalltalk}
+\begin{listing}[label=lst:symmatrix]{Smalltalk}
 {Symmetric matrix classes}
-PMMatrix subclass: #SymmetricMatrix
+PMMatrix subclass: #PMSymmetricMatrix
    instanceVariableNames: ''
    classVariableNames: ''
    package: 'Math-Matrix'
 \end{listing}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix class >> identity: anInteger
+PMSymmetricMatrix class >> identity: anInteger
     ^ self new initializeIdentity: anInteger
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> + aMatrix
+PMSymmetricMatrix >> + aMatrix
     ^ aMatrix addWithSymmetricMatrix: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> - aMatrix
+PMSymmetricMatrix >> - aMatrix
     ^ aMatrix subtractWithSymmetricMatrix: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> addWithSymmetricMatrix: aMatrix
+PMSymmetricMatrix >> addWithSymmetricMatrix: aMatrix
     ^ aMatrix addWithMatrix: self class: self class
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> clear
+PMSymmetricMatrix >> clear
     rows do: [ :each | each atAllPut: 0].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> initializeIdentity: anInteger
+PMSymmetricMatrix >> initializeIdentity: anInteger
     rows := ( 1 to: anInteger) asVector collect: [ :n | (DhbVector 
                  new: anInteger) atAllPut: 0; at: n put: 1; yourself].
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> isSquare
+PMSymmetricMatrix >> isSquare
     ^ true
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> isSymmetric
+PMSymmetricMatrix >> isSymmetric
     ^ true
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> productWithMatrix: aMatrix
+PMSymmetricMatrix >> productWithMatrix: aMatrix
     ^ aMatrix productWithSymmetricMatrix: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> productWithSymmetricMatrix: aSymmetricMatrix
+PMSymmetricMatrix >> productWithSymmetricMatrix: aSymmetricMatrix
     ^ aSymmetricMatrix productWithMatrixFinal: self
 \end{displaycode}
 
 \begin{displaycode}{Smalltalk}
-SymmetricMatrix >> subtractWithSymmetricMatrix: aMatrix
+PMSymmetricMatrix >> subtractWithSymmetricMatrix: aMatrix
     ^ aMatrix subtractWithMatrix: self class: self class
 \end{displaycode}
 
