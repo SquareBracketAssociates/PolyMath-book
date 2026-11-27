@@ -2032,6 +2032,8 @@ normal distribution for various values of the parameters. The
 reader can see that the peak of the distribution is always located
 at $\mu$ and that the width of the bell curve is proportional to
 $\sigma$.
+
+
 \begin{figure}
 \centering\includegraphics[width=12cm]{Figures/NormalDistribution}
 \caption{Normal distribution for various values of the parameters
@@ -2049,9 +2051,115 @@ computed with the error function (\cf section
 PMNormalDistribution} is implemented as a subclass of {\texttt
 PMProbabilityDensity}.
 
-\begin{listing} Smalltalk implementation of the normal distribution \label{lst:normdist}
-\input{Smalltalk/Statistics/DhbNormalDistribution}
+%\input{Smalltalk/Statistics/DhbNormalDistribution}
+\begin{listing}[label=lst:normdist]{Smalltalk}
+{Smalltalk implementation of the normal distribution}
+PMProbabilityDensity subclass: #PMNormalDistribution
+   instanceVariableNames: 'mu sigma'
+    classVariableNames: 'NextRandom'
+    package: #'Math-Distributions-Normal'
 \end{listing}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution class >> distributionName
+    ^ 'Normal distribution'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution class >> fromHistogram: aHistogram
+    ^ self new: aHistogram average sigma: aHistogram standardDeviation
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution class >> new
+    ^self new: 0 sigma: 1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution class >> new: aNumber1 sigma: aNumber2
+    ^ super new initialize: aNumber1 sigma: aNumber2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution class >> random
+    | v1 v2 w y |
+    NextRandom isNil
+        ifTrue: [ [ v1 := Number random * 2 - 1.
+                    v2 := Number random * 2 - 1.
+                    w := v1 squared + v2 squared.
+                    w > 1 ] whileTrue: [].
+                  y := ( ( w ln * 2 negated) / w) sqrt.
+                v1 := y * v1.
+                NextRandom := y * v2.
+                ]
+        ifFalse:[ v1 :=NextRandom.
+                  NextRandom := nil.
+                ].
+    ^ v1
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> average
+    ^ mu
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> changeParametersBy: aVector
+    mu := mu + ( aVector at: 1).
+    sigma := sigma + ( aVector at: 2)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> distributionValue: aNumber
+    ^ PMErfApproximation new value: ( ( aNumber - mu) / sigma)
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> initialize: aNumber1 sigma: aNumber2
+    mu := aNumber1.
+    sigma := aNumber2
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> kurtosis
+    ^ 0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> parameters
+    ^Array with: mu with: sigma
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> random
+    ^ self class random * sigma + mu
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> skewness
+    ^ 0
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> standardDeviation
+    ^ sigma
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> value: aNumber
+    ^ (PMErfApproximation new normal: (aNumber - mu) / sigma) / 
+                                                                 sigma
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMNormalDistribution >> valueAndGradient: aNumber
+    | dp y |
+    y := (aNumber - mu) / sigma.
+    dp := (PMErfApproximation new normal: y) / sigma.
+    ^ Array with: dp
+           with: ( PMVector with: dp * y / sigma
+                             with: dp * ( y squared - 1) / sigma)
+\end{displaycode}
 
 \section{Gamma distribution}
 \label{sec:gammadist} The gamma distribution is used to describe
@@ -2372,9 +2480,93 @@ instance is defined. To prevent creating a instance with undefined
 instance variable, the default class creation method {\texttt new}
 returns an error.
 
-\begin{listing} Smalltalk implementation of an experimental distribution \label{lst:histprob}
-\input{Smalltalk/Statistics/DhbHistogrammedDistribution}
+%\input{Smalltalk/Statistics/DhbHistogrammedDistribution}
+\begin{listing}[label=lst:histprob]{Smalltalk}
+{Smalltalk implementation of an experimental distribution}
+PMProbabilityDensity subclass: #PMHistogrammedDistribution
+   instanceVariableNames: 'histogram'
+    classVariableNames: ''
+    package: #'Math-Distributions'
 \end{listing}
 
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution class >> distributionName
+    ^ 'Experimental distribution'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution class >> histogram: aHistogram
+    ^ super new initialize: aHistogram
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution class >> new
+    ^ self error: 'Illegal creation message for this class'
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> acceptanceBetween: aNumber1 and: aNumber2
+    ^ (histogram countsBetween: (aNumber1 max: histogram minimum)
+                        and: (aNumber2 min: histogram maximum) ) / 
+                                                  histogram totalCount
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> average
+    ^ histogram average
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> distributionValue: aNumber
+    ^ aNumber < histogram minimum
+        ifTrue: [ 0 ]
+        ifFalse:[ aNumber < histogram maximum
+                            ifTrue: [ ( histogram countsUpTo: 
+                                      aNumber) / histogram totalCount ]
+                            ifFalse:[ 1 ]
+                    ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> initialize: aHistogram
+    aHistogram count = 0
+        ifTrue: [ self error: 'Cannot define probability density on 
+                                                 an empty histogram'].
+    histogram := aHistogram
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> kurtosis
+    ^ histogram kurtosis
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> privateInverseDistributionValue: aNumber
+    ^ histogram inverseDistributionValue: aNumber
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> skewness
+    ^ histogram skewness
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> standardDeviation
+    ^ histogram standardDeviation
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> value: aNumber
+    ^ (aNumber >= histogram minimum and: [ aNumber < histogram 
+                                                             maximum])
+        ifTrue: [ ( histogram countAt: aNumber) / ( histogram 
+                                     totalCount * histogram binWidth)]
+        ifFalse:[ 0 ]
+\end{displaycode}
+
+\begin{displaycode}{Smalltalk}
+PMHistogrammedDistribution >> variance
+    ^ histogram variance
+\end{displaycode}
 
 %\ifx\wholebook\relax\else\end{document}\fi
