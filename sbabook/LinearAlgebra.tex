@@ -380,7 +380,7 @@ of addition can make a big difference in performance since many
 large short-lived objects put a heavy toll of the garbage
 collector.
 
-\begin{listing}[label=ls:vector]{Smalltalk}
+\begin{listing}[label=lst:vector]{Smalltalk}
 {Vector class in Pharo}
 Array variableSubclass: #PMVector
    instanceVariableNames: ''
@@ -529,10 +529,8 @@ If the problem is such that one can allocate memory once for all, more efficient
 The implementation of matrix operations --- addition, subtraction,
 product --- uses double or multiple dispatching to determine
 whether or not the result is a symmetric matrix.
-Double and multiple dispatching are explained in sections
-\ref{sec:doubledisp} and \ref{sec:multipledisp}. The reader who is
-not familiar with multiple dispatching should trace down a few
-examples between simple matrices using the debugger.
+Double and multiple dispatching are explained in sections \ref{sec:doubledisp} and \ref{sec:multipledisp}.
+The reader who is not familiar with multiple dispatching should trace down a few examples between simple matrices using the debugger.
 
 \begin{listing}[label=lst:matrix]{Smalltalk}
 {Matrix classes}
